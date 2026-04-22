@@ -1,6 +1,9 @@
 {
   "name": "memmgmt",
   "version": "0.1.0",
+  "description": "Local UI for managing Claude Code configuration surface.",
+  "license": "MIT",
+  "keywords": ["claude-code", "memmgmt", "config", "skills", "commands"],
   "private": true,
   "bin": {
     "memmgmt": "./bin/memmgmt.mjs"
@@ -25,7 +28,8 @@
     "test:watch": "vitest",
     "typecheck": "tsc --noEmit",
     "memmgmt:launch-dev": "node bin/memmgmt.mjs",
-    "postbuild": "node scripts/copy-standalone-assets.mjs"
+    "postbuild": "node scripts/copy-standalone-assets.mjs",
+    "prepublishOnly": "pnpm build"
   },
   "dependencies": {
     "@base-ui/react": "^1.4.1",
