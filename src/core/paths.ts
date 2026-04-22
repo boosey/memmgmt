@@ -9,9 +9,16 @@ export interface HomePaths {
   viewPrefsFile: string;
 }
 
-export function resolveHomePaths(overrideHome?: string): HomePaths {
-  const home = overrideHome ?? os.homedir();
-  const claudeHome = path.join(home, ".claude");
+export interface ResolveOverride {
+  home?: string;
+  claudeHome?: string;
+}
+
+export function resolveHomePaths(override?: ResolveOverride): HomePaths {
+  const claudeHome =
+    override?.claudeHome
+    ?? process.env.MEMMGMT_CLAUDE_HOME
+    ?? path.join(override?.home ?? os.homedir(), ".claude");
   return {
     claudeHome,
     projectsDir: path.join(claudeHome, "projects"),
