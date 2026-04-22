@@ -36,7 +36,11 @@ export default function HomePage() {
       {graph && tab === "graph" && (
         <GraphView graph={graph} onSelect={setSelectedId} />
       )}
-      <EditorPanel id={selectedId} onClose={() => setSelectedId(null)} />
+      <EditorPanel
+        id={selectedId}
+        onClose={() => setSelectedId(null)}
+        onSaved={() => location.reload()}
+      />
     </div>
   );
 }
