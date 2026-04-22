@@ -1,13 +1,39 @@
-import { Button } from "@/components/ui/button";
+"use client";
+import { useState } from "react";
+import { useGraph } from "@/hooks/useGraph";
+import { TopBar } from "@/components/TopBar";
+import { InventoryView } from "@/components/InventoryView";
+import { ConnectionOverlay } from "@/components/ConnectionOverlay";
 
 export default function HomePage() {
+  const { graph, loading, error } = useGraph();
+  const [tab, setTab] = useState<"inventory" | "graph">("inventory");
+  const [showConnections, setShowConnections] = useState(false);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
+
   return (
-    <main className="min-h-screen p-8">
-      <h1 className="text-3xl font-semibold">memmgmt</h1>
-      <p className="mt-2 text-neutral-500">
-        Local-only manager for your Claude Code configuration surface.
-      </p>
-      <Button className="mt-4">OK</Button>
-    </main>
+    <div className="min-h-screen bg-neutral-100">
+      <TopBar
+        activeTab={tab}
+        onTabChange={setTab}
+        showConnections={showConnections}
+        onToggleConnections={setShowConnections}
+      />
+      {loading && <div className="p-6 text-neutral-500">Loading…</div>}
+      {error && <div className="p-6 text-red-600">Error: {error}</div>}
+      {graph && tab === "inventory" && (
+        <>
+          <InventoryView
+            graph={graph}
+            selectedId={selectedId}
+            onSelect={setSelectedId}
+          />
+          <ConnectionOverlay graph={graph} enabled={showConnections} />
+        </>
+      )}
+      {graph && tab === "graph" && (
+        <div className="p-6 text-neutral-500">Graph view — Milestone 6.</div>
+      )}
+    </div>
   );
 }
