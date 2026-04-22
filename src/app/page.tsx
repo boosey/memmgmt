@@ -4,6 +4,7 @@ import { useGraph } from "@/hooks/useGraph";
 import { TopBar } from "@/components/TopBar";
 import { InventoryView } from "@/components/InventoryView";
 import { ConnectionOverlay } from "@/components/ConnectionOverlay";
+import { GraphView } from "@/components/GraphView";
 
 export default function HomePage() {
   const { graph, loading, error } = useGraph();
@@ -32,7 +33,7 @@ export default function HomePage() {
         </>
       )}
       {graph && tab === "graph" && (
-        <div className="p-6 text-neutral-500">Graph view — Milestone 6.</div>
+        <GraphView graph={graph} onSelect={setSelectedId} />
       )}
     </div>
   );
