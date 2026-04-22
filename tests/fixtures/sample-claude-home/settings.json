@@ -1,0 +1,5 @@
+{
+  "permissions": { "allow": ["Bash(git *)"], "deny": [] },
+  "hooks": {},
+  "env": { "DEBUG": "true" }
+}

@@ -1,0 +1,7 @@
+{
+  "name": "acme-plugin",
+  "version": "1.0.0",
+  "description": "Acme test plugin",
+  "author": "Acme Corp",
+  "publisher": "acme"
+}
