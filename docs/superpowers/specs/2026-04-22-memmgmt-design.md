@@ -143,11 +143,42 @@ Discovery algorithm:
 
 1. List subdirectories of `~/.claude/projects/`.
 2. For each slug, decode to a project path. If the project path exists, include it as an active project; otherwise flag the slug as **dead** (shown in UI as a separate "Ghost slugs" section for cleanup).
-3. For each active project path, crawl for `CLAUDE.md`, `CLAUDE.local.md`, and `.claude/` contents.
+3. For each active project path, crawl all Project and Local scope files (see inventory below).
 4. For each slug, also crawl its `memory/` subdirectory and count `*.jsonl` session transcripts.
-5. Crawl `~/.claude/` (global) and `~/.claude/plugins/` (plugin scope).
+5. Crawl `~/.claude/` (Global scope) and `~/.claude/plugins/` (Plugin scope).
 
 No user configuration. No directory scanning outside `~/.claude/` and decoded project paths.
+
+#### 5.6.1 File Inventory — Exactly What Gets Crawled
+
+Settings files are **explicitly in scope at every applicable level**. Full inventory:
+
+| Scope | Path pattern | Artifact type produced |
+|---|---|---|
+| Global | `~/.claude/CLAUDE.md` | CLAUDE.md sections (entry-level nodes) |
+| Global | `~/.claude/settings.json` | Settings entries: permissions, hooks, env, other keys (entry-level) |
+| Global | `~/.claude/keybindings.json` | Keybinding set (file-level) |
+| Global | `~/.claude/skills/**/SKILL.md` | Skill (file-level) |
+| Global | `~/.claude/commands/**/*.md` | Slash command (file-level) |
+| Slug | `~/.claude/projects/<slug>/memory/MEMORY.md` | MEMORY.md index entries (entry-level) |
+| Slug | `~/.claude/projects/<slug>/memory/*.md` (non-index) | Typed memory files (file-level) |
+| Slug | `~/.claude/projects/<slug>/*.jsonl` | Session transcript **metadata only** (§5.7) |
+| Plugin | `~/.claude/plugins/**/SKILL.md` | Skill contributed by plugin (file-level) |
+| Plugin | `~/.claude/plugins/**/commands/*.md` | Slash command contributed by plugin (file-level) |
+| Plugin | `~/.claude/plugins/**/plugin.json` (or equivalent manifest) | Plugin metadata node (file-level) |
+| Project | `<project>/CLAUDE.md`, `<project>/AGENTS.md`, `<project>/GEMINI.md` | CLAUDE.md sections (entry-level) |
+| Project | `<project>/.claude/settings.json` | Settings entries (entry-level) |
+| Project | `<project>/.claude/skills/**/SKILL.md` | Skill (file-level) |
+| Project | `<project>/.claude/commands/**/*.md` | Slash command (file-level) |
+| Local | `<project>/CLAUDE.local.md` | CLAUDE.md sections (entry-level) |
+| Local | `<project>/.claude/settings.local.json` | Settings entries (entry-level) |
+
+`settings.json` at Global, Project, and Local scopes is parsed into entry-level nodes (one per permission rule, one per hook matcher, one per env var, one per other top-level key) so that individual rules can be visualized, overridden, and edited independently rather than as an opaque blob.
+
+**Notes:**
+- `AGENTS.md` / `GEMINI.md` (cross-agent-vendor memory files) are treated as aliases of `CLAUDE.md` for discovery purposes; the spec follows whichever the project actually uses.
+- Plugin manifest format varies across plugin sources; v1 uses a best-effort heuristic and falls back to filesystem layout if no manifest is found (tracked as an implementation detail in §13).
+- Anything not listed above is out of scope for v1 crawling.
 
 ### 5.7 Session Transcripts in v1
 
