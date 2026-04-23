@@ -1,5 +1,6 @@
 {
   "permissions": { "allow": ["Bash(git *)"], "deny": [] },
   "hooks": {},
-  "env": { "DEBUG": "true" }
+  "env": { "DEBUG": "true" },
+  "experimentalFutureKey": "used to trigger the unknown-top-level-key detection in E2E"
 }

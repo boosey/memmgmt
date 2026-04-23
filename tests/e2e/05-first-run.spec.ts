@@ -1,10 +1,25 @@
-import { test, expect, waitForInventory } from "./fixtures";
+import { test, expect, waitForSignalFlow } from "./fixtures";
 
-test("first-run has no setup screen, inventory is the root", async ({ page }) => {
+test("cold launch lands on signal-flow — no setup screen, no config prompt", async ({
+  page,
+}) => {
   await page.goto("/");
-  // No "Welcome" or "Setup" wizard
-  await expect(page.getByText(/welcome|setup|get started/i)).toHaveCount(0);
-  // Inventory is the immediate content
-  await waitForInventory(page);
-  await expect(page.getByText(/Global/i).first()).toBeVisible();
+  // No welcome / setup / onboarding surface.
+  await expect(
+    page.getByText(/^welcome|setup wizard|get started|configure memmgmt/i),
+  ).toHaveCount(0);
+
+  await waitForSignalFlow(page);
+
+  // Masthead + TypeTabs are the root content.
+  await expect(page.getByTestId("masthead")).toBeVisible();
+  await expect(page.getByTestId("type-tabs")).toBeVisible();
+
+  // At least one type tab has a non-zero count (fixture has standing
+  // instructions, skills, commands, etc.)
+  const tabs = page.locator('[data-testid^="type-tab-"]');
+  const counts = await tabs.evaluateAll((els) =>
+    els.map((el) => Number(el.getAttribute("data-count") ?? "0")),
+  );
+  expect(counts.some((n) => n > 0)).toBe(true);
 });

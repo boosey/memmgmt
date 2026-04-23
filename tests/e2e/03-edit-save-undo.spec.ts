@@ -1,48 +1,64 @@
-import { test, expect, waitForInventory, clickCardByTitle } from "./fixtures";
+import {
+  test,
+  expect,
+  waitForSignalFlow,
+  clickTypeTab,
+  openEditorForTitle,
+} from "./fixtures";
 import fs from "node:fs/promises";
 import path from "node:path";
 
 const FIXTURE = path.resolve(process.cwd(), "tests/fixtures/sample-claude-home");
-const SETTINGS_FILE = path.join(FIXTURE, "settings.json");
+const SKILL_FILE = path.join(FIXTURE, "skills", "demo-skill", "SKILL.md");
 const BACKUPS = path.join(FIXTURE, "memmgmt-backups");
 
-test("edit permission -> diff preview -> save -> backup exists -> undo restores", async ({
+test("skill edit → preview diff → save with backup → undo restores", async ({
   page,
 }) => {
-  const before = await fs.readFile(SETTINGS_FILE, "utf8");
+  const before = await fs.readFile(SKILL_FILE, "utf8");
   try {
-    await waitForInventory(page);
-    // Click the "Bash(git *)" permission card
-    await clickCardByTitle(page, /Bash\(git \*\)/);
+    await waitForSignalFlow(page);
+    await clickTypeTab(page, "skill");
+    await openEditorForTitle(page, /demo-skill/i);
 
-    // In the structured editor, find the value input (font-mono styling) and change it
-    const input = page.locator('aside input.font-mono').first();
-    await input.waitFor({ state: "visible", timeout: 5_000 });
-    await input.fill("Bash(git status)");
+    // Edit the description textarea.
+    const descBox = page.locator('textarea').nth(0);
+    await descBox.waitFor({ state: "visible", timeout: 5_000 });
+    const originalDesc = await descBox.inputValue();
+    await descBox.fill(`${originalDesc} (edited by e2e)`);
 
-    // Trigger diff preview (first "save"-named button is "Preview save")
-    await page.getByRole("button", { name: /save/i }).first().click();
-    await expect(
-      page.getByText(/preview save|before|after/i).first(),
-    ).toBeVisible();
+    // Preview diff via RightRail.
+    await page.getByTestId("right-rail-preview").click();
+    const modal = page.getByTestId("diff-preview-modal");
+    await expect(modal).toBeVisible();
+    // Close the modal (close button inside the modal header).
+    await modal.getByRole("button", { name: /close/i }).click();
+    await expect(modal).toBeHidden();
 
-    // Confirm save (exact match "Save" inside the diff modal)
-    await page.getByRole("button", { name: /^save$/i }).last().click();
+    // Save with backup.
+    await page.getByTestId("right-rail-save").click();
+    await page.waitForTimeout(800);
 
-    // Backup directory should exist with a timestamped subdir
-    // Give the save a moment to flush
-    await page.waitForTimeout(500);
+    // Disk reflects the edit.
+    const afterSave = await fs.readFile(SKILL_FILE, "utf8");
+    expect(afterSave).not.toBe(before);
+    expect(afterSave).toContain("edited by e2e");
+
+    // Backup directory exists with at least one timestamped subdir.
     const backupDirs = await fs.readdir(BACKUPS).catch(() => [] as string[]);
     expect(backupDirs.length).toBeGreaterThan(0);
 
-    // Undo
-    await page.getByRole("button", { name: /undo/i }).click();
-    await page.waitForTimeout(500);
-    const after = await fs.readFile(SETTINGS_FILE, "utf8");
-    expect(after).toBe(before);
+    // Sonner toast renders with Undo action.
+    const undoBtn = page.getByRole("button", { name: /^undo$/i });
+    await undoBtn.waitFor({ state: "visible", timeout: 5_000 });
+    await undoBtn.click();
+    await page.waitForTimeout(800);
+
+    const afterUndo = await fs.readFile(SKILL_FILE, "utf8");
+    expect(afterUndo).toBe(before);
   } finally {
-    // Always restore the fixture in case the test aborts mid-run
-    await fs.writeFile(SETTINGS_FILE, before, "utf8");
+    // Always restore the fixture, even on mid-test abort.
+    await fs.writeFile(SKILL_FILE, before, "utf8");
     await fs.rm(BACKUPS, { recursive: true, force: true });
   }
 });

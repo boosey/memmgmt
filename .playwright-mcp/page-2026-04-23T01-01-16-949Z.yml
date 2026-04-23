@@ -1,0 +1,63 @@
+- generic [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e14] [cursor=pointer]:
+    - img [ref=e15]
+  - alert [ref=e18]
+  - main [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - generic [ref=e22]: memmgmt
+        - generic [ref=e23]: Trace entities, follow relationships, resolve and prune — all inline.
+      - generic [ref=e24]: Signal Edition · v1.6
+    - generic [ref=e25]:
+      - generic [ref=e26]: Health
+      - generic [ref=e27]:
+        - text: Contested
+        - generic [ref=e29]: "74"
+      - generic [ref=e30]:
+        - text: Stale memory
+        - generic [ref=e32]: "1"
+      - generic [ref=e33]:
+        - text: Unknown author
+        - generic [ref=e35]: "45"
+      - generic [ref=e36]:
+        - text: Dead imports
+        - generic [ref=e38]: "8"
+      - generic [ref=e39]: 5 ghost slugs · 128 issues
+    - generic [ref=e40]:
+      - generic [ref=e41]: Trace by entity kind
+      - generic [ref=e42]:
+        - button "Standing Instructions32" [ref=e43] [cursor=pointer]
+        - button "Permissions75" [ref=e44] [cursor=pointer]
+        - button "Plugins93" [ref=e45] [cursor=pointer]
+        - button "Skills224" [ref=e46] [cursor=pointer]
+        - button "Slash Commands79" [ref=e47] [cursor=pointer]
+        - button "Memories10" [ref=e48] [cursor=pointer]
+        - button "Hooks4" [ref=e49] [cursor=pointer]
+        - button "Env Vars11" [ref=e50] [cursor=pointer]
+        - button "Keybindings0" [ref=e51] [cursor=pointer]
+        - button "Agents45" [ref=e52] [cursor=pointer]
+        - button "MCP Servers0" [active] [ref=e53] [cursor=pointer]
+    - generic [ref=e55]: Model Context Protocol servers registered in settings.
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - generic [ref=e59]: Entity
+        - generic [ref=e60]: Global
+        - generic [ref=e61]: Plugin
+        - generic [ref=e62]: Slug
+        - generic [ref=e63]: Project
+        - generic [ref=e64]: Local
+        - generic [ref=e65]: Composite
+        - generic [ref=e66]: Relations
+      - generic [ref=e2221]: No entities of this kind.
+    - generic [ref=e1012]:
+      - button "▸ Detections · 4 conventions · 108 occurrences" [ref=e1014] [cursor=pointer]:
+        - generic [ref=e1015]: ▸
+        - text: Detections
+        - generic [ref=e1016]: · 4 conventions · 108 occurrences
+      - generic [ref=e1017]:
+        - generic [ref=e1018]:
+          - generic [ref=e1021]: Anthropic
+          - generic [ref=e1024]: Community
+          - generic [ref=e1027]: You
+          - generic [ref=e1030]: Unknown
+        - generic [ref=e1031]: override · provides · invokes · gates · imports · fires-on · accretes-from

@@ -1,20 +1,38 @@
-import { test, expect, waitForInventory, switchToGraph } from "./fixtures";
+import {
+  test,
+  expect,
+  waitForSignalFlow,
+  findRowByTitle,
+} from "./fixtures";
 
-test("CLAUDE.md @import is visible as a relationship in graph view", async ({ page }) => {
-  await waitForInventory(page);
-  await switchToGraph(page);
+test("standing-instruction with live + dead @imports renders matching RelationPills", async ({
+  page,
+}) => {
+  await waitForSignalFlow(page);
 
-  // React Flow renders nodes as .react-flow__node; edges as .react-flow__edge
-  const nodes = page.locator(".react-flow__node");
-  const edges = page.locator(".react-flow__edge");
-  await expect(nodes.first()).toBeVisible();
-  expect(await edges.count()).toBeGreaterThan(0);
-});
+  // The "Imports demo section" row in the fixture CLAUDE.md has:
+  //   live: @./imports-demo.md     -> path pseudo-node (broken=false)
+  //   dead: @./does-not-exist.md   -> path pseudo-node (broken=true)
+  const row = findRowByTitle(page, /Imports demo section/i);
+  await row.waitFor({ state: "visible" });
 
-test("imports-demo target is discoverable in inventory without reading markdown", async ({ page }) => {
-  await waitForInventory(page);
-  // The imports-demo.md target should appear as its own artifact card
-  await expect(
-    page.getByText(/Imported content|imports-demo/i).first(),
-  ).toBeVisible();
+  const importPills = row.locator(
+    '[data-testid="relation-pill"][data-direction="out"][data-kind="imports"]',
+  );
+  await expect(importPills.first()).toBeVisible();
+  expect(await importPills.count()).toBeGreaterThanOrEqual(2);
+
+  // At least one broken pill — rendered with "missing" badge.
+  const broken = row.locator(
+    '[data-testid="relation-pill"][data-broken="true"]',
+  );
+  await expect(broken.first()).toBeVisible();
+  await expect(broken.first()).toContainText(/missing/i);
+
+  // At least one live pill — no "missing" badge.
+  const live = row.locator(
+    '[data-testid="relation-pill"][data-broken="false"][data-kind="imports"]',
+  );
+  await expect(live.first()).toBeVisible();
+  await expect(live.first()).not.toContainText(/missing/i);
 });

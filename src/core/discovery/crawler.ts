@@ -64,7 +64,15 @@ export async function crawl(opts: CrawlOptions): Promise<CrawlResult> {
   await pushDirFiles(
     raws,
     path.join(claudeHome, "commands"),
-    "slash-command",
+    "command",
+    "file",
+    "global",
+    claudeHome,
+  );
+  await pushDirFiles(
+    raws,
+    path.join(claudeHome, "agents"),
+    "agent",
     "file",
     "global",
     claudeHome,
@@ -104,7 +112,15 @@ export async function crawl(opts: CrawlOptions): Promise<CrawlResult> {
     await pushDirFiles(
       raws,
       path.join(pluginDir, "commands"),
-      "slash-command",
+      "command",
+      "file",
+      "plugin",
+      pluginDir,
+    );
+    await pushDirFiles(
+      raws,
+      path.join(pluginDir, "agents"),
+      "agent",
       "file",
       "plugin",
       pluginDir,
@@ -189,7 +205,15 @@ export async function crawl(opts: CrawlOptions): Promise<CrawlResult> {
     await pushDirFiles(
       raws,
       path.join(proj, ".claude", "commands"),
-      "slash-command",
+      "command",
+      "file",
+      "project",
+      proj,
+    );
+    await pushDirFiles(
+      raws,
+      path.join(proj, ".claude", "agents"),
+      "agent",
       "file",
       "project",
       proj,
@@ -299,8 +323,9 @@ async function pushDirFiles(
         stack.push(full);
       } else if (e.isFile()) {
         const isSkill = kind === "skill" && e.name === "SKILL.md";
-        const isCmd = kind === "slash-command" && e.name.endsWith(".md");
-        if (isSkill || isCmd) {
+        const isCmd = kind === "command" && e.name.endsWith(".md");
+        const isAgent = kind === "agent" && e.name.endsWith(".md");
+        if (isSkill || isCmd || isAgent) {
           await pushIfFile(out, full, kind, granularity, scope, scopeRoot);
         }
       }

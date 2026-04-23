@@ -17,7 +17,7 @@ describe("crawler", () => {
     expect(kinds).toContain("settings-entry");
     expect(kinds).toContain("keybindings");
     expect(kinds).toContain("skill");
-    expect(kinds).toContain("slash-command");
+    expect(kinds).toContain("command");
     expect(kinds).toContain("plugin-manifest");
     expect(kinds).toContain("typed-memory");
     expect(kinds).toContain("memory-index-entry");

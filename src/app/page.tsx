@@ -1,46 +1,296 @@
 "use client";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import {
+  ENTITY_TYPE_ORDER,
+  SCOPE_PRECEDENCE,
+  type Entity,
+  type EntityType,
+  type GraphPayload,
+  type PseudoNode,
+  type Relation,
+} from "@/core/entities";
+import { Footer } from "@/components/signal/Footer";
+import { HealthRibbon } from "@/components/signal/HealthRibbon";
+import { Masthead } from "@/components/signal/Masthead";
+import { SchematicHeader } from "@/components/signal/SchematicHeader";
+import { SignalRow } from "@/components/signal/SignalRow";
+import { TracingBanner } from "@/components/signal/TracingBanner";
+import { TracingBlurb } from "@/components/signal/TracingBlurb";
+import { TypeTabs } from "@/components/signal/TypeTabs";
+import { EditorDrawer } from "@/components/signal/EditorDrawer";
+import { BulkActionBar } from "@/components/signal/BulkActionBar";
+import { UndoToaster } from "@/components/signal/UndoToast";
+import { PinnedProvider, usePinned } from "@/hooks/usePinned";
+import { SelectionProvider, useSelection } from "@/hooks/useSelection";
+import {
+  HealthFilterProvider,
+  groupMatchesFilter,
+  useHealthFilter,
+} from "@/hooks/useHealthFilter";
 import { useGraph } from "@/hooks/useGraph";
-import { TopBar } from "@/components/TopBar";
-import { InventoryView } from "@/components/InventoryView";
-import { ConnectionOverlay } from "@/components/ConnectionOverlay";
-import { GraphView } from "@/components/GraphView";
-import { EditorPanel } from "@/components/editor/EditorPanel";
 
 export default function HomePage() {
-  const { graph, loading, error } = useGraph();
-  const [tab, setTab] = useState<"inventory" | "graph">("inventory");
-  const [showConnections, setShowConnections] = useState(false);
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  return (
+    <PinnedProvider>
+      <SelectionProvider>
+        <HealthFilterProvider>
+          <SignalFlowPage />
+          <UndoToaster />
+        </HealthFilterProvider>
+      </SelectionProvider>
+    </PinnedProvider>
+  );
+}
+
+function SignalFlowPage() {
+  const { graph, loading, error, refetch } = useGraph();
+
+  if (loading) {
+    return (
+      <Shell>
+        <div className="flex flex-1 items-center justify-center p-12 text-[color:var(--text-muted)]">
+          Loading…
+        </div>
+      </Shell>
+    );
+  }
+  if (error) {
+    return (
+      <Shell>
+        <div className="flex flex-1 items-center justify-center p-12 text-[color:var(--semantic-error)]">
+          Failed to load graph: {error}
+        </div>
+      </Shell>
+    );
+  }
+  if (!graph) {
+    return (
+      <Shell>
+        <div className="flex flex-1 items-center justify-center p-12 text-[color:var(--text-muted)]">
+          No data.
+        </div>
+      </Shell>
+    );
+  }
+  return <Loaded graph={graph} refetch={refetch} />;
+}
+
+function Shell({ children }: { children: React.ReactNode }) {
+  return (
+    <main className="flex min-h-full flex-1 flex-col">
+      <Masthead />
+      {children}
+    </main>
+  );
+}
+
+interface GroupedRow {
+  key: string;
+  group: Entity[];
+  winner: Entity;
+}
+
+function groupByIdentity(entities: readonly Entity[]): GroupedRow[] {
+  const groups = new Map<string, Entity[]>();
+  for (const e of entities) {
+    const key = e.identity ?? `id:${e.id}`;
+    const arr = groups.get(key);
+    if (arr) arr.push(e);
+    else groups.set(key, [e]);
+  }
+  const rows: GroupedRow[] = [];
+  for (const [key, group] of groups) {
+    group.sort(
+      (a, b) => SCOPE_PRECEDENCE[a.scope] - SCOPE_PRECEDENCE[b.scope],
+    );
+    const winner = group[group.length - 1];
+    if (!winner) continue;
+    rows.push({ key, group, winner });
+  }
+  rows.sort((a, b) => a.winner.title.localeCompare(b.winner.title));
+  return rows;
+}
+
+function Loaded({
+  graph,
+  refetch,
+}: {
+  graph: GraphPayload;
+  refetch: () => void;
+}) {
+  const [activeType, setActiveType] = useState<EntityType>(() => {
+    for (const t of ENTITY_TYPE_ORDER) {
+      if (graph.entities.some((e) => e.type === t)) return t;
+    }
+    return "standing-instruction";
+  });
+
+  const { pinnedId, pin, unpin } = usePinned();
+  const selection = useSelection();
+  const healthFilter = useHealthFilter();
+  const [expandedKey, setExpandedKey] = useState<string | null>(null);
+
+  const entitiesById = useMemo(() => {
+    const m = new Map<string, Entity>();
+    for (const e of graph.entities) m.set(e.id, e);
+    return m;
+  }, [graph.entities]);
+
+  const targetsById = useMemo(() => {
+    const m = new Map<string, Entity | PseudoNode>();
+    for (const e of graph.entities) m.set(e.id, e);
+    for (const p of graph.pseudoNodes) m.set(p.id, p);
+    return m;
+  }, [graph.entities, graph.pseudoNodes]);
+
+  const relationsByEntity = useMemo(() => {
+    const out = new Map<string, Relation[]>();
+    const inb = new Map<string, Relation[]>();
+    for (const r of graph.relations) {
+      const o = out.get(r.from);
+      if (o) o.push(r);
+      else out.set(r.from, [r]);
+      const i = inb.get(r.to);
+      if (i) i.push(r);
+      else inb.set(r.to, [r]);
+    }
+    return { out, inb };
+  }, [graph.relations]);
+
+  const rows = useMemo(() => {
+    const filtered = graph.entities.filter((e) => e.type === activeType);
+    return groupByIdentity(filtered);
+  }, [graph.entities, activeType]);
+
+  const visibleRows = useMemo(
+    () =>
+      rows.filter((r) =>
+        groupMatchesFilter(r.group, healthFilter.active, graph.pseudoNodes),
+      ),
+    [rows, healthFilter.active, graph.pseudoNodes],
+  );
+
+  const pinnedEntity = pinnedId ? entitiesById.get(pinnedId) : undefined;
+  const pinnedPseudo = pinnedId
+    ? graph.pseudoNodes.find((p) => p.id === pinnedId)
+    : undefined;
+  const pinnedTarget = pinnedEntity ?? pinnedPseudo;
+
+  const relatedSet = useMemo(() => {
+    const s = new Set<string>();
+    if (!pinnedId) return s;
+    for (const r of graph.relations) {
+      if (r.from === pinnedId) s.add(r.to);
+      if (r.to === pinnedId) s.add(r.from);
+    }
+    return s;
+  }, [pinnedId, graph.relations]);
+
+  const kindCount = useMemo(() => {
+    if (!pinnedId) return 0;
+    const kinds = new Set<EntityType>();
+    for (const id of relatedSet) {
+      const e = entitiesById.get(id);
+      if (e) kinds.add(e.type);
+    }
+    return kinds.size;
+  }, [pinnedId, relatedSet, entitiesById]);
+
+  function handleOpenEditor(groupKey: string) {
+    setExpandedKey(expandedKey === groupKey ? null : groupKey);
+  }
+
+  function handleSaved() {
+    setExpandedKey(null);
+    refetch();
+  }
+
+  function handleOpenEntity(e: Entity) {
+    setActiveType(e.type);
+    const key = e.identity ?? `id:${e.id}`;
+    setExpandedKey(key);
+  }
 
   return (
-    <div className="min-h-screen bg-neutral-100">
-      <TopBar
-        activeTab={tab}
-        onTabChange={setTab}
-        showConnections={showConnections}
-        onToggleConnections={setShowConnections}
-      />
-      {loading && <div className="p-6 text-neutral-500">Loading…</div>}
-      {error && <div className="p-6 text-red-600">Error: {error}</div>}
-      {graph && tab === "inventory" && (
-        <>
-          <InventoryView
-            graph={graph}
-            selectedId={selectedId}
-            onSelect={setSelectedId}
-          />
-          <ConnectionOverlay graph={graph} enabled={showConnections} />
-        </>
+    <main className="flex min-h-full flex-1 flex-col pb-[72px]">
+      <Masthead />
+      <HealthRibbon graph={graph} />
+      {pinnedTarget && (
+        <TracingBanner
+          pinned={pinnedTarget}
+          relatedCount={relatedSet.size}
+          kindCount={kindCount}
+          onClear={unpin}
+        />
       )}
-      {graph && tab === "graph" && (
-        <GraphView graph={graph} onSelect={setSelectedId} />
-      )}
-      <EditorPanel
-        id={selectedId}
-        onClose={() => setSelectedId(null)}
-        onSaved={() => location.reload()}
+      <TypeTabs
+        entities={graph.entities}
+        relations={graph.relations}
+        activeType={activeType}
+        pinnedId={pinnedId}
+        onSelectType={setActiveType}
       />
-    </div>
+      <TracingBlurb activeType={activeType} />
+
+      <div className="flex-1 overflow-auto px-7 pt-[14px] pb-[60px]">
+        <SchematicHeader />
+        <div className="mt-[10px]">
+          {visibleRows.length === 0 ? (
+            <div className="py-10 text-center text-[13px] text-[color:var(--text-muted)]">
+              {rows.length === 0
+                ? "No entities of this kind."
+                : "No entities match the current filter."}
+            </div>
+          ) : (
+            visibleRows.map(({ key, group, winner }) => {
+              const out = relationsByEntity.out.get(winner.id) ?? [];
+              const inb = relationsByEntity.inb.get(winner.id) ?? [];
+              const isPinned = group.some((e) => e.id === pinnedId);
+              const isRelated =
+                !isPinned && group.some((e) => relatedSet.has(e.id));
+              const isChecked = group.some((e) =>
+                selection.isSelected(e.id),
+              );
+              const isExpanded = expandedKey === key;
+              return (
+                <div key={key} data-testid="signal-row-wrapper">
+                  <SignalRow
+                    group={group}
+                    winner={winner}
+                    relationsOut={out}
+                    relationsIn={inb}
+                    targetsById={targetsById}
+                    isPinned={isPinned}
+                    isRelated={isRelated}
+                    isChecked={isChecked}
+                    isExpanded={isExpanded}
+                    onPin={(id) =>
+                      pinnedId === id ? unpin() : pin(id)
+                    }
+                    onPinTarget={(id) => pin(id)}
+                    onToggleSelect={selection.toggle}
+                    onOpenEditor={handleOpenEditor}
+                  />
+                  {isExpanded && (
+                    <EditorDrawer
+                      entity={winner}
+                      group={group}
+                      allEntities={graph.entities}
+                      relations={graph.relations}
+                      onClose={() => setExpandedKey(null)}
+                      onSaved={handleSaved}
+                      onOpenEntity={handleOpenEntity}
+                    />
+                  )}
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+
+      <Footer detections={graph.detections} />
+      <BulkActionBar entities={graph.entities} onApplied={handleSaved} />
+    </main>
   );
 }

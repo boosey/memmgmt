@@ -1,17 +1,21 @@
 "use client";
-import { useEffect, useState } from "react";
-import type { Graph } from "@/core/types";
+import { useCallback, useEffect, useState } from "react";
+import type { GraphPayload } from "@/core/entities";
 
 export function useGraph() {
-  const [graph, setGraph] = useState<Graph | null>(null);
+  const [graph, setGraph] = useState<GraphPayload | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [tick, setTick] = useState(0);
+
+  const refetch = useCallback(() => setTick((n) => n + 1), []);
 
   useEffect(() => {
     let cancelled = false;
-    fetch("/api/graph")
+    if (tick === 0) setLoading(true);
+    fetch("/api/graph", { cache: "no-store" })
       .then((r) => r.json())
-      .then((g: Graph) => {
+      .then((g: GraphPayload) => {
         if (!cancelled) {
           setGraph(g);
           setLoading(false);
@@ -26,7 +30,7 @@ export function useGraph() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [tick]);
 
-  return { graph, loading, error };
+  return { graph, loading, error, refetch };
 }

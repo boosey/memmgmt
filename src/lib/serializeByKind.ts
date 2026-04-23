@@ -10,6 +10,7 @@ import {
 } from "@/core/parsers/settings";
 import { serializeSkill, type ParsedSkill } from "@/core/parsers/skill";
 import { serializeCommand, type ParsedCommand } from "@/core/parsers/command";
+import { serializeAgent, type ParsedAgent } from "@/core/parsers/agent";
 import {
   serializeTypedMemory,
   type ParsedTypedMemory,
@@ -35,8 +36,10 @@ export function buildNextContent(node: ArtifactNode, draft: unknown): string {
       return buildSettingsNext(node, draft as SettingsEntry);
     case "skill":
       return serializeSkill(draft as ParsedSkill);
-    case "slash-command":
+    case "command":
       return serializeCommand(draft as ParsedCommand);
+    case "agent":
+      return serializeAgent(draft as ParsedAgent);
     case "typed-memory":
       return serializeTypedMemory(draft as ParsedTypedMemory);
     case "keybindings":
@@ -72,7 +75,11 @@ function buildSettingsNext(
   const parsed = parseSettings(node.rawContent);
   const raw = JSON.parse(JSON.stringify(parsed.raw)) as Record<string, unknown>;
   applySettingsEntry(raw, draft);
-  return serializeSettings({ raw, entries: parsed.entries });
+  return serializeSettings({
+    raw,
+    entries: parsed.entries,
+    unknownTopLevelKeys: parsed.unknownTopLevelKeys,
+  });
 }
 
 function applySettingsEntry(
@@ -94,6 +101,9 @@ function applySettingsEntry(
     const match = /\[(\d+)\]$/.exec(entry.entryKey);
     const i = match ? Number(match[1]) : list.length;
     list[i] = { matcher: entry.matcher, hooks: entry.hooks };
+  } else if (entry.kind === "mcp-server") {
+    const servers = (raw.mcpServers ??= {}) as Record<string, unknown>;
+    servers[entry.server.name] = entry.server.raw;
   } else if (entry.kind === "other") {
     raw[entry.key] = entry.value;
   }

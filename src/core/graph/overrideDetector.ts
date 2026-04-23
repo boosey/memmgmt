@@ -38,7 +38,12 @@ export function detectOverrides(nodes: ArtifactNode[]): GraphEdge[] {
   return edges;
 }
 
-function identityKey(n: ArtifactNode): string | null {
+/**
+ * Identity key for override grouping — same logical artifact across scopes.
+ * Exported so the Entity transform can attach `identity` to each Entity for
+ * tournament-bracket rendering in the UI.
+ */
+export function identityKey(n: ArtifactNode): string | null {
   const sd = n.structuredData as Record<string, unknown> | null | undefined;
   if (!sd) return null;
   switch (n.kind) {
@@ -48,9 +53,13 @@ function identityKey(n: ArtifactNode): string | null {
         : null;
     case "skill":
       return typeof sd.name === "string" && sd.name ? `skill::${sd.name}` : null;
-    case "slash-command":
+    case "command":
       return typeof sd.filename === "string" && sd.filename
         ? `cmd::${sd.filename}`
+        : null;
+    case "agent":
+      return typeof sd.name === "string" && sd.name
+        ? `agent::${sd.name}`
         : null;
     case "settings-entry": {
       if (sd.kind === "permission") return `perm::${sd.value}`;
@@ -59,6 +68,10 @@ function identityKey(n: ArtifactNode): string | null {
         return `hook::${sd.event}::${sd.matcher}::${JSON.stringify(hookList[0] ?? null)}`;
       }
       if (sd.kind === "env") return `env::${sd.name}`;
+      if (sd.kind === "mcp-server") {
+        const s = sd.server as { name?: string } | undefined;
+        return s?.name ? `mcp::${s.name}` : null;
+      }
       if (sd.kind === "other") return `other::${sd.key}`;
       return null;
     }

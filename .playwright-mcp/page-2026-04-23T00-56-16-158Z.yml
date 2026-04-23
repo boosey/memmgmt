@@ -1,0 +1,1359 @@
+- generic [active] [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e14] [cursor=pointer]:
+    - img [ref=e15]
+  - alert [ref=e18]
+  - main [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - generic [ref=e22]: memmgmt
+        - generic [ref=e23]: Trace entities, follow relationships, resolve and prune — all inline.
+      - generic [ref=e24]: Signal Edition · v1.6
+    - generic [ref=e25]:
+      - generic [ref=e26]: Health
+      - generic [ref=e27]:
+        - text: Contested
+        - generic [ref=e29]: "74"
+      - generic [ref=e30]:
+        - text: Stale memory
+        - generic [ref=e32]: "1"
+      - generic [ref=e33]:
+        - text: Unknown author
+        - generic [ref=e35]: "45"
+      - generic [ref=e36]:
+        - text: Dead imports
+        - generic [ref=e38]: "8"
+      - generic [ref=e39]: 5 ghost slugs · 128 issues
+    - generic [ref=e3026]:
+      - generic [ref=e3027]: Tracing
+      - generic [ref=e3028]: Bash(*)
+      - generic [ref=e3029]: Permission
+      - generic [ref=e3030]: 1 related across 0 kinds
+      - button "clear" [ref=e3031] [cursor=pointer]
+    - generic [ref=e40]:
+      - generic [ref=e41]: Trace by entity kind
+      - generic [ref=e42]:
+        - button "Standing Instructions32" [ref=e43] [cursor=pointer]
+        - button "Permissions75" [ref=e44] [cursor=pointer]
+        - button "Plugins93" [ref=e45] [cursor=pointer]
+        - button "Skills224" [ref=e46] [cursor=pointer]
+        - button "Slash Commands79" [ref=e47] [cursor=pointer]
+        - button "Memories10" [ref=e48] [cursor=pointer]
+        - button "Hooks4" [ref=e49] [cursor=pointer]
+        - button "Env Vars11" [ref=e50] [cursor=pointer]
+        - button "Keybindings0" [ref=e51] [cursor=pointer]
+        - button "Agents45" [ref=e52] [cursor=pointer]
+        - button "MCP Servers0" [ref=e53] [cursor=pointer]
+    - generic [ref=e55]: Allow/deny rules for tools and shell access.
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - generic [ref=e59]: Entity
+        - generic [ref=e60]: Global
+        - generic [ref=e61]: Plugin
+        - generic [ref=e62]: Slug
+        - generic [ref=e63]: Project
+        - generic [ref=e64]: Local
+        - generic [ref=e65]: Composite
+        - generic [ref=e66]: Relations
+      - generic [ref=e67]:
+        - generic [ref=e1032] [cursor=pointer]:
+          - generic [ref=e1035]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1036]:
+              - generic [ref=e1037]: ›
+            - generic [ref=e1038]:
+              - generic [ref=e1039]: Bash(*)
+              - generic [ref=e1040]: 2 scopes · 1 out
+          - generic "permissions.allow[0] → \"Bash(*)\"" [ref=e1042]:
+            - generic [ref=e1043]: Global
+            - generic [ref=e1044]: permissions.allow[0] → "…
+            - img
+          - generic "permissions.allow[0] → \"Bash(*)\"" [ref=e1050]:
+            - generic [ref=e1051]: Project
+            - generic [ref=e1052]: permissions.allow[0] → "…
+            - img
+          - generic [ref=e1055]:
+            - generic [ref=e1056]: permissions.allow[0] → "Bash(*)"
+            - generic [ref=e1057]:
+              - generic [ref=e1058]: You
+              - generic [ref=e1060]: from project
+              - generic [ref=e1061]: · 1 shadowed
+          - button "gates Bash Tool" [ref=e1063]:
+            - generic [ref=e1064]: gates
+            - generic [ref=e1065]: Bash
+            - generic [ref=e1066]: Tool
+        - generic [ref=e1067] [cursor=pointer]:
+          - generic [ref=e1070]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1071]:
+              - generic [ref=e1072]: ›
+            - generic [ref=e1073]:
+              - generic [ref=e1074]: "Bash(awk 'match\\($0, /De=function\\\\\\(a,s,i\\\\\\)/\\) { start=RSTART; print substr\\($0, start, 3000\\); exit }' /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)"
+              - generic [ref=e1075]: single source · 1 out
+          - 'generic "permissions.allow[26] → \"Bash(awk ''match\\($0, /De=function\\\\\\(a,s,i\\\\\\)/\\) { start=RSTART; print substr\\($0, start, 3000\\); exit }'' /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)\"" [ref=e1085]':
+            - generic [ref=e1086]: Local
+            - generic [ref=e1087]: permissions.allow[26] → …
+            - img
+          - generic [ref=e1088]:
+            - generic [ref=e1089]: permissions.allow[26] → "Bash(awk 'match\($0, /De=func…
+            - generic [ref=e1090]:
+              - generic [ref=e1091]: You
+              - generic [ref=e1093]: from local
+          - button "gates Bash Tool" [ref=e1095]:
+            - generic [ref=e1096]: gates
+            - generic [ref=e1097]: Bash
+            - generic [ref=e1098]: Tool
+        - generic [ref=e1099] [cursor=pointer]:
+          - generic [ref=e1102]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1103]:
+              - generic [ref=e1104]: ›
+            - generic [ref=e1105]:
+              - generic [ref=e1106]: Bash(awk *)
+              - generic [ref=e1107]: single source · 1 out
+          - generic "permissions.allow[30] → \"Bash(awk *)\"" [ref=e1117]:
+            - generic [ref=e1118]: Local
+            - generic [ref=e1119]: permissions.allow[30] → …
+            - img
+          - generic [ref=e1120]:
+            - generic [ref=e1121]: permissions.allow[30] → "Bash(awk *)"
+            - generic [ref=e1122]:
+              - generic [ref=e1123]: You
+              - generic [ref=e1125]: from local
+          - button "gates Bash Tool" [ref=e1127]:
+            - generic [ref=e1128]: gates
+            - generic [ref=e1129]: Bash
+            - generic [ref=e1130]: Tool
+        - generic [ref=e1131] [cursor=pointer]:
+          - generic [ref=e1134]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1135]:
+              - generic [ref=e1136]: ›
+            - generic [ref=e1137]:
+              - generic [ref=e1138]: Bash(cmd.exe /c "where gh" 2>/dev/null)
+              - generic [ref=e1139]: single source · 1 out
+          - generic "permissions.allow[7] → \"Bash(cmd.exe /c \"where gh\" 2>/dev/null)\"" [ref=e1149]:
+            - generic [ref=e1150]: Local
+            - generic [ref=e1151]: permissions.allow[7] → "…
+            - img
+          - generic [ref=e1152]:
+            - generic [ref=e1153]: permissions.allow[7] → "Bash(cmd.exe /c "where gh" 2>/…
+            - generic [ref=e1154]:
+              - generic [ref=e1155]: You
+              - generic [ref=e1157]: from local
+          - button "gates Bash Tool" [ref=e1159]:
+            - generic [ref=e1160]: gates
+            - generic [ref=e1161]: Bash
+            - generic [ref=e1162]: Tool
+        - generic [ref=e1163] [cursor=pointer]:
+          - generic [ref=e1166]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1167]:
+              - generic [ref=e1168]: ›
+            - generic [ref=e1169]:
+              - generic [ref=e1170]: Bash(gh run:*)
+              - generic [ref=e1171]: single source · 1 out
+          - generic "permissions.allow[5] → \"Bash(gh run:*)\"" [ref=e1181]:
+            - generic [ref=e1182]: Local
+            - generic [ref=e1183]: permissions.allow[5] → "…
+            - img
+          - generic [ref=e1184]:
+            - generic [ref=e1185]: permissions.allow[5] → "Bash(gh run:*)"
+            - generic [ref=e1186]:
+              - generic [ref=e1187]: You
+              - generic [ref=e1189]: from local
+          - button "gates Bash Tool" [ref=e1191]:
+            - generic [ref=e1192]: gates
+            - generic [ref=e1193]: Bash
+            - generic [ref=e1194]: Tool
+        - generic [ref=e1195] [cursor=pointer]:
+          - generic [ref=e1198]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1199]:
+              - generic [ref=e1200]: ›
+            - generic [ref=e1201]:
+              - generic [ref=e1202]: Bash(git add:*)
+              - generic [ref=e1203]: single source · 1 out
+          - generic "permissions.allow[0] → \"Bash(git add:*)\"" [ref=e1213]:
+            - generic [ref=e1214]: Local
+            - generic [ref=e1215]: permissions.allow[0] → "…
+            - img
+          - generic [ref=e1216]:
+            - generic [ref=e1217]: permissions.allow[0] → "Bash(git add:*)"
+            - generic [ref=e1218]:
+              - generic [ref=e1219]: You
+              - generic [ref=e1221]: from local
+          - button "gates Bash Tool" [ref=e1223]:
+            - generic [ref=e1224]: gates
+            - generic [ref=e1225]: Bash
+            - generic [ref=e1226]: Tool
+        - generic [ref=e1227] [cursor=pointer]:
+          - generic [ref=e1230]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1231]:
+              - generic [ref=e1232]: ›
+            - generic [ref=e1233]:
+              - generic [ref=e1234]: Bash(git clone:*)
+              - generic [ref=e1235]: single source · 1 out
+          - generic "permissions.allow[0] → \"Bash(git clone:*)\"" [ref=e1245]:
+            - generic [ref=e1246]: Local
+            - generic [ref=e1247]: permissions.allow[0] → "…
+            - img
+          - generic [ref=e1248]:
+            - generic [ref=e1249]: permissions.allow[0] → "Bash(git clone:*)"
+            - generic [ref=e1250]:
+              - generic [ref=e1251]: You
+              - generic [ref=e1253]: from local
+          - button "gates Bash Tool" [ref=e1255]:
+            - generic [ref=e1256]: gates
+            - generic [ref=e1257]: Bash
+            - generic [ref=e1258]: Tool
+        - generic [ref=e1259] [cursor=pointer]:
+          - generic [ref=e1262]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1263]:
+              - generic [ref=e1264]: ›
+            - generic [ref=e1265]:
+              - generic [ref=e1266]: Bash(git commit:*)
+              - generic [ref=e1267]: single source · 1 out
+          - generic "permissions.allow[1] → \"Bash(git commit:*)\"" [ref=e1277]:
+            - generic [ref=e1278]: Local
+            - generic [ref=e1279]: permissions.allow[1] → "…
+            - img
+          - generic [ref=e1280]:
+            - generic [ref=e1281]: permissions.allow[1] → "Bash(git commit:*)"
+            - generic [ref=e1282]:
+              - generic [ref=e1283]: You
+              - generic [ref=e1285]: from local
+          - button "gates Bash Tool" [ref=e1287]:
+            - generic [ref=e1288]: gates
+            - generic [ref=e1289]: Bash
+            - generic [ref=e1290]: Tool
+        - generic [ref=e1291] [cursor=pointer]:
+          - generic [ref=e1294]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1295]:
+              - generic [ref=e1296]: ›
+            - generic [ref=e1297]:
+              - generic [ref=e1298]: Bash(git pull:*)
+              - generic [ref=e1299]: single source · 1 out
+          - generic "permissions.allow[3] → \"Bash(git pull:*)\"" [ref=e1309]:
+            - generic [ref=e1310]: Local
+            - generic [ref=e1311]: permissions.allow[3] → "…
+            - img
+          - generic [ref=e1312]:
+            - generic [ref=e1313]: permissions.allow[3] → "Bash(git pull:*)"
+            - generic [ref=e1314]:
+              - generic [ref=e1315]: You
+              - generic [ref=e1317]: from local
+          - button "gates Bash Tool" [ref=e1319]:
+            - generic [ref=e1320]: gates
+            - generic [ref=e1321]: Bash
+            - generic [ref=e1322]: Tool
+        - generic [ref=e1323] [cursor=pointer]:
+          - generic [ref=e1326]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1327]:
+              - generic [ref=e1328]: ›
+            - generic [ref=e1329]:
+              - generic [ref=e1330]: Bash(git push:*)
+              - generic [ref=e1331]: single source · 1 out
+          - generic "permissions.allow[4] → \"Bash(git push:*)\"" [ref=e1341]:
+            - generic [ref=e1342]: Local
+            - generic [ref=e1343]: permissions.allow[4] → "…
+            - img
+          - generic [ref=e1344]:
+            - generic [ref=e1345]: permissions.allow[4] → "Bash(git push:*)"
+            - generic [ref=e1346]:
+              - generic [ref=e1347]: You
+              - generic [ref=e1349]: from local
+          - button "gates Bash Tool" [ref=e1351]:
+            - generic [ref=e1352]: gates
+            - generic [ref=e1353]: Bash
+            - generic [ref=e1354]: Tool
+        - generic [ref=e1355] [cursor=pointer]:
+          - generic [ref=e1358]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1359]:
+              - generic [ref=e1360]: ›
+            - generic [ref=e1361]:
+              - generic [ref=e1362]: "Bash(grep -o \"^[^;]\\\\{0,200\\\\}await\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-Bv0xsVBW.js)"
+              - generic [ref=e1363]: single source · 1 out
+          - 'generic "permissions.allow[27] → \"Bash(grep -o \"^[^;]\\\\{0,200\\\\}await\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-Bv0xsVBW.js)\"" [ref=e1373]':
+            - generic [ref=e1374]: Local
+            - generic [ref=e1375]: permissions.allow[27] → …
+            - img
+          - generic [ref=e1376]:
+            - generic [ref=e1377]: "permissions.allow[27] → \"Bash(grep -o \"^[^;]\\\\{0,200\\\\…"
+            - generic [ref=e1378]:
+              - generic [ref=e1379]: You
+              - generic [ref=e1381]: from local
+          - button "gates Bash Tool" [ref=e1383]:
+            - generic [ref=e1384]: gates
+            - generic [ref=e1385]: Bash
+            - generic [ref=e1386]: Tool
+        - generic [ref=e1387] [cursor=pointer]:
+          - generic [ref=e1390]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1391]:
+              - generic [ref=e1392]: ›
+            - generic [ref=e1393]:
+              - generic [ref=e1394]: "Bash(grep -o \"async function Ai[^}]\\\\{0,200\\\\}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)"
+              - generic [ref=e1395]: single source · 1 out
+          - 'generic "permissions.allow[21] → \"Bash(grep -o \"async function Ai[^}]\\\\{0,200\\\\}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)\"" [ref=e1405]':
+            - generic [ref=e1406]: Local
+            - generic [ref=e1407]: permissions.allow[21] → …
+            - img
+          - generic [ref=e1408]:
+            - generic [ref=e1409]: permissions.allow[21] → "Bash(grep -o "async function …
+            - generic [ref=e1410]:
+              - generic [ref=e1411]: You
+              - generic [ref=e1413]: from local
+          - button "gates Bash Tool" [ref=e1415]:
+            - generic [ref=e1416]: gates
+            - generic [ref=e1417]: Bash
+            - generic [ref=e1418]: Tool
+        - generic [ref=e1419] [cursor=pointer]:
+          - generic [ref=e1422]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1423]:
+              - generic [ref=e1424]: ›
+            - generic [ref=e1425]:
+              - generic [ref=e1426]: "Bash(grep -o \"const De=[^;]\\\\{0,200\\\\}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)"
+              - generic [ref=e1427]: single source · 1 out
+          - 'generic "permissions.allow[22] → \"Bash(grep -o \"const De=[^;]\\\\{0,200\\\\}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)\"" [ref=e1437]':
+            - generic [ref=e1438]: Local
+            - generic [ref=e1439]: permissions.allow[22] → …
+            - img
+          - generic [ref=e1440]:
+            - generic [ref=e1441]: permissions.allow[22] → "Bash(grep -o "const De=[^;]\\…
+            - generic [ref=e1442]:
+              - generic [ref=e1443]: You
+              - generic [ref=e1445]: from local
+          - button "gates Bash Tool" [ref=e1447]:
+            - generic [ref=e1448]: gates
+            - generic [ref=e1449]: Bash
+            - generic [ref=e1450]: Tool
+        - generic [ref=e1451] [cursor=pointer]:
+          - generic [ref=e1454]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1455]:
+              - generic [ref=e1456]: ›
+            - generic [ref=e1457]:
+              - generic [ref=e1458]: "Bash(grep -o \"loadRC[^}]\\\\{0,150\\\\}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)"
+              - generic [ref=e1459]: single source · 1 out
+          - 'generic "permissions.allow[20] → \"Bash(grep -o \"loadRC[^}]\\\\{0,150\\\\}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)\"" [ref=e1469]':
+            - generic [ref=e1470]: Local
+            - generic [ref=e1471]: permissions.allow[20] → …
+            - img
+          - generic [ref=e1472]:
+            - generic [ref=e1473]: "permissions.allow[20] → \"Bash(grep -o \"loadRC[^}]\\\\{0,…"
+            - generic [ref=e1474]:
+              - generic [ref=e1475]: You
+              - generic [ref=e1477]: from local
+          - button "gates Bash Tool" [ref=e1479]:
+            - generic [ref=e1480]: gates
+            - generic [ref=e1481]: Bash
+            - generic [ref=e1482]: Tool
+        - generic [ref=e1483] [cursor=pointer]:
+          - generic [ref=e1486]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1487]:
+              - generic [ref=e1488]: ›
+            - generic [ref=e1489]:
+              - generic [ref=e1490]: "Bash(grep -oE \"\\(function |const \\)De[^=]?=[^;]{0,400}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)"
+              - generic [ref=e1491]: single source · 1 out
+          - 'generic "permissions.allow[23] → \"Bash(grep -oE \"\\(function |const \\)De[^=]?=[^;]{0,400}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)\"" [ref=e1501]':
+            - generic [ref=e1502]: Local
+            - generic [ref=e1503]: permissions.allow[23] → …
+            - img
+          - generic [ref=e1504]:
+            - generic [ref=e1505]: permissions.allow[23] → "Bash(grep -oE "\(function |co…
+            - generic [ref=e1506]:
+              - generic [ref=e1507]: You
+              - generic [ref=e1509]: from local
+          - button "gates Bash Tool" [ref=e1511]:
+            - generic [ref=e1512]: gates
+            - generic [ref=e1513]: Bash
+            - generic [ref=e1514]: Tool
+        - generic [ref=e1515] [cursor=pointer]:
+          - generic [ref=e1518]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1519]:
+              - generic [ref=e1520]: ›
+            - generic [ref=e1521]:
+              - generic [ref=e1522]: "Bash(grep -oE \"De=function\\\\\\([^{]*\\\\{[^}]{0,2000}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)"
+              - generic [ref=e1523]: single source · 1 out
+          - 'generic "permissions.allow[25] → \"Bash(grep -oE \"De=function\\\\\\([^{]*\\\\{[^}]{0,2000}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)\"" [ref=e1533]':
+            - generic [ref=e1534]: Local
+            - generic [ref=e1535]: permissions.allow[25] → …
+            - img
+          - generic [ref=e1536]:
+            - generic [ref=e1537]: permissions.allow[25] → "Bash(grep -oE "De=function\\\…
+            - generic [ref=e1538]:
+              - generic [ref=e1539]: You
+              - generic [ref=e1541]: from local
+          - button "gates Bash Tool" [ref=e1543]:
+            - generic [ref=e1544]: gates
+            - generic [ref=e1545]: Bash
+            - generic [ref=e1546]: Tool
+        - generic [ref=e1547] [cursor=pointer]:
+          - generic [ref=e1550]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1551]:
+              - generic [ref=e1552]: ›
+            - generic [ref=e1553]:
+              - generic [ref=e1554]: "Bash(grep -oE \"function De\\\\\\([^\\)]*\\\\\\)[^}]{0,300}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)"
+              - generic [ref=e1555]: single source · 1 out
+          - 'generic "permissions.allow[24] → \"Bash(grep -oE \"function De\\\\\\([^\\)]*\\\\\\)[^}]{0,300}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-DyPD7F1_.js)\"" [ref=e1565]':
+            - generic [ref=e1566]: Local
+            - generic [ref=e1567]: permissions.allow[24] → …
+            - img
+          - generic [ref=e1568]:
+            - generic [ref=e1569]: permissions.allow[24] → "Bash(grep -oE "function De\\\…
+            - generic [ref=e1570]:
+              - generic [ref=e1571]: You
+              - generic [ref=e1573]: from local
+          - button "gates Bash Tool" [ref=e1575]:
+            - generic [ref=e1576]: gates
+            - generic [ref=e1577]: Bash
+            - generic [ref=e1578]: Tool
+        - generic [ref=e1579] [cursor=pointer]:
+          - generic [ref=e1582]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1583]:
+              - generic [ref=e1584]: ›
+            - generic [ref=e1585]:
+              - generic [ref=e1586]: "Bash(grep -oE \"initIAP starting[^,]{0,500}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-E0ESYlN8.js)"
+              - generic [ref=e1587]: single source · 1 out
+          - 'generic "permissions.allow[29] → \"Bash(grep -oE \"initIAP starting[^,]{0,500}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-E0ESYlN8.js)\"" [ref=e1597]':
+            - generic [ref=e1598]: Local
+            - generic [ref=e1599]: permissions.allow[29] → …
+            - img
+          - generic [ref=e1600]:
+            - generic [ref=e1601]: permissions.allow[29] → "Bash(grep -oE "initIAP starti…
+            - generic [ref=e1602]:
+              - generic [ref=e1603]: You
+              - generic [ref=e1605]: from local
+          - button "gates Bash Tool" [ref=e1607]:
+            - generic [ref=e1608]: gates
+            - generic [ref=e1609]: Bash
+            - generic [ref=e1610]: Tool
+        - generic [ref=e1611] [cursor=pointer]:
+          - generic [ref=e1614]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1615]:
+              - generic [ref=e1616]: ›
+            - generic [ref=e1617]:
+              - generic [ref=e1618]: "Bash(grep -oE \"loadRC[^}]{0,300}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-E0ESYlN8.js)"
+              - generic [ref=e1619]: single source · 1 out
+          - 'generic "permissions.allow[28] → \"Bash(grep -oE \"loadRC[^}]{0,300}\" /Users/boosey/Documents/blipp/ios/App/App/public/assets/index-E0ESYlN8.js)\"" [ref=e1629]':
+            - generic [ref=e1630]: Local
+            - generic [ref=e1631]: permissions.allow[28] → …
+            - img
+          - generic [ref=e1632]:
+            - generic [ref=e1633]: "permissions.allow[28] → \"Bash(grep -oE \"loadRC[^}]{0,3…"
+            - generic [ref=e1634]:
+              - generic [ref=e1635]: You
+              - generic [ref=e1637]: from local
+          - button "gates Bash Tool" [ref=e1639]:
+            - generic [ref=e1640]: gates
+            - generic [ref=e1641]: Bash
+            - generic [ref=e1642]: Tool
+        - generic [ref=e1643] [cursor=pointer]:
+          - generic [ref=e1646]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1647]:
+              - generic [ref=e1648]: ›
+            - generic [ref=e1649]:
+              - generic [ref=e1650]: Bash(grep -v ":0$")
+              - generic [ref=e1651]: single source · 1 out
+          - generic "permissions.allow[19] → \"Bash(grep -v \":0$\")\"" [ref=e1661]:
+            - generic [ref=e1662]: Local
+            - generic [ref=e1663]: permissions.allow[19] → …
+            - img
+          - generic [ref=e1664]:
+            - generic [ref=e1665]: permissions.allow[19] → "Bash(grep -v ":0$")"
+            - generic [ref=e1666]:
+              - generic [ref=e1667]: You
+              - generic [ref=e1669]: from local
+          - button "gates Bash Tool" [ref=e1671]:
+            - generic [ref=e1672]: gates
+            - generic [ref=e1673]: Bash
+            - generic [ref=e1674]: Tool
+        - generic [ref=e1675] [cursor=pointer]:
+          - generic [ref=e1678]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1679]:
+              - generic [ref=e1680]: ›
+            - generic [ref=e1681]:
+              - generic [ref=e1682]: Bash(ls:*)
+              - generic [ref=e1683]: single source · 1 out
+          - generic "permissions.allow[1] → \"Bash(ls:*)\"" [ref=e1693]:
+            - generic [ref=e1694]: Local
+            - generic [ref=e1695]: permissions.allow[1] → "…
+            - img
+          - generic [ref=e1696]:
+            - generic [ref=e1697]: permissions.allow[1] → "Bash(ls:*)"
+            - generic [ref=e1698]:
+              - generic [ref=e1699]: You
+              - generic [ref=e1701]: from local
+          - button "gates Bash Tool" [ref=e1703]:
+            - generic [ref=e1704]: gates
+            - generic [ref=e1705]: Bash
+            - generic [ref=e1706]: Tool
+        - generic [ref=e1707] [cursor=pointer]:
+          - generic [ref=e1710]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1711]:
+              - generic [ref=e1712]: ›
+            - generic [ref=e1713]:
+              - generic [ref=e1714]: Bash(mdfind -name "Xcode.app")
+              - generic [ref=e1715]: single source · 1 out
+          - generic "permissions.allow[17] → \"Bash(mdfind -name \"Xcode.app\")\"" [ref=e1725]:
+            - generic [ref=e1726]: Local
+            - generic [ref=e1727]: permissions.allow[17] → …
+            - img
+          - generic [ref=e1728]:
+            - generic [ref=e1729]: permissions.allow[17] → "Bash(mdfind -name "Xcode.app")"
+            - generic [ref=e1730]:
+              - generic [ref=e1731]: You
+              - generic [ref=e1733]: from local
+          - button "gates Bash Tool" [ref=e1735]:
+            - generic [ref=e1736]: gates
+            - generic [ref=e1737]: Bash
+            - generic [ref=e1738]: Tool
+        - generic [ref=e1739] [cursor=pointer]:
+          - generic [ref=e1742]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1743]:
+              - generic [ref=e1744]: ›
+            - generic [ref=e1745]:
+              - generic [ref=e1746]: Bash(NODE_OPTIONS="--max-old-space-size=4096" npx vitest run worker/routes/__tests__/billing.test.ts worker/routes/__tests__/revenuecat-webhook.test.ts)
+              - generic [ref=e1747]: single source · 1 out
+          - generic "permissions.allow[34] → \"Bash(NODE_OPTIONS=\"--max-old-space-size=4096\" npx vitest run worker/routes/__tests__/billing.test.ts worker/routes/__tests__/revenuecat-webhook.test.ts)\"" [ref=e1757]:
+            - generic [ref=e1758]: Local
+            - generic [ref=e1759]: permissions.allow[34] → …
+            - img
+          - generic [ref=e1760]:
+            - generic [ref=e1761]: permissions.allow[34] → "Bash(NODE_OPTIONS="--max-old-…
+            - generic [ref=e1762]:
+              - generic [ref=e1763]: You
+              - generic [ref=e1765]: from local
+          - button "gates Bash Tool" [ref=e1767]:
+            - generic [ref=e1768]: gates
+            - generic [ref=e1769]: Bash
+            - generic [ref=e1770]: Tool
+        - generic [ref=e1771] [cursor=pointer]:
+          - generic [ref=e1774]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1775]:
+              - generic [ref=e1776]: ›
+            - generic [ref=e1777]:
+              - generic [ref=e1778]: Bash(NODE_OPTIONS="--max-old-space-size=4096" npx vitest run worker/routes/__tests__/iap-link.test.ts)
+              - generic [ref=e1779]: single source · 1 out
+          - generic "permissions.allow[33] → \"Bash(NODE_OPTIONS=\"--max-old-space-size=4096\" npx vitest run worker/routes/__tests__/iap-link.test.ts)\"" [ref=e1789]:
+            - generic [ref=e1790]: Local
+            - generic [ref=e1791]: permissions.allow[33] → …
+            - img
+          - generic [ref=e1792]:
+            - generic [ref=e1793]: permissions.allow[33] → "Bash(NODE_OPTIONS="--max-old-…
+            - generic [ref=e1794]:
+              - generic [ref=e1795]: You
+              - generic [ref=e1797]: from local
+          - button "gates Bash Tool" [ref=e1799]:
+            - generic [ref=e1800]: gates
+            - generic [ref=e1801]: Bash
+            - generic [ref=e1802]: Tool
+        - generic [ref=e1803] [cursor=pointer]:
+          - generic [ref=e1806]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1807]:
+              - generic [ref=e1808]: ›
+            - generic [ref=e1809]:
+              - generic [ref=e1810]: Bash(npm run:*)
+              - generic [ref=e1811]: single source · 1 out
+          - generic "permissions.allow[8] → \"Bash(npm run:*)\"" [ref=e1821]:
+            - generic [ref=e1822]: Local
+            - generic [ref=e1823]: permissions.allow[8] → "…
+            - img
+          - generic [ref=e1824]:
+            - generic [ref=e1825]: permissions.allow[8] → "Bash(npm run:*)"
+            - generic [ref=e1826]:
+              - generic [ref=e1827]: You
+              - generic [ref=e1829]: from local
+          - button "gates Bash Tool" [ref=e1831]:
+            - generic [ref=e1832]: gates
+            - generic [ref=e1833]: Bash
+            - generic [ref=e1834]: Tool
+        - generic [ref=e1835] [cursor=pointer]:
+          - generic [ref=e1838]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1839]:
+              - generic [ref=e1840]: ›
+            - generic [ref=e1841]:
+              - generic [ref=e1842]: Bash(npx cap *)
+              - generic [ref=e1843]: single source · 1 out
+          - generic "permissions.allow[13] → \"Bash(npx cap *)\"" [ref=e1853]:
+            - generic [ref=e1854]: Local
+            - generic [ref=e1855]: permissions.allow[13] → …
+            - img
+          - generic [ref=e1856]:
+            - generic [ref=e1857]: permissions.allow[13] → "Bash(npx cap *)"
+            - generic [ref=e1858]:
+              - generic [ref=e1859]: You
+              - generic [ref=e1861]: from local
+          - button "gates Bash Tool" [ref=e1863]:
+            - generic [ref=e1864]: gates
+            - generic [ref=e1865]: Bash
+            - generic [ref=e1866]: Tool
+        - generic [ref=e1867] [cursor=pointer]:
+          - generic [ref=e1870]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1871]:
+              - generic [ref=e1872]: ›
+            - generic [ref=e1873]:
+              - generic [ref=e1874]: Bash(npx prisma *)
+              - generic [ref=e1875]: single source · 1 out
+          - generic "permissions.allow[12] → \"Bash(npx prisma *)\"" [ref=e1885]:
+            - generic [ref=e1886]: Local
+            - generic [ref=e1887]: permissions.allow[12] → …
+            - img
+          - generic [ref=e1888]:
+            - generic [ref=e1889]: permissions.allow[12] → "Bash(npx prisma *)"
+            - generic [ref=e1890]:
+              - generic [ref=e1891]: You
+              - generic [ref=e1893]: from local
+          - button "gates Bash Tool" [ref=e1895]:
+            - generic [ref=e1896]: gates
+            - generic [ref=e1897]: Bash
+            - generic [ref=e1898]: Tool
+        - generic [ref=e1899] [cursor=pointer]:
+          - generic [ref=e1902]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1903]:
+              - generic [ref=e1904]: ›
+            - generic [ref=e1905]:
+              - generic [ref=e1906]: Bash(npx tsx *)
+              - generic [ref=e1907]: single source · 1 out
+          - generic "permissions.allow[18] → \"Bash(npx tsx *)\"" [ref=e1917]:
+            - generic [ref=e1918]: Local
+            - generic [ref=e1919]: permissions.allow[18] → …
+            - img
+          - generic [ref=e1920]:
+            - generic [ref=e1921]: permissions.allow[18] → "Bash(npx tsx *)"
+            - generic [ref=e1922]:
+              - generic [ref=e1923]: You
+              - generic [ref=e1925]: from local
+          - button "gates Bash Tool" [ref=e1927]:
+            - generic [ref=e1928]: gates
+            - generic [ref=e1929]: Bash
+            - generic [ref=e1930]: Tool
+        - generic [ref=e1931] [cursor=pointer]:
+          - generic [ref=e1934]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1935]:
+              - generic [ref=e1936]: ›
+            - generic [ref=e1937]:
+              - generic [ref=e1938]: Bash(npx vitest:*)
+              - generic [ref=e1939]: single source · 1 out
+          - generic "permissions.allow[2] → \"Bash(npx vitest:*)\"" [ref=e1949]:
+            - generic [ref=e1950]: Local
+            - generic [ref=e1951]: permissions.allow[2] → "…
+            - img
+          - generic [ref=e1952]:
+            - generic [ref=e1953]: permissions.allow[2] → "Bash(npx vitest:*)"
+            - generic [ref=e1954]:
+              - generic [ref=e1955]: You
+              - generic [ref=e1957]: from local
+          - button "gates Bash Tool" [ref=e1959]:
+            - generic [ref=e1960]: gates
+            - generic [ref=e1961]: Bash
+            - generic [ref=e1962]: Tool
+        - generic [ref=e1963] [cursor=pointer]:
+          - generic [ref=e1966]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1967]:
+              - generic [ref=e1968]: ›
+            - generic [ref=e1969]:
+              - generic [ref=e1970]: Bash(where gh:*)
+              - generic [ref=e1971]: single source · 1 out
+          - generic "permissions.allow[6] → \"Bash(where gh:*)\"" [ref=e1981]:
+            - generic [ref=e1982]: Local
+            - generic [ref=e1983]: permissions.allow[6] → "…
+            - img
+          - generic [ref=e1984]:
+            - generic [ref=e1985]: permissions.allow[6] → "Bash(where gh:*)"
+            - generic [ref=e1986]:
+              - generic [ref=e1987]: You
+              - generic [ref=e1989]: from local
+          - button "gates Bash Tool" [ref=e1991]:
+            - generic [ref=e1992]: gates
+            - generic [ref=e1993]: Bash
+            - generic [ref=e1994]: Tool
+        - generic [ref=e1995] [cursor=pointer]:
+          - generic [ref=e1998]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1999]:
+              - generic [ref=e2000]: ›
+            - generic [ref=e2001]:
+              - generic [ref=e2002]: Bash(xcode-select -p)
+              - generic [ref=e2003]: single source · 1 out
+          - generic "permissions.allow[15] → \"Bash(xcode-select -p)\"" [ref=e2013]:
+            - generic [ref=e2014]: Local
+            - generic [ref=e2015]: permissions.allow[15] → …
+            - img
+          - generic [ref=e2016]:
+            - generic [ref=e2017]: permissions.allow[15] → "Bash(xcode-select -p)"
+            - generic [ref=e2018]:
+              - generic [ref=e2019]: You
+              - generic [ref=e2021]: from local
+          - button "gates Bash Tool" [ref=e2023]:
+            - generic [ref=e2024]: gates
+            - generic [ref=e2025]: Bash
+            - generic [ref=e2026]: Tool
+        - generic [ref=e2027] [cursor=pointer]:
+          - generic [ref=e2030]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2031]:
+              - generic [ref=e2032]: ›
+            - generic [ref=e2033]:
+              - generic [ref=e2034]: Bash(xcodebuild -version)
+              - generic [ref=e2035]: single source · 1 out
+          - generic "permissions.allow[16] → \"Bash(xcodebuild -version)\"" [ref=e2045]:
+            - generic [ref=e2046]: Local
+            - generic [ref=e2047]: permissions.allow[16] → …
+            - img
+          - generic [ref=e2048]:
+            - generic [ref=e2049]: permissions.allow[16] → "Bash(xcodebuild -version)"
+            - generic [ref=e2050]:
+              - generic [ref=e2051]: You
+              - generic [ref=e2053]: from local
+          - button "gates Bash Tool" [ref=e2055]:
+            - generic [ref=e2056]: gates
+            - generic [ref=e2057]: Bash
+            - generic [ref=e2058]: Tool
+        - generic [ref=e2059] [cursor=pointer]:
+          - generic [ref=e2062]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2063]:
+              - generic [ref=e2064]: ›
+            - generic [ref=e2065]:
+              - generic [ref=e2066]: Bash(xcrun simctl *)
+              - generic [ref=e2067]: single source · 1 out
+          - generic "permissions.allow[14] → \"Bash(xcrun simctl *)\"" [ref=e2077]:
+            - generic [ref=e2078]: Local
+            - generic [ref=e2079]: permissions.allow[14] → …
+            - img
+          - generic [ref=e2080]:
+            - generic [ref=e2081]: permissions.allow[14] → "Bash(xcrun simctl *)"
+            - generic [ref=e2082]:
+              - generic [ref=e2083]: You
+              - generic [ref=e2085]: from local
+          - button "gates Bash Tool" [ref=e2087]:
+            - generic [ref=e2088]: gates
+            - generic [ref=e2089]: Bash
+            - generic [ref=e2090]: Tool
+        - generic [ref=e2091] [cursor=pointer]:
+          - generic [ref=e2094]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2095]:
+              - generic [ref=e2096]: ›
+            - generic [ref=e2097]:
+              - generic [ref=e2098]: Edit(*)
+              - generic [ref=e2099]: 2 scopes · 1 out
+          - generic "permissions.allow[2] → \"Edit(*)\"" [ref=e2101]:
+            - generic [ref=e2102]: Global
+            - generic [ref=e2103]: permissions.allow[2] → "…
+            - img
+          - generic "permissions.allow[2] → \"Edit(*)\"" [ref=e2109]:
+            - generic [ref=e2110]: Project
+            - generic [ref=e2111]: permissions.allow[2] → "…
+            - img
+          - generic [ref=e2114]:
+            - generic [ref=e2115]: permissions.allow[2] → "Edit(*)"
+            - generic [ref=e2116]:
+              - generic [ref=e2117]: You
+              - generic [ref=e2119]: from project
+              - generic [ref=e2120]: · 1 shadowed
+          - button "gates Edit Tool" [ref=e2122]:
+            - generic [ref=e2123]: gates
+            - generic [ref=e2124]: Edit
+            - generic [ref=e2125]: Tool
+        - generic [ref=e2126] [cursor=pointer]:
+          - generic [ref=e2129]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2130]:
+              - generic [ref=e2131]: ›
+            - generic [ref=e2132]:
+              - generic [ref=e2133]: Glob(*)
+              - generic [ref=e2134]: 2 scopes · 1 out
+          - generic "permissions.allow[8] → \"Glob(*)\"" [ref=e2136]:
+            - generic [ref=e2137]: Global
+            - generic [ref=e2138]: permissions.allow[8] → "…
+            - img
+          - generic "permissions.allow[8] → \"Glob(*)\"" [ref=e2144]:
+            - generic [ref=e2145]: Project
+            - generic [ref=e2146]: permissions.allow[8] → "…
+            - img
+          - generic [ref=e2149]:
+            - generic [ref=e2150]: permissions.allow[8] → "Glob(*)"
+            - generic [ref=e2151]:
+              - generic [ref=e2152]: You
+              - generic [ref=e2154]: from project
+              - generic [ref=e2155]: · 1 shadowed
+          - button "gates Glob Tool" [ref=e2157]:
+            - generic [ref=e2158]: gates
+            - generic [ref=e2159]: Glob
+            - generic [ref=e2160]: Tool
+        - generic [ref=e2161] [cursor=pointer]:
+          - generic [ref=e2164]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2165]:
+              - generic [ref=e2166]: ›
+            - generic [ref=e2167]:
+              - generic [ref=e2168]: Grep(*)
+              - generic [ref=e2169]: 2 scopes · 1 out
+          - generic "permissions.allow[9] → \"Grep(*)\"" [ref=e2171]:
+            - generic [ref=e2172]: Global
+            - generic [ref=e2173]: permissions.allow[9] → "…
+            - img
+          - generic "permissions.allow[9] → \"Grep(*)\"" [ref=e2179]:
+            - generic [ref=e2180]: Project
+            - generic [ref=e2181]: permissions.allow[9] → "…
+            - img
+          - generic [ref=e2184]:
+            - generic [ref=e2185]: permissions.allow[9] → "Grep(*)"
+            - generic [ref=e2186]:
+              - generic [ref=e2187]: You
+              - generic [ref=e2189]: from project
+              - generic [ref=e2190]: · 1 shadowed
+          - button "gates Grep Tool" [ref=e2192]:
+            - generic [ref=e2193]: gates
+            - generic [ref=e2194]: Grep
+            - generic [ref=e2195]: Tool
+        - generic [ref=e2196] [cursor=pointer]:
+          - generic [ref=e2199]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2200]:
+              - generic [ref=e2201]: ›
+            - generic [ref=e2202]:
+              - generic [ref=e2203]: mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL
+              - generic [ref=e2204]: single source · 1 out
+          - generic "permissions.allow[11] → \"mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL\"" [ref=e2214]:
+            - generic [ref=e2215]: Local
+            - generic [ref=e2216]: permissions.allow[11] → …
+            - img
+          - generic [ref=e2217]:
+            - generic [ref=e2218]: permissions.allow[11] → "mcp__composio__COMPOSIO_MULTI…
+            - generic [ref=e2219]:
+              - generic [ref=e2220]: You
+              - generic [ref=e2222]: from local
+          - button "gates mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL Tool" [ref=e2224]:
+            - generic [ref=e2225]: gates
+            - generic [ref=e2226]: mcp__composio__COMPOSIO_MULTI_EXECUTE_TOOL
+            - generic [ref=e2227]: Tool
+        - generic [ref=e2228] [cursor=pointer]:
+          - generic [ref=e2231]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2232]:
+              - generic [ref=e2233]: ›
+            - generic [ref=e2234]:
+              - generic [ref=e2235]: mcp__composio__COMPOSIO_SEARCH_TOOLS
+              - generic [ref=e2236]: single source · 1 out
+          - generic "permissions.allow[10] → \"mcp__composio__COMPOSIO_SEARCH_TOOLS\"" [ref=e2246]:
+            - generic [ref=e2247]: Local
+            - generic [ref=e2248]: permissions.allow[10] → …
+            - img
+          - generic [ref=e2249]:
+            - generic [ref=e2250]: permissions.allow[10] → "mcp__composio__COMPOSIO_SEARC…
+            - generic [ref=e2251]:
+              - generic [ref=e2252]: You
+              - generic [ref=e2254]: from local
+          - button "gates mcp__composio__COMPOSIO_SEARCH_TOOLS Tool" [ref=e2256]:
+            - generic [ref=e2257]: gates
+            - generic [ref=e2258]: mcp__composio__COMPOSIO_SEARCH_TOOLS
+            - generic [ref=e2259]: Tool
+        - generic [ref=e2260] [cursor=pointer]:
+          - generic [ref=e2263]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2264]:
+              - generic [ref=e2265]: ›
+            - generic [ref=e2266]:
+              - generic [ref=e2267]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__click
+              - generic [ref=e2268]: single source · 1 out
+          - generic "permissions.allow[4] → \"mcp__plugin_chrome-devtools-mcp_chrome-devtools__click\"" [ref=e2278]:
+            - generic [ref=e2279]: Local
+            - generic [ref=e2280]: permissions.allow[4] → "…
+            - img
+          - generic [ref=e2281]:
+            - generic [ref=e2282]: permissions.allow[4] → "mcp__plugin_chrome-devtools-mc…
+            - generic [ref=e2283]:
+              - generic [ref=e2284]: You
+              - generic [ref=e2286]: from local
+          - button "gates mcp__plugin_chrome-devtools-mcp_chrome-devtools__click Tool" [ref=e2288]:
+            - generic [ref=e2289]: gates
+            - generic [ref=e2290]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__click
+            - generic [ref=e2291]: Tool
+        - generic [ref=e2292] [cursor=pointer]:
+          - generic [ref=e2295]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2296]:
+              - generic [ref=e2297]: ›
+            - generic [ref=e2298]:
+              - generic [ref=e2299]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__lighthouse_audit
+              - generic [ref=e2300]: single source · 1 out
+          - generic "permissions.allow[6] → \"mcp__plugin_chrome-devtools-mcp_chrome-devtools__lighthouse_audit\"" [ref=e2310]:
+            - generic [ref=e2311]: Local
+            - generic [ref=e2312]: permissions.allow[6] → "…
+            - img
+          - generic [ref=e2313]:
+            - generic [ref=e2314]: permissions.allow[6] → "mcp__plugin_chrome-devtools-mc…
+            - generic [ref=e2315]:
+              - generic [ref=e2316]: You
+              - generic [ref=e2318]: from local
+          - button "gates mcp__plugin_chrome-devtools-mcp_chrome-devtools__lighthouse_audit Tool" [ref=e2320]:
+            - generic [ref=e2321]: gates
+            - generic [ref=e2322]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__lighthouse_audit
+            - generic [ref=e2323]: Tool
+        - generic [ref=e2324] [cursor=pointer]:
+          - generic [ref=e2327]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2328]:
+              - generic [ref=e2329]: ›
+            - generic [ref=e2330]:
+              - generic [ref=e2331]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_console_messages
+              - generic [ref=e2332]: single source · 1 out
+          - generic "permissions.allow[2] → \"mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_console_messages\"" [ref=e2342]:
+            - generic [ref=e2343]: Local
+            - generic [ref=e2344]: permissions.allow[2] → "…
+            - img
+          - generic [ref=e2345]:
+            - generic [ref=e2346]: permissions.allow[2] → "mcp__plugin_chrome-devtools-mc…
+            - generic [ref=e2347]:
+              - generic [ref=e2348]: You
+              - generic [ref=e2350]: from local
+          - button "gates mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_console_messages Tool" [ref=e2352]:
+            - generic [ref=e2353]: gates
+            - generic [ref=e2354]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__list_console_messages
+            - generic [ref=e2355]: Tool
+        - generic [ref=e2356] [cursor=pointer]:
+          - generic [ref=e2359]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2360]:
+              - generic [ref=e2361]: ›
+            - generic [ref=e2362]:
+              - generic [ref=e2363]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page
+              - generic [ref=e2364]: single source · 1 out
+          - generic "permissions.allow[5] → \"mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page\"" [ref=e2374]:
+            - generic [ref=e2375]: Local
+            - generic [ref=e2376]: permissions.allow[5] → "…
+            - img
+          - generic [ref=e2377]:
+            - generic [ref=e2378]: permissions.allow[5] → "mcp__plugin_chrome-devtools-mc…
+            - generic [ref=e2379]:
+              - generic [ref=e2380]: You
+              - generic [ref=e2382]: from local
+          - button "gates mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page Tool" [ref=e2384]:
+            - generic [ref=e2385]: gates
+            - generic [ref=e2386]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__navigate_page
+            - generic [ref=e2387]: Tool
+        - generic [ref=e2388] [cursor=pointer]:
+          - generic [ref=e2391]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2392]:
+              - generic [ref=e2393]: ›
+            - generic [ref=e2394]:
+              - generic [ref=e2395]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__new_page
+              - generic [ref=e2396]: single source · 1 out
+          - generic "permissions.allow[0] → \"mcp__plugin_chrome-devtools-mcp_chrome-devtools__new_page\"" [ref=e2406]:
+            - generic [ref=e2407]: Local
+            - generic [ref=e2408]: permissions.allow[0] → "…
+            - img
+          - generic [ref=e2409]:
+            - generic [ref=e2410]: permissions.allow[0] → "mcp__plugin_chrome-devtools-mc…
+            - generic [ref=e2411]:
+              - generic [ref=e2412]: You
+              - generic [ref=e2414]: from local
+          - button "gates mcp__plugin_chrome-devtools-mcp_chrome-devtools__new_page Tool" [ref=e2416]:
+            - generic [ref=e2417]: gates
+            - generic [ref=e2418]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__new_page
+            - generic [ref=e2419]: Tool
+        - generic [ref=e2420] [cursor=pointer]:
+          - generic [ref=e2423]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2424]:
+              - generic [ref=e2425]: ›
+            - generic [ref=e2426]:
+              - generic [ref=e2427]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot
+              - generic [ref=e2428]: single source · 1 out
+          - generic "permissions.allow[3] → \"mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot\"" [ref=e2438]:
+            - generic [ref=e2439]: Local
+            - generic [ref=e2440]: permissions.allow[3] → "…
+            - img
+          - generic [ref=e2441]:
+            - generic [ref=e2442]: permissions.allow[3] → "mcp__plugin_chrome-devtools-mc…
+            - generic [ref=e2443]:
+              - generic [ref=e2444]: You
+              - generic [ref=e2446]: from local
+          - button "gates mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot Tool" [ref=e2448]:
+            - generic [ref=e2449]: gates
+            - generic [ref=e2450]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_screenshot
+            - generic [ref=e2451]: Tool
+        - generic [ref=e2452] [cursor=pointer]:
+          - generic [ref=e2455]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2456]:
+              - generic [ref=e2457]: ›
+            - generic [ref=e2458]:
+              - generic [ref=e2459]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_snapshot
+              - generic [ref=e2460]: single source · 1 out
+          - generic "permissions.allow[1] → \"mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_snapshot\"" [ref=e2470]:
+            - generic [ref=e2471]: Local
+            - generic [ref=e2472]: permissions.allow[1] → "…
+            - img
+          - generic [ref=e2473]:
+            - generic [ref=e2474]: permissions.allow[1] → "mcp__plugin_chrome-devtools-mc…
+            - generic [ref=e2475]:
+              - generic [ref=e2476]: You
+              - generic [ref=e2478]: from local
+          - button "gates mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_snapshot Tool" [ref=e2480]:
+            - generic [ref=e2481]: gates
+            - generic [ref=e2482]: mcp__plugin_chrome-devtools-mcp_chrome-devtools__take_snapshot
+            - generic [ref=e2483]: Tool
+        - generic [ref=e2484] [cursor=pointer]:
+          - generic [ref=e2487]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2488]:
+              - generic [ref=e2489]: ›
+            - generic [ref=e2490]:
+              - generic [ref=e2491]: mcp__plugin_context7_context7__*
+              - generic [ref=e2492]: 2 scopes · 1 out
+          - generic "permissions.allow[5] → \"mcp__plugin_context7_context7__*\"" [ref=e2494]:
+            - generic [ref=e2495]: Global
+            - generic [ref=e2496]: permissions.allow[5] → "…
+            - img
+          - generic "permissions.allow[5] → \"mcp__plugin_context7_context7__*\"" [ref=e2502]:
+            - generic [ref=e2503]: Project
+            - generic [ref=e2504]: permissions.allow[5] → "…
+            - img
+          - generic [ref=e2507]:
+            - generic [ref=e2508]: permissions.allow[5] → "mcp__plugin_context7_context7_…
+            - generic [ref=e2509]:
+              - generic [ref=e2510]: You
+              - generic [ref=e2512]: from project
+              - generic [ref=e2513]: · 1 shadowed
+          - button "gates mcp__plugin_context7_context7__* Tool" [ref=e2515]:
+            - generic [ref=e2516]: gates
+            - generic [ref=e2517]: mcp__plugin_context7_context7__*
+            - generic [ref=e2518]: Tool
+        - generic [ref=e2519] [cursor=pointer]:
+          - generic [ref=e2522]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2523]:
+              - generic [ref=e2524]: ›
+            - generic [ref=e2525]:
+              - generic [ref=e2526]: mcp__plugin_github_github__get_file_contents
+              - generic [ref=e2527]: single source · 1 out
+          - generic "permissions.allow[2] → \"mcp__plugin_github_github__get_file_contents\"" [ref=e2537]:
+            - generic [ref=e2538]: Local
+            - generic [ref=e2539]: permissions.allow[2] → "…
+            - img
+          - generic [ref=e2540]:
+            - generic [ref=e2541]: permissions.allow[2] → "mcp__plugin_github_github__get…
+            - generic [ref=e2542]:
+              - generic [ref=e2543]: You
+              - generic [ref=e2545]: from local
+          - button "gates mcp__plugin_github_github__get_file_contents Tool" [ref=e2547]:
+            - generic [ref=e2548]: gates
+            - generic [ref=e2549]: mcp__plugin_github_github__get_file_contents
+            - generic [ref=e2550]: Tool
+        - generic [ref=e2551] [cursor=pointer]:
+          - generic [ref=e2554]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2555]:
+              - generic [ref=e2556]: ›
+            - generic [ref=e2557]:
+              - generic [ref=e2558]: mcp__plugin_github_github__search_code
+              - generic [ref=e2559]: single source · 1 out
+          - generic "permissions.allow[3] → \"mcp__plugin_github_github__search_code\"" [ref=e2569]:
+            - generic [ref=e2570]: Local
+            - generic [ref=e2571]: permissions.allow[3] → "…
+            - img
+          - generic [ref=e2572]:
+            - generic [ref=e2573]: permissions.allow[3] → "mcp__plugin_github_github__sea…
+            - generic [ref=e2574]:
+              - generic [ref=e2575]: You
+              - generic [ref=e2577]: from local
+          - button "gates mcp__plugin_github_github__search_code Tool" [ref=e2579]:
+            - generic [ref=e2580]: gates
+            - generic [ref=e2581]: mcp__plugin_github_github__search_code
+            - generic [ref=e2582]: Tool
+        - generic [ref=e2583] [cursor=pointer]:
+          - generic [ref=e2586]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2587]:
+              - generic [ref=e2588]: ›
+            - generic [ref=e2589]:
+              - generic [ref=e2590]: mcp__plugin_playwright_playwright__*
+              - generic [ref=e2591]: 2 scopes · 1 out
+          - generic "permissions.allow[12] → \"mcp__plugin_playwright_playwright__*\"" [ref=e2593]:
+            - generic [ref=e2594]: Global
+            - generic [ref=e2595]: permissions.allow[12] → …
+            - img
+          - generic "permissions.allow[12] → \"mcp__plugin_playwright_playwright__*\"" [ref=e2601]:
+            - generic [ref=e2602]: Project
+            - generic [ref=e2603]: permissions.allow[12] → …
+            - img
+          - generic [ref=e2606]:
+            - generic [ref=e2607]: permissions.allow[12] → "mcp__plugin_playwright_playwr…
+            - generic [ref=e2608]:
+              - generic [ref=e2609]: You
+              - generic [ref=e2611]: from project
+              - generic [ref=e2612]: · 1 shadowed
+          - button "gates mcp__plugin_playwright_playwright__* Tool" [ref=e2614]:
+            - generic [ref=e2615]: gates
+            - generic [ref=e2616]: mcp__plugin_playwright_playwright__*
+            - generic [ref=e2617]: Tool
+        - generic [ref=e2618] [cursor=pointer]:
+          - generic [ref=e2621]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2622]:
+              - generic [ref=e2623]: ›
+            - generic [ref=e2624]:
+              - generic [ref=e2625]: NotebookEdit(*)
+              - generic [ref=e2626]: 2 scopes · 1 out
+          - generic "permissions.allow[4] → \"NotebookEdit(*)\"" [ref=e2628]:
+            - generic [ref=e2629]: Global
+            - generic [ref=e2630]: permissions.allow[4] → "…
+            - img
+          - generic "permissions.allow[4] → \"NotebookEdit(*)\"" [ref=e2636]:
+            - generic [ref=e2637]: Project
+            - generic [ref=e2638]: permissions.allow[4] → "…
+            - img
+          - generic [ref=e2641]:
+            - generic [ref=e2642]: permissions.allow[4] → "NotebookEdit(*)"
+            - generic [ref=e2643]:
+              - generic [ref=e2644]: You
+              - generic [ref=e2646]: from project
+              - generic [ref=e2647]: · 1 shadowed
+          - button "gates NotebookEdit Tool" [ref=e2649]:
+            - generic [ref=e2650]: gates
+            - generic [ref=e2651]: NotebookEdit
+            - generic [ref=e2652]: Tool
+        - generic [ref=e2653] [cursor=pointer]:
+          - generic [ref=e2656]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2657]:
+              - generic [ref=e2658]: ›
+            - generic [ref=e2659]:
+              - generic [ref=e2660]: Read(*)
+              - generic [ref=e2661]: 2 scopes · 1 out
+          - generic "permissions.allow[1] → \"Read(*)\"" [ref=e2663]:
+            - generic [ref=e2664]: Global
+            - generic [ref=e2665]: permissions.allow[1] → "…
+            - img
+          - generic "permissions.allow[1] → \"Read(*)\"" [ref=e2671]:
+            - generic [ref=e2672]: Project
+            - generic [ref=e2673]: permissions.allow[1] → "…
+            - img
+          - generic [ref=e2676]:
+            - generic [ref=e2677]: permissions.allow[1] → "Read(*)"
+            - generic [ref=e2678]:
+              - generic [ref=e2679]: You
+              - generic [ref=e2681]: from project
+              - generic [ref=e2682]: · 1 shadowed
+          - button "gates Read Tool" [ref=e2684]:
+            - generic [ref=e2685]: gates
+            - generic [ref=e2686]: Read
+            - generic [ref=e2687]: Tool
+        - generic [ref=e2688] [cursor=pointer]:
+          - generic [ref=e2691]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2692]:
+              - generic [ref=e2693]: ›
+            - generic [ref=e2694]:
+              - generic [ref=e2695]: Skill(commit-commands:commit-push-pr)
+              - generic [ref=e2696]: single source · 1 out
+          - generic "permissions.allow[0] → \"Skill(commit-commands:commit-push-pr)\"" [ref=e2706]:
+            - generic [ref=e2707]: Local
+            - generic [ref=e2708]: permissions.allow[0] → "…
+            - img
+          - generic [ref=e2709]:
+            - generic [ref=e2710]: permissions.allow[0] → "Skill(commit-commands:commit-p…
+            - generic [ref=e2711]:
+              - generic [ref=e2712]: You
+              - generic [ref=e2714]: from local
+          - button "gates Skill Tool" [ref=e2716]:
+            - generic [ref=e2717]: gates
+            - generic [ref=e2718]: Skill
+            - generic [ref=e2719]: Tool
+        - generic [ref=e2720] [cursor=pointer]:
+          - generic [ref=e2723]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2724]:
+              - generic [ref=e2725]: ›
+            - generic [ref=e2726]:
+              - generic [ref=e2727]: Skill(commit-commands:commit)
+              - generic [ref=e2728]: 2 scopes · 1 out
+          - generic "permissions.allow[13] → \"Skill(commit-commands:commit)\"" [ref=e2730]:
+            - generic [ref=e2731]: Global
+            - generic [ref=e2732]: permissions.allow[13] → …
+            - img
+          - generic "permissions.allow[13] → \"Skill(commit-commands:commit)\"" [ref=e2738]:
+            - generic [ref=e2739]: Project
+            - generic [ref=e2740]: permissions.allow[13] → …
+            - img
+          - generic [ref=e2743]:
+            - generic [ref=e2744]: permissions.allow[13] → "Skill(commit-commands:commit)"
+            - generic [ref=e2745]:
+              - generic [ref=e2746]: You
+              - generic [ref=e2748]: from project
+              - generic [ref=e2749]: · 1 shadowed
+          - button "gates Skill Tool" [ref=e2751]:
+            - generic [ref=e2752]: gates
+            - generic [ref=e2753]: Skill
+            - generic [ref=e2754]: Tool
+        - generic [ref=e2755] [cursor=pointer]:
+          - generic [ref=e2758]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2759]:
+              - generic [ref=e2760]: ›
+            - generic [ref=e2761]:
+              - generic [ref=e2762]: Skill(update-config)
+              - generic [ref=e2763]: single source · 1 out
+          - generic "permissions.allow[9] → \"Skill(update-config)\"" [ref=e2773]:
+            - generic [ref=e2774]: Local
+            - generic [ref=e2775]: permissions.allow[9] → "…
+            - img
+          - generic [ref=e2776]:
+            - generic [ref=e2777]: permissions.allow[9] → "Skill(update-config)"
+            - generic [ref=e2778]:
+              - generic [ref=e2779]: You
+              - generic [ref=e2781]: from local
+          - button "gates Skill Tool" [ref=e2783]:
+            - generic [ref=e2784]: gates
+            - generic [ref=e2785]: Skill
+            - generic [ref=e2786]: Tool
+        - generic [ref=e2787] [cursor=pointer]:
+          - generic [ref=e2790]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2791]:
+              - generic [ref=e2792]: ›
+            - generic [ref=e2793]:
+              - generic [ref=e2794]: Task(*)
+              - generic [ref=e2795]: 2 scopes · 1 out
+          - generic "permissions.allow[10] → \"Task(*)\"" [ref=e2797]:
+            - generic [ref=e2798]: Global
+            - generic [ref=e2799]: permissions.allow[10] → …
+            - img
+          - generic "permissions.allow[10] → \"Task(*)\"" [ref=e2805]:
+            - generic [ref=e2806]: Project
+            - generic [ref=e2807]: permissions.allow[10] → …
+            - img
+          - generic [ref=e2810]:
+            - generic [ref=e2811]: permissions.allow[10] → "Task(*)"
+            - generic [ref=e2812]:
+              - generic [ref=e2813]: You
+              - generic [ref=e2815]: from project
+              - generic [ref=e2816]: · 1 shadowed
+          - button "gates Task Tool" [ref=e2818]:
+            - generic [ref=e2819]: gates
+            - generic [ref=e2820]: Task
+            - generic [ref=e2821]: Tool
+        - generic [ref=e2822] [cursor=pointer]:
+          - generic [ref=e2825]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2826]:
+              - generic [ref=e2827]: ›
+            - generic [ref=e2828]:
+              - generic [ref=e2829]: TodoWrite(*)
+              - generic [ref=e2830]: 2 scopes · 1 out
+          - generic "permissions.allow[11] → \"TodoWrite(*)\"" [ref=e2832]:
+            - generic [ref=e2833]: Global
+            - generic [ref=e2834]: permissions.allow[11] → …
+            - img
+          - generic "permissions.allow[11] → \"TodoWrite(*)\"" [ref=e2840]:
+            - generic [ref=e2841]: Project
+            - generic [ref=e2842]: permissions.allow[11] → …
+            - img
+          - generic [ref=e2845]:
+            - generic [ref=e2846]: permissions.allow[11] → "TodoWrite(*)"
+            - generic [ref=e2847]:
+              - generic [ref=e2848]: You
+              - generic [ref=e2850]: from project
+              - generic [ref=e2851]: · 1 shadowed
+          - button "gates TodoWrite Tool" [ref=e2853]:
+            - generic [ref=e2854]: gates
+            - generic [ref=e2855]: TodoWrite
+            - generic [ref=e2856]: Tool
+        - generic [ref=e2857] [cursor=pointer]:
+          - generic [ref=e2860]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2861]:
+              - generic [ref=e2862]: ›
+            - generic [ref=e2863]:
+              - generic [ref=e2864]: WebFetch(*)
+              - generic [ref=e2865]: 2 scopes · 1 out
+          - generic "permissions.allow[7] → \"WebFetch(*)\"" [ref=e2867]:
+            - generic [ref=e2868]: Global
+            - generic [ref=e2869]: permissions.allow[7] → "…
+            - img
+          - generic "permissions.allow[7] → \"WebFetch(*)\"" [ref=e2875]:
+            - generic [ref=e2876]: Project
+            - generic [ref=e2877]: permissions.allow[7] → "…
+            - img
+          - generic [ref=e2880]:
+            - generic [ref=e2881]: permissions.allow[7] → "WebFetch(*)"
+            - generic [ref=e2882]:
+              - generic [ref=e2883]: You
+              - generic [ref=e2885]: from project
+              - generic [ref=e2886]: · 1 shadowed
+          - button "gates WebFetch Tool" [ref=e2888]:
+            - generic [ref=e2889]: gates
+            - generic [ref=e2890]: WebFetch
+            - generic [ref=e2891]: Tool
+        - generic [ref=e2892] [cursor=pointer]:
+          - generic [ref=e2895]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2896]:
+              - generic [ref=e2897]: ›
+            - generic [ref=e2898]:
+              - generic [ref=e2899]: WebFetch(domain:www.revenuecat.com)
+              - generic [ref=e2900]: single source · 1 out
+          - generic "permissions.allow[32] → \"WebFetch(domain:www.revenuecat.com)\"" [ref=e2910]:
+            - generic [ref=e2911]: Local
+            - generic [ref=e2912]: permissions.allow[32] → …
+            - img
+          - generic [ref=e2913]:
+            - generic [ref=e2914]: permissions.allow[32] → "WebFetch(domain:www.revenueca…
+            - generic [ref=e2915]:
+              - generic [ref=e2916]: You
+              - generic [ref=e2918]: from local
+          - button "gates WebFetch Tool" [ref=e2920]:
+            - generic [ref=e2921]: gates
+            - generic [ref=e2922]: WebFetch
+            - generic [ref=e2923]: Tool
+        - generic [ref=e2924] [cursor=pointer]:
+          - generic [ref=e2927]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2928]:
+              - generic [ref=e2929]: ›
+            - generic [ref=e2930]:
+              - generic [ref=e2931]: WebSearch
+              - generic [ref=e2932]: single source · 1 out
+          - generic "permissions.allow[31] → \"WebSearch\"" [ref=e2942]:
+            - generic [ref=e2943]: Local
+            - generic [ref=e2944]: permissions.allow[31] → …
+            - img
+          - generic [ref=e2945]:
+            - generic [ref=e2946]: permissions.allow[31] → "WebSearch"
+            - generic [ref=e2947]:
+              - generic [ref=e2948]: You
+              - generic [ref=e2950]: from local
+          - button "gates WebSearch Tool" [ref=e2952]:
+            - generic [ref=e2953]: gates
+            - generic [ref=e2954]: WebSearch
+            - generic [ref=e2955]: Tool
+        - generic [ref=e2956] [cursor=pointer]:
+          - generic [ref=e2959]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2960]:
+              - generic [ref=e2961]: ›
+            - generic [ref=e2962]:
+              - generic [ref=e2963]: WebSearch(*)
+              - generic [ref=e2964]: 2 scopes · 1 out
+          - generic "permissions.allow[6] → \"WebSearch(*)\"" [ref=e2966]:
+            - generic [ref=e2967]: Global
+            - generic [ref=e2968]: permissions.allow[6] → "…
+            - img
+          - generic "permissions.allow[6] → \"WebSearch(*)\"" [ref=e2974]:
+            - generic [ref=e2975]: Project
+            - generic [ref=e2976]: permissions.allow[6] → "…
+            - img
+          - generic [ref=e2979]:
+            - generic [ref=e2980]: permissions.allow[6] → "WebSearch(*)"
+            - generic [ref=e2981]:
+              - generic [ref=e2982]: You
+              - generic [ref=e2984]: from project
+              - generic [ref=e2985]: · 1 shadowed
+          - button "gates WebSearch Tool" [ref=e2987]:
+            - generic [ref=e2988]: gates
+            - generic [ref=e2989]: WebSearch
+            - generic [ref=e2990]: Tool
+        - generic [ref=e2991] [cursor=pointer]:
+          - generic [ref=e2994]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2995]:
+              - generic [ref=e2996]: ›
+            - generic [ref=e2997]:
+              - generic [ref=e2998]: Write(*)
+              - generic [ref=e2999]: 2 scopes · 1 out
+          - generic "permissions.allow[3] → \"Write(*)\"" [ref=e3001]:
+            - generic [ref=e3002]: Global
+            - generic [ref=e3003]: permissions.allow[3] → "…
+            - img
+          - generic "permissions.allow[3] → \"Write(*)\"" [ref=e3009]:
+            - generic [ref=e3010]: Project
+            - generic [ref=e3011]: permissions.allow[3] → "…
+            - img
+          - generic [ref=e3014]:
+            - generic [ref=e3015]: permissions.allow[3] → "Write(*)"
+            - generic [ref=e3016]:
+              - generic [ref=e3017]: You
+              - generic [ref=e3019]: from project
+              - generic [ref=e3020]: · 1 shadowed
+          - button "gates Write Tool" [ref=e3022]:
+            - generic [ref=e3023]: gates
+            - generic [ref=e3024]: Write
+            - generic [ref=e3025]: Tool
+    - generic [ref=e1012]:
+      - button "▸ Detections · 4 conventions · 108 occurrences" [ref=e1014] [cursor=pointer]:
+        - generic [ref=e1015]: ▸
+        - text: Detections
+        - generic [ref=e1016]: · 4 conventions · 108 occurrences
+      - generic [ref=e1017]:
+        - generic [ref=e1018]:
+          - generic [ref=e1021]: Anthropic
+          - generic [ref=e1024]: Community
+          - generic [ref=e1027]: You
+          - generic [ref=e1030]: Unknown
+        - generic [ref=e1031]: override · provides · invokes · gates · imports · fires-on · accretes-from

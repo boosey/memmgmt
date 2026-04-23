@@ -1,4 +1,5 @@
 import type { Scope } from "../types";
+import type { AuthorBucket } from "../entities";
 
 export interface ResolveInput {
   scope: Scope;
@@ -45,4 +46,29 @@ export function resolveAuthor(input: ResolveInput): ResolvedAuthor {
   }
 
   return { author: "self", publisher: null, isOfficial: false };
+}
+
+/**
+ * Collapse a ResolvedAuthor + Scope into a UI-facing provenance bucket.
+ *
+ *   anthropic → resolved.isOfficial OR author starts with /anthropic/i
+ *   you       → author === 'self' OR (author === null AND scope !== 'plugin')
+ *   unknown   → author === null AND scope === 'plugin'
+ *   community → everyone else
+ */
+export function authorBucket(
+  resolved: ResolvedAuthor,
+  scope: Scope,
+): AuthorBucket {
+  if (
+    resolved.isOfficial ||
+    (resolved.author != null && ANTHROPIC_RE.test(resolved.author))
+  ) {
+    return "anthropic";
+  }
+  if (resolved.author === "self") return "you";
+  if (resolved.author === null) {
+    return scope === "plugin" ? "unknown" : "you";
+  }
+  return "community";
 }

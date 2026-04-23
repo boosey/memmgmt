@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<title>memmgmt — UX Exploration</title>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<style>
+  html, body { margin:0; padding:0; height:100%; background:#f0eee9; font-family: -apple-system, BlinkMacSystemFont, system-ui, sans-serif; }
+  #root { height:100%; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script src="data.js"></script>
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="shared.jsx"></script>
+<script type="text/babel" src="variation-c.jsx"></script>
+<script type="text/babel" src="editors-by-type.jsx"></script>
+
+<script type="text/babel" data-presets="react">
+  const MEM_DATA = window.MEM_DATA;
+
+  function App() {
+    return (
+      <DesignCanvas>
+        <DCSection id="intro" title="memmgmt · Signal Flow (relationship-aware)" subtitle="Entity-first tabs. Each row shows the scope→composite bracket AND the outbound/inbound relationships: plugin provides skill, command invokes skill, permission gates tool, hook fires on event, memory accretes from sessions. Click any relation to follow the thread — the tab switches, the entity pins, related entities glow across kinds.">
+
+          <DCArtboard id="signal" label="Signal Flow — inline editor + bulk pruning" width={1600} height={1400}>
+            <VariationC />
+          </DCArtboard>
+
+        </DCSection>
+      </DesignCanvas>
+    );
+  }
+
+  ReactDOM.createRoot(document.getElementById('root')).render(<App />);
+</script>
+</body>
+</html>

@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
 import { crawl } from "@/core/discovery";
-import { buildGraph } from "@/core/graph/builder";
+import { buildPayload } from "@/core/graph/transform";
 import { resolveHomePaths } from "@/core/paths";
-import { getCached, setCached } from "@/lib/graphCache";
+import { getCachedNodes, setCached } from "@/lib/graphCache";
 
 export const runtime = "nodejs";
 
@@ -11,18 +11,17 @@ export async function GET(
   ctx: { params: Promise<{ id: string }> },
 ) {
   const { id } = await ctx.params;
-  let graph = getCached();
-  if (!graph) {
+  let nodes = getCachedNodes();
+  if (!nodes) {
     const paths = resolveHomePaths();
-    const { raws, ghostSlugs, slugMetadata } = await crawl({
+    const { raws, ghostSlugs, slugMetadata, crawledAtMs } = await crawl({
       claudeHome: paths.claudeHome,
     });
-    graph = buildGraph(raws);
-    graph.ghostSlugs = ghostSlugs;
-    graph.slugMetadata = slugMetadata;
-    setCached(graph);
+    const built = buildPayload({ raws, slugMetadata, ghostSlugs, crawledAtMs });
+    setCached(built.payload, built.nodes);
+    nodes = built.nodes;
   }
-  const node = graph.nodes.find((n) => n.id === id);
+  const node = nodes.find((n) => n.id === id);
   if (!node) return NextResponse.json({ error: "not found" }, { status: 404 });
   return NextResponse.json(node);
 }

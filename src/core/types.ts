@@ -5,10 +5,11 @@ export type ArtifactKind =
   | "settings-entry"
   | "memory-index-entry"
   | "skill"
-  | "slash-command"
+  | "command"
   | "typed-memory"
   | "keybindings"
-  | "plugin-manifest";
+  | "plugin-manifest"
+  | "agent";
 
 export type ArtifactGranularity = "entry" | "file";
 

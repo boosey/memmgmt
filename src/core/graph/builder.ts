@@ -1,4 +1,5 @@
 import type {
+  ArtifactKind,
   ArtifactNode,
   GraphEdge,
   RawArtifact,
@@ -9,9 +10,11 @@ import { parseClaudeMd } from "../parsers/claudeMd";
 import { parseSettings } from "../parsers/settings";
 import { parseSkill } from "../parsers/skill";
 import { parseCommand } from "../parsers/command";
+import { parseAgent } from "../parsers/agent";
 import { parseTypedMemory, parseMemoryIndex } from "../parsers/memory";
 import { parseKeybindings } from "../parsers/keybindings";
 import { parsePluginManifest } from "../parsers/pluginManifest";
+import { parseMcpServerEntry } from "../parsers/mcpServer";
 import { deriveIntentSummary } from "./intentSummary";
 import { resolveAuthor, type ResolvedAuthor } from "./authorResolver";
 import { resolveImport } from "./importResolver";
@@ -59,9 +62,14 @@ export function buildGraph(raws: RawArtifact[], opts: BuildOptions = {}): Graph 
             emitSkill(r, pluginManifestByRoot.get(r.scopeRoot) ?? null),
           );
           break;
-        case "slash-command":
+        case "command":
           nodes.push(
             emitCommand(r, pluginManifestByRoot.get(r.scopeRoot) ?? null),
+          );
+          break;
+        case "agent":
+          nodes.push(
+            emitAgent(r, pluginManifestByRoot.get(r.scopeRoot) ?? null),
           );
           break;
         case "typed-memory":
@@ -74,7 +82,7 @@ export function buildGraph(raws: RawArtifact[], opts: BuildOptions = {}): Graph 
           nodes.push(emitKeybindings(r));
           break;
         case "plugin-manifest":
-          nodes.push(emitPluginManifest(r));
+          nodes.push(...emitPluginManifest(r));
           break;
       }
     } catch (e) {
@@ -171,16 +179,18 @@ function baseNode(
   author: ResolvedAuthor,
   entryKey?: string,
   idSuffix = "",
+  kindOverride?: ArtifactKind,
 ): ArtifactNode {
   const id = idSuffix ? `${r.id}::${idSuffix}` : r.id;
+  const kind = kindOverride ?? r.kind;
   const intentSummary = deriveIntentSummary({
-    kind: r.kind,
+    kind,
     structuredData: structured,
     rawContent: r.rawContent,
   });
   const node: ArtifactNode = {
     id,
-    kind: r.kind,
+    kind,
     granularity: r.granularity,
     scope: r.scope,
     sourceFile: r.sourceFile,
@@ -200,7 +210,14 @@ function baseNode(
 }
 
 function fallbackNode(r: RawArtifact, errMsg: string): ArtifactNode {
-  const title = r.sourceFile.split(/[\\/]/).pop() ?? r.sourceFile;
+  const parts = r.sourceFile.split(/[\\/]/);
+  const last = (parts.pop() ?? r.sourceFile).replace(/\.md$/, "");
+  // For AGENT.md / SKILL.md conventions the filename conveys no identity; use
+  // the parent directory instead. For all other files strip the extension.
+  const title =
+    (last === "AGENT" || last === "SKILL") && parts.length > 0
+      ? parts[parts.length - 1]!
+      : last;
   const node: ArtifactNode = {
     id: r.id,
     kind: r.kind,
@@ -266,6 +283,10 @@ function titleForSettingsEntry(e: {
   if (e.kind === "permission") return String(e.value);
   if (e.kind === "hook") return `${e.event}/${e.matcher}`;
   if (e.kind === "env") return String(e.name);
+  if (e.kind === "mcp-server") {
+    const s = e.server as { name?: string } | undefined;
+    return s?.name ?? "";
+  }
   return String(e.key);
 }
 
@@ -302,6 +323,31 @@ function emitCommand(
     "",
   );
   return baseNode(r, filename, { ...parsed, filename }, author);
+}
+
+function emitAgent(
+  r: RawArtifact,
+  pm: PluginManifestInfo | null,
+): ArtifactNode {
+  const parsed = parseAgent(r.rawContent);
+  const author = resolveAuthor({
+    scope: r.scope,
+    frontmatterAuthor: parsed.author,
+    pluginManifest: pm,
+  });
+  // Agents live either as `<name>.md` or as `<name>/AGENT.md` (mirrors
+  // SKILL.md). For the dir-style case the filename conveys no identity, so
+  // fall back to the parent directory.
+  const parts = r.sourceFile.split(/[\\/]/);
+  const filename = (parts.pop() ?? "").replace(/\.md$/, "");
+  const dirFallback = filename === "AGENT" ? (parts.pop() ?? "") : filename;
+  const effectiveName = parsed.name || dirFallback;
+  return baseNode(
+    r,
+    effectiveName,
+    { ...parsed, name: effectiveName, filename: effectiveName },
+    author,
+  );
 }
 
 function emitTypedMemory(r: RawArtifact): ArtifactNode {
@@ -341,12 +387,42 @@ function emitKeybindings(r: RawArtifact): ArtifactNode {
   return baseNode(r, "Keybindings", parsed, author);
 }
 
-function emitPluginManifest(r: RawArtifact): ArtifactNode {
+function emitPluginManifest(r: RawArtifact): ArtifactNode[] {
   const parsed = parsePluginManifest(r.rawContent, r.sourceFile);
   const author = resolveAuthor({
     scope: "plugin",
     frontmatterAuthor: null,
     pluginManifest: { author: parsed.author, publisher: parsed.publisher },
   });
-  return baseNode(r, parsed.name, parsed, author);
+  const out: ArtifactNode[] = [baseNode(r, parsed.name, parsed, author)];
+
+  // Plugin manifests can embed mcpServers directly. Lift them into per-server
+  // settings-entry nodes so the transform layer emits mcp-server entities with
+  // the plugin as their scopeRoot. Unparseable shapes fall through to the
+  // detections emitter in transform.ts.
+  const rawMcp = parsed.raw.mcpServers;
+  if (rawMcp && typeof rawMcp === "object" && !Array.isArray(rawMcp)) {
+    for (const [name, rawEntry] of Object.entries(
+      rawMcp as Record<string, unknown>,
+    )) {
+      const server = parseMcpServerEntry(name, rawEntry);
+      const entry = {
+        kind: "mcp-server" as const,
+        entryKey: `mcpServers.${name}`,
+        server,
+      };
+      out.push(
+        baseNode(
+          r,
+          name,
+          entry,
+          author,
+          entry.entryKey,
+          `mcp_${name.replace(/[^\w]/g, "_")}`,
+          "settings-entry",
+        ),
+      );
+    }
+  }
+  return out;
 }

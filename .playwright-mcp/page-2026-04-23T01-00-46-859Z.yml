@@ -1,0 +1,808 @@
+- generic [ref=e1]:
+  - button "Open Next.js Dev Tools" [ref=e14] [cursor=pointer]:
+    - img [ref=e15]
+  - alert [ref=e18]
+  - main [ref=e19]:
+    - generic [ref=e20]:
+      - generic [ref=e21]:
+        - generic [ref=e22]: memmgmt
+        - generic [ref=e23]: Trace entities, follow relationships, resolve and prune — all inline.
+      - generic [ref=e24]: Signal Edition · v1.6
+    - generic [ref=e25]:
+      - generic [ref=e26]: Health
+      - generic [ref=e27]:
+        - text: Contested
+        - generic [ref=e29]: "74"
+      - generic [ref=e30]:
+        - text: Stale memory
+        - generic [ref=e32]: "1"
+      - generic [ref=e33]:
+        - text: Unknown author
+        - generic [ref=e35]: "45"
+      - generic [ref=e36]:
+        - text: Dead imports
+        - generic [ref=e38]: "8"
+      - generic [ref=e39]: 5 ghost slugs · 128 issues
+    - generic [ref=e40]:
+      - generic [ref=e41]: Trace by entity kind
+      - generic [ref=e42]:
+        - button "Standing Instructions32" [ref=e43] [cursor=pointer]
+        - button "Permissions75" [ref=e44] [cursor=pointer]
+        - button "Plugins93" [ref=e45] [cursor=pointer]
+        - button "Skills224" [ref=e46] [cursor=pointer]
+        - button "Slash Commands79" [ref=e47] [cursor=pointer]
+        - button "Memories10" [ref=e48] [cursor=pointer]
+        - button "Hooks4" [ref=e49] [cursor=pointer]
+        - button "Env Vars11" [ref=e50] [cursor=pointer]
+        - button "Keybindings0" [ref=e51] [cursor=pointer]
+        - button "Agents45" [active] [ref=e52] [cursor=pointer]
+        - button "MCP Servers0" [ref=e53] [cursor=pointer]
+    - generic [ref=e55]: Specialized sub-agents Claude can delegate to.
+    - generic [ref=e56]:
+      - generic [ref=e57]:
+        - generic [ref=e59]: Entity
+        - generic [ref=e60]: Global
+        - generic [ref=e61]: Plugin
+        - generic [ref=e62]: Slug
+        - generic [ref=e63]: Project
+        - generic [ref=e64]: Local
+        - generic [ref=e65]: Composite
+        - generic [ref=e66]: Relations
+      - generic [ref=e67]:
+        - generic [ref=e1032] [cursor=pointer]:
+          - generic [ref=e1035]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1036]:
+              - generic [ref=e1037]: ›
+            - generic [ref=e1038]:
+              - generic [ref=e1039]: AGENT
+              - generic [ref=e1040]: single source · 1 in
+          - generic "Run a full SEO audit on a website or codebase. Use when user asks to \"audit my site\", \"SEO audit\", \"check SEO health\",…" [ref=e1044]:
+            - generic [ref=e1045]: Plugin
+            - generic [ref=e1046]: Run a full SEO audit on …
+            - img
+          - generic [ref=e1053]:
+            - generic [ref=e1054]: Run a full SEO audit on a website or codebase. Use whe…
+            - generic [ref=e1055]:
+              - generic [ref=e1056]: Community
+              - generic [ref=e1058]: from plugin
+          - button "provided by searchfit-seo Plugin" [ref=e1060]:
+            - generic [ref=e1061]: provided by
+            - generic [ref=e1062]: searchfit-seo
+            - generic [ref=e1063]: Plugin
+        - generic [ref=e1064] [cursor=pointer]:
+          - generic [ref=e1067]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1068]:
+              - generic [ref=e1069]: ›
+            - generic [ref=e1070]:
+              - generic [ref=e1071]: AGENT
+              - generic [ref=e1072]: single source · 1 in
+          - generic "Analyze a website and create a full content strategy. Use when user asks to \"create a content plan\", \"content strategy…" [ref=e1076]:
+            - generic [ref=e1077]: Plugin
+            - generic [ref=e1078]: Analyze a website and cr…
+            - img
+          - generic [ref=e1085]:
+            - generic [ref=e1086]: Analyze a website and create a full content strategy. …
+            - generic [ref=e1087]:
+              - generic [ref=e1088]: Community
+              - generic [ref=e1090]: from plugin
+          - button "provided by searchfit-seo Plugin" [ref=e1092]:
+            - generic [ref=e1093]: provided by
+            - generic [ref=e1094]: searchfit-seo
+            - generic [ref=e1095]: Plugin
+        - generic [ref=e1096] [cursor=pointer]:
+          - generic [ref=e1099]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1100]:
+              - generic [ref=e1101]: ›
+            - generic [ref=e1102]:
+              - generic [ref=e1103]: AGENT
+              - generic [ref=e1104]: single source · 1 in
+          - generic "Analyze competitors' SEO and content strategy. Use when user asks to \"analyze competitors\", \"competitor analysis\", \"com…" [ref=e1108]:
+            - generic [ref=e1109]: Plugin
+            - generic [ref=e1110]: Analyze competitors' SEO…
+            - img
+          - generic [ref=e1117]:
+            - generic [ref=e1118]: Analyze competitors' SEO and content strategy. Use whe…
+            - generic [ref=e1119]:
+              - generic [ref=e1120]: Community
+              - generic [ref=e1122]: from plugin
+          - button "provided by searchfit-seo Plugin" [ref=e1124]:
+            - generic [ref=e1125]: provided by
+            - generic [ref=e1126]: searchfit-seo
+            - generic [ref=e1127]: Plugin
+        - generic [ref=e1128] [cursor=pointer]:
+          - generic [ref=e1131]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1132]:
+              - generic [ref=e1133]: ›
+            - generic [ref=e1134]:
+              - generic [ref=e1135]: AGENT
+              - generic [ref=e1136]: single source · 1 in
+          - generic "Run a full SEO audit on a website or codebase. Use when user asks to \"audit my site\", \"SEO audit\", \"check SEO health\",…" [ref=e1140]:
+            - generic [ref=e1141]: Plugin
+            - generic [ref=e1142]: Run a full SEO audit on …
+            - img
+          - generic [ref=e1149]:
+            - generic [ref=e1150]: Run a full SEO audit on a website or codebase. Use whe…
+            - generic [ref=e1151]:
+              - generic [ref=e1152]: Community
+              - generic [ref=e1154]: from plugin
+          - button "provided by searchfit-seo Plugin" [ref=e1156]:
+            - generic [ref=e1157]: provided by
+            - generic [ref=e1158]: searchfit-seo
+            - generic [ref=e1159]: Plugin
+        - generic [ref=e1160] [cursor=pointer]:
+          - generic [ref=e1163]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1164]:
+              - generic [ref=e1165]: ›
+            - generic [ref=e1166]:
+              - generic [ref=e1167]: AGENT
+              - generic [ref=e1168]: single source · 1 in
+          - generic "Analyze a website and create a full content strategy. Use when user asks to \"create a content plan\", \"content strategy…" [ref=e1172]:
+            - generic [ref=e1173]: Plugin
+            - generic [ref=e1174]: Analyze a website and cr…
+            - img
+          - generic [ref=e1181]:
+            - generic [ref=e1182]: Analyze a website and create a full content strategy. …
+            - generic [ref=e1183]:
+              - generic [ref=e1184]: Community
+              - generic [ref=e1186]: from plugin
+          - button "provided by searchfit-seo Plugin" [ref=e1188]:
+            - generic [ref=e1189]: provided by
+            - generic [ref=e1190]: searchfit-seo
+            - generic [ref=e1191]: Plugin
+        - generic [ref=e1192] [cursor=pointer]:
+          - generic [ref=e1195]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1196]:
+              - generic [ref=e1197]: ›
+            - generic [ref=e1198]:
+              - generic [ref=e1199]: AGENT
+              - generic [ref=e1200]: single source · 1 in
+          - generic "Analyze competitors' SEO and content strategy. Use when user asks to \"analyze competitors\", \"competitor analysis\", \"com…" [ref=e1204]:
+            - generic [ref=e1205]: Plugin
+            - generic [ref=e1206]: Analyze competitors' SEO…
+            - img
+          - generic [ref=e1213]:
+            - generic [ref=e1214]: Analyze competitors' SEO and content strategy. Use whe…
+            - generic [ref=e1215]:
+              - generic [ref=e1216]: Community
+              - generic [ref=e1218]: from plugin
+          - button "provided by searchfit-seo Plugin" [ref=e1220]:
+            - generic [ref=e1221]: provided by
+            - generic [ref=e1222]: searchfit-seo
+            - generic [ref=e1223]: Plugin
+        - generic [ref=e1224] [cursor=pointer]:
+          - generic [ref=e1227]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1228]:
+              - generic [ref=e1229]: ›
+            - generic [ref=e1230]:
+              - generic [ref=e1231]: agent-creator
+              - generic [ref=e1232]: single source · 1 in
+          - generic "Use this agent when the user asks to \"create an agent\", \"generate an agent\", \"build a new agent\", \"make me an agent tha…" [ref=e1236]:
+            - generic [ref=e1237]: Plugin
+            - generic [ref=e1238]: Use this agent when the …
+            - img
+          - generic [ref=e1245]:
+            - generic [ref=e1246]: Use this agent when the user asks to "create an agent"…
+            - generic [ref=e1247]:
+              - generic [ref=e1248]: Anthropic
+              - generic [ref=e1250]: from plugin
+          - button "provided by plugin-dev Plugin" [ref=e1252]:
+            - generic [ref=e1253]: provided by
+            - generic [ref=e1254]: plugin-dev
+            - generic [ref=e1255]: Plugin
+        - generic [ref=e1256] [cursor=pointer]:
+          - generic [ref=e1259]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1260]:
+              - generic [ref=e1261]: ›
+            - generic [ref=e1262]:
+              - generic [ref=e1263]: agent-sdk-verifier-py
+              - generic [ref=e1264]: single source · 1 in
+          - generic "Use this agent to verify that a Python Agent SDK application is properly configured, follows SDK best practices and doc…" [ref=e1268]:
+            - generic [ref=e1269]: Plugin
+            - generic [ref=e1270]: Use this agent to verify…
+            - img
+          - generic [ref=e1277]:
+            - generic [ref=e1278]: Use this agent to verify that a Python Agent SDK appli…
+            - generic [ref=e1279]:
+              - generic [ref=e1280]: Anthropic
+              - generic [ref=e1282]: from plugin
+          - button "provided by agent-sdk-dev Plugin" [ref=e1284]:
+            - generic [ref=e1285]: provided by
+            - generic [ref=e1286]: agent-sdk-dev
+            - generic [ref=e1287]: Plugin
+        - generic [ref=e1288] [cursor=pointer]:
+          - generic [ref=e1291]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1292]:
+              - generic [ref=e1293]: ›
+            - generic [ref=e1294]:
+              - generic [ref=e1295]: agent-sdk-verifier-ts
+              - generic [ref=e1296]: single source · 1 in
+          - generic "Use this agent to verify that a TypeScript Agent SDK application is properly configured, follows SDK best practices and…" [ref=e1300]:
+            - generic [ref=e1301]: Plugin
+            - generic [ref=e1302]: Use this agent to verify…
+            - img
+          - generic [ref=e1309]:
+            - generic [ref=e1310]: Use this agent to verify that a TypeScript Agent SDK a…
+            - generic [ref=e1311]:
+              - generic [ref=e1312]: Anthropic
+              - generic [ref=e1314]: from plugin
+          - button "provided by agent-sdk-dev Plugin" [ref=e1316]:
+            - generic [ref=e1317]: provided by
+            - generic [ref=e1318]: agent-sdk-dev
+            - generic [ref=e1319]: Plugin
+        - generic [ref=e1320] [cursor=pointer]:
+          - generic [ref=e1323]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1324]:
+              - generic [ref=e1325]: ›
+            - generic [ref=e1326]:
+              - generic [ref=e1327]: AGENTS
+              - generic [ref=e1328]: single source · 1 in
+          - generic "You have additional SKILLs documented in directories containing a \"SKILL." [ref=e1332]:
+            - generic [ref=e1333]: Plugin
+            - generic [ref=e1334]: You have additional SKIL…
+            - img
+          - generic [ref=e1341]:
+            - generic [ref=e1342]: You have additional SKILLs documented in directories c…
+            - generic [ref=e1343]:
+              - generic [ref=e1344]: Community
+              - generic [ref=e1346]: from plugin
+          - button "provided by huggingface-skills Plugin" [ref=e1348]:
+            - generic [ref=e1349]: provided by
+            - generic [ref=e1350]: huggingface-skills
+            - generic [ref=e1351]: Plugin
+        - generic [ref=e1352] [cursor=pointer]:
+          - generic [ref=e1355]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1356]:
+              - generic [ref=e1357]: ›
+            - generic [ref=e1358]:
+              - generic [ref=e1359]: ai-architect
+              - generic [ref=e1360]: single source · 1 in
+          - generic "Specializes in architecting AI-powered applications on Vercel — choosing between AI SDK patterns, configuring providers…" [ref=e1364]:
+            - generic [ref=e1365]: Plugin
+            - generic [ref=e1366]: Specializes in architect…
+            - img
+          - generic [ref=e1373]:
+            - generic [ref=e1374]: Specializes in architecting AI-powered applications on…
+            - generic [ref=e1375]:
+              - generic [ref=e1376]: Community
+              - generic [ref=e1378]: from plugin
+          - button "provided by vercel Plugin" [ref=e1380]:
+            - generic [ref=e1381]: provided by
+            - generic [ref=e1382]: vercel
+            - generic [ref=e1383]: Plugin
+        - generic [ref=e1384] [cursor=pointer]:
+          - generic [ref=e1387]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1388]:
+              - generic [ref=e1389]: ›
+            - generic [ref=e1390]:
+              - generic [ref=e1391]: API Readiness Analyzer
+              - generic [ref=e1392]: 2 scopes · 1 in
+          - generic "Analyze any API for AI agent compatibility. Scans OpenAPI specs across 8 pillars (48 checks), scores agent-readiness, a…" [ref=e1396]:
+            - generic [ref=e1397]: Plugin
+            - generic [ref=e1398]: Analyze any API for AI a…
+            - img
+          - generic [ref=e1405]:
+            - generic [ref=e1406]: Analyze any API for AI agent compatibility. Scans Open…
+            - generic [ref=e1407]:
+              - generic [ref=e1408]: Community
+              - generic [ref=e1410]: from plugin
+              - generic [ref=e1411]: · 1 shadowed
+          - button "provided by postman Plugin" [ref=e1413]:
+            - generic [ref=e1414]: provided by
+            - generic [ref=e1415]: postman
+            - generic [ref=e1416]: Plugin
+        - generic [ref=e1417] [cursor=pointer]:
+          - generic [ref=e1420]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1421]:
+              - generic [ref=e1422]: ›
+            - generic [ref=e1423]:
+              - generic [ref=e1424]: code-architect
+              - generic [ref=e1425]: 2 scopes · 1 in
+          - generic "Designs feature architectures by analyzing existing codebase patterns and conventions, then providing comprehensive imp…" [ref=e1429]:
+            - generic [ref=e1430]: Plugin
+            - generic [ref=e1431]: Designs feature architec…
+            - img
+          - generic [ref=e1438]:
+            - generic [ref=e1439]: Designs feature architectures by analyzing existing co…
+            - generic [ref=e1440]:
+              - generic [ref=e1441]: Anthropic
+              - generic [ref=e1443]: from plugin
+              - generic [ref=e1444]: · 1 shadowed
+          - button "provided by feature-dev Plugin" [ref=e1446]:
+            - generic [ref=e1447]: provided by
+            - generic [ref=e1448]: feature-dev
+            - generic [ref=e1449]: Plugin
+        - generic [ref=e1450] [cursor=pointer]:
+          - generic [ref=e1453]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1454]:
+              - generic [ref=e1455]: ›
+            - generic [ref=e1456]:
+              - generic [ref=e1457]: code-explorer
+              - generic [ref=e1458]: 2 scopes · 1 in
+          - generic "Deeply analyzes existing codebase features by tracing execution paths, mapping architecture layers, understanding patte…" [ref=e1462]:
+            - generic [ref=e1463]: Plugin
+            - generic [ref=e1464]: Deeply analyzes existing…
+            - img
+          - generic [ref=e1471]:
+            - generic [ref=e1472]: Deeply analyzes existing codebase features by tracing …
+            - generic [ref=e1473]:
+              - generic [ref=e1474]: Anthropic
+              - generic [ref=e1476]: from plugin
+              - generic [ref=e1477]: · 1 shadowed
+          - button "provided by feature-dev Plugin" [ref=e1479]:
+            - generic [ref=e1480]: provided by
+            - generic [ref=e1481]: feature-dev
+            - generic [ref=e1482]: Plugin
+        - generic [ref=e1483] [cursor=pointer]:
+          - generic [ref=e1486]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1487]:
+              - generic [ref=e1488]: ›
+            - generic [ref=e1489]:
+              - generic [ref=e1490]: code-reviewer
+              - generic [ref=e1491]: 3 scopes · 1 in
+          - generic "Reviews code for bugs, logic errors, security vulnerabilities, code quality issues, and adherence to project convention…" [ref=e1495]:
+            - generic [ref=e1496]: Plugin
+            - generic [ref=e1497]: Reviews code for bugs, l…
+            - img
+          - generic [ref=e1504]:
+            - generic [ref=e1505]: Reviews code for bugs, logic errors, security vulnerab…
+            - generic [ref=e1506]:
+              - generic [ref=e1507]: Anthropic
+              - generic [ref=e1509]: from plugin
+              - generic [ref=e1510]: · 2 shadowed
+          - button "provided by feature-dev Plugin" [ref=e1512]:
+            - generic [ref=e1513]: provided by
+            - generic [ref=e1514]: feature-dev
+            - generic [ref=e1515]: Plugin
+        - generic [ref=e1516] [cursor=pointer]:
+          - generic [ref=e1519]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1520]:
+              - generic [ref=e1521]: ›
+            - generic [ref=e1522]:
+              - generic [ref=e1523]: code-reviewer
+              - generic [ref=e1524]: single source · 1 in
+          - generic "Specialized CodeRabbit code review agent that performs thorough analysis of code changes" [ref=e1528]:
+            - generic [ref=e1529]: Plugin
+            - generic [ref=e1530]: Specialized CodeRabbit c…
+            - img
+          - generic [ref=e1537]:
+            - generic [ref=e1538]: Specialized CodeRabbit code review agent that performs…
+            - generic [ref=e1539]:
+              - generic [ref=e1540]: Community
+              - generic [ref=e1542]: from plugin
+          - button "provided by coderabbit Plugin" [ref=e1544]:
+            - generic [ref=e1545]: provided by
+            - generic [ref=e1546]: coderabbit
+            - generic [ref=e1547]: Plugin
+        - generic [ref=e1548] [cursor=pointer]:
+          - generic [ref=e1551]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1552]:
+              - generic [ref=e1553]: ›
+            - generic [ref=e1554]:
+              - generic [ref=e1555]: code-reviewer.md
+              - generic [ref=e1556]: single source · 1 in
+          - generic "(failed to parse)" [ref=e1560]:
+            - generic [ref=e1561]: Plugin
+            - generic [ref=e1562]: (failed to parse)
+            - img
+          - generic [ref=e1569]:
+            - generic [ref=e1570]: (failed to parse)
+            - generic [ref=e1571]:
+              - generic [ref=e1572]: Unknown
+              - generic [ref=e1574]: from plugin
+          - button "provided by pr-review-toolkit Plugin" [ref=e1576]:
+            - generic [ref=e1577]: provided by
+            - generic [ref=e1578]: pr-review-toolkit
+            - generic [ref=e1579]: Plugin
+        - generic [ref=e1580] [cursor=pointer]:
+          - generic [ref=e1583]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1584]:
+              - generic [ref=e1585]: ›
+            - generic [ref=e1586]:
+              - generic [ref=e1587]: code-reviewer.md
+              - generic [ref=e1588]: single source · 1 in
+          - generic "(failed to parse)" [ref=e1592]:
+            - generic [ref=e1593]: Plugin
+            - generic [ref=e1594]: (failed to parse)
+            - img
+          - generic [ref=e1601]:
+            - generic [ref=e1602]: (failed to parse)
+            - generic [ref=e1603]:
+              - generic [ref=e1604]: Unknown
+              - generic [ref=e1606]: from plugin
+          - button "provided by pr-review-toolkit Plugin" [ref=e1608]:
+            - generic [ref=e1609]: provided by
+            - generic [ref=e1610]: pr-review-toolkit
+            - generic [ref=e1611]: Plugin
+        - generic [ref=e1612] [cursor=pointer]:
+          - generic [ref=e1615]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1616]:
+              - generic [ref=e1617]: ›
+            - generic [ref=e1618]:
+              - generic [ref=e1619]: code-simplifier
+              - generic [ref=e1620]: 4 scopes · 1 in
+          - generic "Simplifies and refines code for clarity, consistency, and maintainability while preserving all functionality. Focuses o…" [ref=e1624]:
+            - generic [ref=e1625]: Plugin
+            - generic [ref=e1626]: Simplifies and refines c…
+            - img
+          - generic [ref=e1633]:
+            - generic [ref=e1634]: Simplifies and refines code for clarity, consistency, …
+            - generic [ref=e1635]:
+              - generic [ref=e1636]: Anthropic
+              - generic [ref=e1638]: from plugin
+              - generic [ref=e1639]: · 3 shadowed
+          - button "provided by code-simplifier Plugin" [ref=e1641]:
+            - generic [ref=e1642]: provided by
+            - generic [ref=e1643]: code-simplifier
+            - generic [ref=e1644]: Plugin
+        - generic [ref=e1645] [cursor=pointer]:
+          - generic [ref=e1648]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1649]:
+              - generic [ref=e1650]: ›
+            - generic [ref=e1651]:
+              - generic [ref=e1652]: comment-analyzer.md
+              - generic [ref=e1653]: single source · 1 in
+          - generic "(failed to parse)" [ref=e1657]:
+            - generic [ref=e1658]: Plugin
+            - generic [ref=e1659]: (failed to parse)
+            - img
+          - generic [ref=e1666]:
+            - generic [ref=e1667]: (failed to parse)
+            - generic [ref=e1668]:
+              - generic [ref=e1669]: Unknown
+              - generic [ref=e1671]: from plugin
+          - button "provided by pr-review-toolkit Plugin" [ref=e1673]:
+            - generic [ref=e1674]: provided by
+            - generic [ref=e1675]: pr-review-toolkit
+            - generic [ref=e1676]: Plugin
+        - generic [ref=e1677] [cursor=pointer]:
+          - generic [ref=e1680]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1681]:
+              - generic [ref=e1682]: ›
+            - generic [ref=e1683]:
+              - generic [ref=e1684]: comment-analyzer.md
+              - generic [ref=e1685]: single source · 1 in
+          - generic "(failed to parse)" [ref=e1689]:
+            - generic [ref=e1690]: Plugin
+            - generic [ref=e1691]: (failed to parse)
+            - img
+          - generic [ref=e1698]:
+            - generic [ref=e1699]: (failed to parse)
+            - generic [ref=e1700]:
+              - generic [ref=e1701]: Unknown
+              - generic [ref=e1703]: from plugin
+          - button "provided by pr-review-toolkit Plugin" [ref=e1705]:
+            - generic [ref=e1706]: provided by
+            - generic [ref=e1707]: pr-review-toolkit
+            - generic [ref=e1708]: Plugin
+        - generic [ref=e1709] [cursor=pointer]:
+          - generic [ref=e1712]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1713]:
+              - generic [ref=e1714]: ›
+            - generic [ref=e1715]:
+              - generic [ref=e1716]: conversation-analyzer.md
+              - generic [ref=e1717]: single source · 1 in
+          - generic "(failed to parse)" [ref=e1721]:
+            - generic [ref=e1722]: Plugin
+            - generic [ref=e1723]: (failed to parse)
+            - img
+          - generic [ref=e1730]:
+            - generic [ref=e1731]: (failed to parse)
+            - generic [ref=e1732]:
+              - generic [ref=e1733]: Unknown
+              - generic [ref=e1735]: from plugin
+          - button "provided by hookify Plugin" [ref=e1737]:
+            - generic [ref=e1738]: provided by
+            - generic [ref=e1739]: hookify
+            - generic [ref=e1740]: Plugin
+        - generic [ref=e1741] [cursor=pointer]:
+          - generic [ref=e1744]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1745]:
+              - generic [ref=e1746]: ›
+            - generic [ref=e1747]:
+              - generic [ref=e1748]: deployment-expert
+              - generic [ref=e1749]: single source · 1 in
+          - generic "Specializes in Vercel deployment strategies, CI/CD pipelines, preview URLs, production promotions, rollbacks, environme…" [ref=e1753]:
+            - generic [ref=e1754]: Plugin
+            - generic [ref=e1755]: Specializes in Vercel de…
+            - img
+          - generic [ref=e1762]:
+            - generic [ref=e1763]: Specializes in Vercel deployment strategies, CI/CD pip…
+            - generic [ref=e1764]:
+              - generic [ref=e1765]: Community
+              - generic [ref=e1767]: from plugin
+          - button "provided by vercel Plugin" [ref=e1769]:
+            - generic [ref=e1770]: provided by
+            - generic [ref=e1771]: vercel
+            - generic [ref=e1772]: Plugin
+        - generic [ref=e1773] [cursor=pointer]:
+          - generic [ref=e1776]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1777]:
+              - generic [ref=e1778]: ›
+            - generic [ref=e1779]:
+              - generic [ref=e1780]: design-system-extractor
+              - generic [ref=e1781]: single source · 1 in
+          - generic "You are a Design System Extractor operating inside this codebase." [ref=e1785]:
+            - generic [ref=e1786]: Plugin
+            - generic [ref=e1787]: You are a Design System …
+            - img
+          - generic [ref=e1794]:
+            - generic [ref=e1795]: You are a Design System Extractor operating inside thi…
+            - generic [ref=e1796]:
+              - generic [ref=e1797]: Community
+              - generic [ref=e1799]: from plugin
+          - button "provided by rc Plugin" [ref=e1801]:
+            - generic [ref=e1802]: provided by
+            - generic [ref=e1803]: rc
+            - generic [ref=e1804]: Plugin
+        - generic [ref=e1805] [cursor=pointer]:
+          - generic [ref=e1808]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1809]:
+              - generic [ref=e1810]: ›
+            - generic [ref=e1811]:
+              - generic [ref=e1812]: paywall-builder
+              - generic [ref=e1813]: single source · 1 in
+          - generic "A specialized agent for creating paywalls with design system integration from the user's codebase." [ref=e1817]:
+            - generic [ref=e1818]: Plugin
+            - generic [ref=e1819]: A specialized agent for …
+            - img
+          - generic [ref=e1826]:
+            - generic [ref=e1827]: A specialized agent for creating paywalls with design …
+            - generic [ref=e1828]:
+              - generic [ref=e1829]: Community
+              - generic [ref=e1831]: from plugin
+          - button "provided by rc Plugin" [ref=e1833]:
+            - generic [ref=e1834]: provided by
+            - generic [ref=e1835]: rc
+            - generic [ref=e1836]: Plugin
+        - generic [ref=e1837] [cursor=pointer]:
+          - generic [ref=e1840]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1841]:
+              - generic [ref=e1842]: ›
+            - generic [ref=e1843]:
+              - generic [ref=e1844]: performance-optimizer
+              - generic [ref=e1845]: single source · 1 in
+          - generic "Specializes in optimizing Vercel application performance — Core Web Vitals, rendering strategies, caching, image optimi…" [ref=e1849]:
+            - generic [ref=e1850]: Plugin
+            - generic [ref=e1851]: Specializes in optimizin…
+            - img
+          - generic [ref=e1858]:
+            - generic [ref=e1859]: Specializes in optimizing Vercel application performan…
+            - generic [ref=e1860]:
+              - generic [ref=e1861]: Community
+              - generic [ref=e1863]: from plugin
+          - button "provided by vercel Plugin" [ref=e1865]:
+            - generic [ref=e1866]: provided by
+            - generic [ref=e1867]: vercel
+            - generic [ref=e1868]: Plugin
+        - generic [ref=e1869] [cursor=pointer]:
+          - generic [ref=e1872]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1873]:
+              - generic [ref=e1874]: ›
+            - generic [ref=e1875]:
+              - generic [ref=e1876]: plugin-validator
+              - generic [ref=e1877]: single source · 1 in
+          - generic "Use this agent when the user asks to \"validate my plugin\", \"check plugin structure\", \"verify plugin is correct\", \"valid…" [ref=e1881]:
+            - generic [ref=e1882]: Plugin
+            - generic [ref=e1883]: Use this agent when the …
+            - img
+          - generic [ref=e1890]:
+            - generic [ref=e1891]: Use this agent when the user asks to "validate my plug…
+            - generic [ref=e1892]:
+              - generic [ref=e1893]: Anthropic
+              - generic [ref=e1895]: from plugin
+          - button "provided by plugin-dev Plugin" [ref=e1897]:
+            - generic [ref=e1898]: provided by
+            - generic [ref=e1899]: plugin-dev
+            - generic [ref=e1900]: Plugin
+        - generic [ref=e1901] [cursor=pointer]:
+          - generic [ref=e1904]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1905]:
+              - generic [ref=e1906]: ›
+            - generic [ref=e1907]:
+              - generic [ref=e1908]: pr-test-analyzer.md
+              - generic [ref=e1909]: single source · 1 in
+          - generic "(failed to parse)" [ref=e1913]:
+            - generic [ref=e1914]: Plugin
+            - generic [ref=e1915]: (failed to parse)
+            - img
+          - generic [ref=e1922]:
+            - generic [ref=e1923]: (failed to parse)
+            - generic [ref=e1924]:
+              - generic [ref=e1925]: Unknown
+              - generic [ref=e1927]: from plugin
+          - button "provided by pr-review-toolkit Plugin" [ref=e1929]:
+            - generic [ref=e1930]: provided by
+            - generic [ref=e1931]: pr-review-toolkit
+            - generic [ref=e1932]: Plugin
+        - generic [ref=e1933] [cursor=pointer]:
+          - generic [ref=e1936]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1937]:
+              - generic [ref=e1938]: ›
+            - generic [ref=e1939]:
+              - generic [ref=e1940]: pr-test-analyzer.md
+              - generic [ref=e1941]: single source · 1 in
+          - generic "(failed to parse)" [ref=e1945]:
+            - generic [ref=e1946]: Plugin
+            - generic [ref=e1947]: (failed to parse)
+            - img
+          - generic [ref=e1954]:
+            - generic [ref=e1955]: (failed to parse)
+            - generic [ref=e1956]:
+              - generic [ref=e1957]: Unknown
+              - generic [ref=e1959]: from plugin
+          - button "provided by pr-review-toolkit Plugin" [ref=e1961]:
+            - generic [ref=e1962]: provided by
+            - generic [ref=e1963]: pr-review-toolkit
+            - generic [ref=e1964]: Plugin
+        - generic [ref=e1965] [cursor=pointer]:
+          - generic [ref=e1968]:
+            - button "Editor opens in v1.7" [disabled] [ref=e1969]:
+              - generic [ref=e1970]: ›
+            - generic [ref=e1971]:
+              - generic [ref=e1972]: project-bootstrap
+              - generic [ref=e1973]: single source · 1 in
+          - generic "A specialized agent for setting up a complete RevenueCat project from scratch." [ref=e1977]:
+            - generic [ref=e1978]: Plugin
+            - generic [ref=e1979]: A specialized agent for …
+            - img
+          - generic [ref=e1986]:
+            - generic [ref=e1987]: A specialized agent for setting up a complete RevenueC…
+            - generic [ref=e1988]:
+              - generic [ref=e1989]: Community
+              - generic [ref=e1991]: from plugin
+          - button "provided by rc Plugin" [ref=e1993]:
+            - generic [ref=e1994]: provided by
+            - generic [ref=e1995]: rc
+            - generic [ref=e1996]: Plugin
+        - generic [ref=e1997] [cursor=pointer]:
+          - generic [ref=e2000]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2001]:
+              - generic [ref=e2002]: ›
+            - generic [ref=e2003]:
+              - generic [ref=e2004]: silent-failure-hunter.md
+              - generic [ref=e2005]: single source · 1 in
+          - generic "(failed to parse)" [ref=e2009]:
+            - generic [ref=e2010]: Plugin
+            - generic [ref=e2011]: (failed to parse)
+            - img
+          - generic [ref=e2018]:
+            - generic [ref=e2019]: (failed to parse)
+            - generic [ref=e2020]:
+              - generic [ref=e2021]: Unknown
+              - generic [ref=e2023]: from plugin
+          - button "provided by pr-review-toolkit Plugin" [ref=e2025]:
+            - generic [ref=e2026]: provided by
+            - generic [ref=e2027]: pr-review-toolkit
+            - generic [ref=e2028]: Plugin
+        - generic [ref=e2029] [cursor=pointer]:
+          - generic [ref=e2032]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2033]:
+              - generic [ref=e2034]: ›
+            - generic [ref=e2035]:
+              - generic [ref=e2036]: silent-failure-hunter.md
+              - generic [ref=e2037]: single source · 1 in
+          - generic "(failed to parse)" [ref=e2041]:
+            - generic [ref=e2042]: Plugin
+            - generic [ref=e2043]: (failed to parse)
+            - img
+          - generic [ref=e2050]:
+            - generic [ref=e2051]: (failed to parse)
+            - generic [ref=e2052]:
+              - generic [ref=e2053]: Unknown
+              - generic [ref=e2055]: from plugin
+          - button "provided by pr-review-toolkit Plugin" [ref=e2057]:
+            - generic [ref=e2058]: provided by
+            - generic [ref=e2059]: pr-review-toolkit
+            - generic [ref=e2060]: Plugin
+        - generic [ref=e2061] [cursor=pointer]:
+          - generic [ref=e2064]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2065]:
+              - generic [ref=e2066]: ›
+            - generic [ref=e2067]:
+              - generic [ref=e2068]: skill-reviewer
+              - generic [ref=e2069]: single source · 1 in
+          - generic "Use this agent when the user has created or modified a skill and needs quality review, asks to \"review my skill\", \"chec…" [ref=e2073]:
+            - generic [ref=e2074]: Plugin
+            - generic [ref=e2075]: Use this agent when the …
+            - img
+          - generic [ref=e2082]:
+            - generic [ref=e2083]: Use this agent when the user has created or modified a…
+            - generic [ref=e2084]:
+              - generic [ref=e2085]: Anthropic
+              - generic [ref=e2087]: from plugin
+          - button "provided by plugin-dev Plugin" [ref=e2089]:
+            - generic [ref=e2090]: provided by
+            - generic [ref=e2091]: plugin-dev
+            - generic [ref=e2092]: Plugin
+        - generic [ref=e2093] [cursor=pointer]:
+          - generic [ref=e2096]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2097]:
+              - generic [ref=e2098]: ›
+            - generic [ref=e2099]:
+              - generic [ref=e2100]: tracking-watchdog
+              - generic [ref=e2101]: single source · 1 in
+          - generic "Proactive tracking coverage monitor. Use automatically after code changes that add new features, modify existing functi…" [ref=e2105]:
+            - generic [ref=e2106]: Plugin
+            - generic [ref=e2107]: Proactive tracking cover…
+            - img
+          - generic [ref=e2114]:
+            - generic [ref=e2115]: Proactive tracking coverage monitor. Use automatically…
+            - generic [ref=e2116]:
+              - generic [ref=e2117]: Community
+              - generic [ref=e2119]: from plugin
+          - button "provided by product-tracking-skills Plugin" [ref=e2121]:
+            - generic [ref=e2122]: provided by
+            - generic [ref=e2123]: product-tracking-skills
+            - generic [ref=e2124]: Plugin
+        - generic [ref=e2125] [cursor=pointer]:
+          - generic [ref=e2128]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2129]:
+              - generic [ref=e2130]: ›
+            - generic [ref=e2131]:
+              - generic [ref=e2132]: troubleshoot
+              - generic [ref=e2133]: single source · 1 in
+          - generic "A specialized agent for diagnosing and resolving common RevenueCat integration issues." [ref=e2137]:
+            - generic [ref=e2138]: Plugin
+            - generic [ref=e2139]: A specialized agent for …
+            - img
+          - generic [ref=e2146]:
+            - generic [ref=e2147]: A specialized agent for diagnosing and resolving commo…
+            - generic [ref=e2148]:
+              - generic [ref=e2149]: Community
+              - generic [ref=e2151]: from plugin
+          - button "provided by rc Plugin" [ref=e2153]:
+            - generic [ref=e2154]: provided by
+            - generic [ref=e2155]: rc
+            - generic [ref=e2156]: Plugin
+        - generic [ref=e2157] [cursor=pointer]:
+          - generic [ref=e2160]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2161]:
+              - generic [ref=e2162]: ›
+            - generic [ref=e2163]:
+              - generic [ref=e2164]: type-design-analyzer.md
+              - generic [ref=e2165]: single source · 1 in
+          - generic "(failed to parse)" [ref=e2169]:
+            - generic [ref=e2170]: Plugin
+            - generic [ref=e2171]: (failed to parse)
+            - img
+          - generic [ref=e2178]:
+            - generic [ref=e2179]: (failed to parse)
+            - generic [ref=e2180]:
+              - generic [ref=e2181]: Unknown
+              - generic [ref=e2183]: from plugin
+          - button "provided by pr-review-toolkit Plugin" [ref=e2185]:
+            - generic [ref=e2186]: provided by
+            - generic [ref=e2187]: pr-review-toolkit
+            - generic [ref=e2188]: Plugin
+        - generic [ref=e2189] [cursor=pointer]:
+          - generic [ref=e2192]:
+            - button "Editor opens in v1.7" [disabled] [ref=e2193]:
+              - generic [ref=e2194]: ›
+            - generic [ref=e2195]:
+              - generic [ref=e2196]: type-design-analyzer.md
+              - generic [ref=e2197]: single source · 1 in
+          - generic "(failed to parse)" [ref=e2201]:
+            - generic [ref=e2202]: Plugin
+            - generic [ref=e2203]: (failed to parse)
+            - img
+          - generic [ref=e2210]:
+            - generic [ref=e2211]: (failed to parse)
+            - generic [ref=e2212]:
+              - generic [ref=e2213]: Unknown
+              - generic [ref=e2215]: from plugin
+          - button "provided by pr-review-toolkit Plugin" [ref=e2217]:
+            - generic [ref=e2218]: provided by
+            - generic [ref=e2219]: pr-review-toolkit
+            - generic [ref=e2220]: Plugin
+    - generic [ref=e1012]:
+      - button "▸ Detections · 4 conventions · 108 occurrences" [ref=e1014] [cursor=pointer]:
+        - generic [ref=e1015]: ▸
+        - text: Detections
+        - generic [ref=e1016]: · 4 conventions · 108 occurrences
+      - generic [ref=e1017]:
+        - generic [ref=e1018]:
+          - generic [ref=e1021]: Anthropic
+          - generic [ref=e1024]: Community
+          - generic [ref=e1027]: You
+          - generic [ref=e1030]: Unknown
+        - generic [ref=e1031]: override · provides · invokes · gates · imports · fires-on · accretes-from

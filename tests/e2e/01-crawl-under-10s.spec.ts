@@ -1,13 +1,27 @@
-import { test, expect, waitForInventory } from "./fixtures";
+import { test, expect, waitForSignalFlow } from "./fixtures";
 
-test("cold load renders inventory in under 10 seconds", async ({ page }) => {
+test("cold load renders Masthead + TypeTabs + first SignalRow in under 10s", async ({
+  page,
+}) => {
   const start = Date.now();
-  await waitForInventory(page);
+  await waitForSignalFlow(page);
   const elapsed = Date.now() - start;
   expect(elapsed).toBeLessThan(10_000);
 
-  // Every scope column should be visible
-  for (const label of ["Global", "Slug", "Plugin", "Project", "Local"]) {
-    await expect(page.getByText(new RegExp(label, "i")).first()).toBeVisible();
+  // Masthead renders the wordmark + edition tag.
+  await expect(page.getByTestId("masthead")).toContainText(/memmgmt/i);
+  await expect(page.getByTestId("masthead")).toContainText(
+    /Signal Edition · v1\.6/,
+  );
+
+  // All 5 scope column headers render in the schematic header.
+  for (const label of ["Global", "Plugin", "Slug", "Project", "Local"]) {
+    await expect(
+      page.getByText(new RegExp(`^${label}$`)).first(),
+    ).toBeVisible();
   }
+
+  // At least one SignalRow rendered — fixture has ≥1 standing-instruction.
+  const rows = page.locator("[data-row-id]");
+  expect(await rows.count()).toBeGreaterThan(0);
 });

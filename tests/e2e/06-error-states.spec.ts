@@ -1,19 +1,44 @@
-import { test, expect, waitForInventory } from "./fixtures";
+import {
+  test,
+  expect,
+  waitForSignalFlow,
+  clickTypeTab,
+  findRowByTitle,
+} from "./fixtures";
 
-test("ghost slug panel visible when a slug's project dir is missing", async ({ page }) => {
-  await waitForInventory(page);
-  await expect(page.getByText(/ghost slugs/i).first()).toBeVisible();
-  // Fixture intentionally contains -tmp-fx-proj (path /tmp/fx-proj which doesn't exist locally).
-  await expect(page.getByText(/-tmp-fx-proj/i).first()).toBeVisible();
+test("ghost slugs surface via HealthRibbon count", async ({ page }) => {
+  await waitForSignalFlow(page);
+  // Fixture has two ghost project paths (-tmp-fx-proj, -tmp-fx-proj-dead).
+  const ribbon = page.getByTestId("health-ribbon");
+  await expect(ribbon).toContainText(/ghost slug/i);
+  // Text renders as "... 2 ghost slugs · 4 issues" — assert on the trailing
+  // summary substring directly.
+  const text = (await ribbon.textContent()) ?? "";
+  const match = text.match(/(\d+)\s+ghost slugs?/i);
+  expect(match).not.toBeNull();
+  expect(Number(match![1])).toBeGreaterThan(0);
 });
 
-test("dead @import is visually indicated on the importing card or in connection overlay", async ({
+test("dead @import relation pill is marked broken with 'missing' badge", async ({
   page,
 }) => {
-  await waitForInventory(page);
-  // Either a red indicator on the card, or a dead-import count in the connection overlay.
-  // Accept either signal for v1.5; tightness is a v2 concern.
-  const hasCardWarning = await page.locator("text=/dead.*import/i").count();
-  const hasOverlay = await page.locator("text=/dead imports:/i").count();
-  expect(hasCardWarning + hasOverlay).toBeGreaterThan(0);
+  await waitForSignalFlow(page);
+  const row = findRowByTitle(page, /Imports demo section/i);
+  await row.waitFor({ state: "visible" });
+  const broken = row.locator(
+    '[data-testid="relation-pill"][data-broken="true"]',
+  );
+  await expect(broken.first()).toBeVisible();
+  await expect(broken.first()).toContainText(/missing/i);
+});
+
+test("entity with a parseError displays a parse-error badge on its row", async ({
+  page,
+}) => {
+  await waitForSignalFlow(page);
+  // Fixture includes a skill (broken-skill) with malformed frontmatter —
+  // it surfaces a parseError on the matching skill entity.
+  await clickTypeTab(page, "skill");
+  const anyBadge = page.getByTestId("row-badge-parse-error");
+  await expect(anyBadge.first()).toBeVisible();
 });
