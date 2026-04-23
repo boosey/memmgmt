@@ -9,6 +9,7 @@ interface DetectionsAccordionProps {
 export function DetectionsAccordion({ detections }: DetectionsAccordionProps) {
   const [open, setOpen] = useState(false);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
+  const [pending, setPending] = useState<string | null>(null);
 
   const totalOccurrences = detections.reduce(
     (n, d) => n + d.occurrences.length,
@@ -25,6 +26,27 @@ export function DetectionsAccordion({ detections }: DetectionsAccordionProps) {
       return next;
     });
   };
+
+  async function handleOpenFollowup(d: Detection) {
+    setPending(d.convention);
+    try {
+      const res = await fetch("/api/followup", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify(d),
+      });
+      const j = await res.json();
+      if (!j.ok) {
+        // eslint-disable-next-line no-console
+        console.error("Failed to open followup:", j.message);
+      }
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error("Failed to open followup:", e);
+    } finally {
+      setPending(null);
+    }
+  }
 
   return (
     <div
@@ -78,14 +100,11 @@ export function DetectionsAccordion({ detections }: DetectionsAccordionProps) {
                   </button>
                   <button
                     type="button"
-                    onClick={() => {
-                      // v1.6: just log; wiring to docs/superpowers/followups.md is v1.7.
-                      // eslint-disable-next-line no-console
-                      console.log("open followup:", d.convention);
-                    }}
-                    className="smallcaps cursor-pointer rounded-sm border border-[color:var(--rule)] bg-transparent px-[8px] py-[3px] text-[9.5px] tracking-[0.14em] text-[color:var(--text-muted)]"
+                    disabled={pending === d.convention}
+                    onClick={() => handleOpenFollowup(d)}
+                    className="smallcaps cursor-pointer rounded-sm border border-[color:var(--rule)] bg-transparent px-[8px] py-[3px] text-[9.5px] tracking-[0.14em] text-[color:var(--text-muted)] disabled:opacity-50"
                   >
-                    open followup
+                    {pending === d.convention ? "opening..." : "open followup"}
                   </button>
                 </div>
                 {isExpanded && examples.length > 0 && (

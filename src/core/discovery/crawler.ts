@@ -8,7 +8,7 @@ import type {
   GhostSlug,
   SlugMetadata,
 } from "../types";
-import { slugToPath } from "./slugCodec";
+import { resolveSlugToPath, slugToPath } from "./slugCodec";
 
 export interface CrawlOptions {
   claudeHome: string;
@@ -132,7 +132,7 @@ export async function crawl(opts: CrawlOptions): Promise<CrawlResult> {
   const projectPaths = new Set<string>(opts.knownProjectPaths ?? []);
   for (const slugDir of await listDirs(projectsDir)) {
     const slug = path.basename(slugDir);
-    const expectedPath = slugToPath(slug);
+    const expectedPath = await resolveSlugToPath(slug, dirExists);
     if (await dirExists(expectedPath)) {
       projectPaths.add(expectedPath);
     } else {

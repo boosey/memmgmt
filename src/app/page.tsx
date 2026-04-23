@@ -20,6 +20,7 @@ import { TypeTabs } from "@/components/signal/TypeTabs";
 import { EditorDrawer } from "@/components/signal/EditorDrawer";
 import { BulkActionBar } from "@/components/signal/BulkActionBar";
 import { UndoToaster } from "@/components/signal/UndoToast";
+import { BrokenImportModal } from "@/components/signal/BrokenImportModal";
 import { PinnedProvider, usePinned } from "@/hooks/usePinned";
 import { SelectionProvider, useSelection } from "@/hooks/useSelection";
 import {
@@ -129,6 +130,11 @@ function Loaded({
   const selection = useSelection();
   const healthFilter = useHealthFilter();
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
+  const [brokenImport, setBrokenImport] = useState<{
+    relation: Relation;
+    importer: Entity;
+    target: PseudoNode | undefined;
+  } | null>(null);
 
   const entitiesById = useMemo(() => {
     const m = new Map<string, Entity>();
@@ -270,6 +276,9 @@ function Loaded({
                     onPinTarget={(id) => pin(id)}
                     onToggleSelect={selection.toggle}
                     onOpenEditor={handleOpenEditor}
+                    onResolveImport={(rel, imp, target) =>
+                      setBrokenImport({ relation: rel, importer: imp, target })
+                    }
                   />
                   {isExpanded && (
                     <EditorDrawer
@@ -291,6 +300,18 @@ function Loaded({
 
       <Footer detections={graph.detections} />
       <BulkActionBar entities={graph.entities} onApplied={handleSaved} />
+      {brokenImport && (
+        <BrokenImportModal
+          relation={brokenImport.relation}
+          importer={brokenImport.importer}
+          target={brokenImport.target}
+          onClose={() => setBrokenImport(null)}
+          onResolved={() => {
+            setBrokenImport(null);
+            refetch();
+          }}
+        />
+      )}
     </main>
   );
 }

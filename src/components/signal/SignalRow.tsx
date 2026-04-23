@@ -26,6 +26,11 @@ interface SignalRowProps {
   onPinTarget: (id: string) => void;
   onToggleSelect: (id: string) => void;
   onOpenEditor: (groupKey: string) => void;
+  onResolveImport?: (
+    relation: Relation,
+    importer: Entity,
+    target: PseudoNode | undefined,
+  ) => void;
 }
 
 export function SignalRow({
@@ -42,6 +47,7 @@ export function SignalRow({
   onPinTarget,
   onToggleSelect,
   onOpenEditor,
+  onResolveImport,
 }: SignalRowProps) {
   const byScope = new Map<Scope, Entity>();
   for (const a of group) byScope.set(a.scope, a);
@@ -198,6 +204,7 @@ export function SignalRow({
             direction="out"
             target={targetsById.get(r.to)}
             onPinTarget={onPinTarget}
+            onResolve={(rel, target) => onResolveImport?.(rel, winner, target)}
           />
         ))}
         {relationsIn.map((r) => (
@@ -207,6 +214,7 @@ export function SignalRow({
             direction="in"
             target={targetsById.get(r.from)}
             onPinTarget={onPinTarget}
+            onResolve={(rel, target) => onResolveImport?.(rel, winner, target)}
           />
         ))}
         {relCount === 0 && (

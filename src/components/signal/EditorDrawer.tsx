@@ -12,6 +12,8 @@ import { HookEditor } from "./editors/HookEditor";
 import { EnvVarEditor } from "./editors/EnvVarEditor";
 import { KeybindingEditor } from "./editors/KeybindingEditor";
 import { PluginEditor } from "./editors/PluginEditor";
+import { AgentEditor } from "./editors/AgentEditor";
+import { McpServerEditor } from "./editors/McpServerEditor";
 import { RawFallbackEditor } from "./editors/RawFallbackEditor";
 import { ScopeMover } from "./editors/ScopeMover";
 import { ResolveConflict } from "./editors/ResolveConflict";
@@ -95,8 +97,9 @@ export function EditorDrawer({
           />
         );
       case "agent":
+        return <AgentEditor {...common} />;
       case "mcp-server":
-        return <RawFallbackEditor {...common} />;
+        return <McpServerEditor {...common} />;
       default:
         return <RawFallbackEditor {...common} />;
     }

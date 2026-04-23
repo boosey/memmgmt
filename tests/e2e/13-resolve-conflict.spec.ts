@@ -61,7 +61,7 @@ test("drawer Resolve conflict tab → make-winner deletes the other scope copy",
       .click();
     await page.waitForTimeout(1200);
 
-    // Global (loser) deleted; project (winner) remains.
+    // The specifically selected Global copy remains; Project (formerly winner) deleted.
     const globalExists = await fs
       .access(GLOBAL_FILE)
       .then(() => true)
@@ -70,8 +70,8 @@ test("drawer Resolve conflict tab → make-winner deletes the other scope copy",
       .access(PROJECT_FILE)
       .then(() => true)
       .catch(() => false);
-    expect(globalExists).toBe(false);
-    expect(projectExists).toBe(true);
+    expect(globalExists).toBe(true);
+    expect(projectExists).toBe(false);
 
     const backupDirs = await fs.readdir(BACKUPS).catch(() => [] as string[]);
     expect(backupDirs.length).toBeGreaterThan(0);

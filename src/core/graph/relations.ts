@@ -39,6 +39,48 @@ export function deriveProvides(entities: Entity[]): Relation[] {
   return out;
 }
 
+// ── invokes ─────────────────────────────────────────────────────────────────
+// skill/command entity → skill/command entities that are mentioned in its body.
+// Uses simple name-based matching.
+
+const INVOKE_TARGET_KINDS = new Set<Entity["type"]>(["skill", "command"]);
+const INVOKE_RE = /\/(\w[\w-]*)\b/g;
+
+export function deriveInvokes(entities: Entity[]): Relation[] {
+  const out: Relation[] = [];
+  const targetsByName = new Map<string, Entity>();
+  for (const e of entities) {
+    if (INVOKE_TARGET_KINDS.has(e.type) && e.title) {
+      // For commands, title often includes the / prefix, but the regex match
+      // m[1] strips it. Handle both.
+      const name = e.title.startsWith("/") ? e.title.slice(1) : e.title;
+      targetsByName.set(name, e);
+    }
+  }
+
+  for (const e of entities) {
+    if (e.type !== "skill" && e.type !== "command") continue;
+    const body = (e.structured as { body?: string } | null)?.body ?? "";
+    if (!body) continue;
+
+    const seen = new Set<string>();
+    for (const m of body.matchAll(INVOKE_RE)) {
+      const token = m[1]!;
+      const target = targetsByName.get(token);
+      if (target && target.id !== e.id && !seen.has(target.id)) {
+        seen.add(target.id);
+        out.push({
+          id: `invokes::${e.id}->${target.id}`,
+          kind: "invokes",
+          from: e.id,
+          to: target.id,
+        });
+      }
+    }
+  }
+  return out;
+}
+
 // ── imports ─────────────────────────────────────────────────────────────────
 // standing-instruction → entity (when the @path resolves to a known entity)
 // or → path pseudo-node (when not). Sets `broken: true` when the target

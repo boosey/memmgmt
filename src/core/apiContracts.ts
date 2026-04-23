@@ -88,7 +88,9 @@ export type BulkAction =
   | "demote-scope"           // move each entity one scope level lower
   | "dismiss-stale"          // suppress stale flag on memory entities
   | "flag-for-review"        // mark warn-eligible entities for manual review
-  | "delete-entity";         // delete ALL scope copies (requires confirmation)
+  | "delete-entity"          // delete ALL scope copies (requires confirmation)
+  | "merge-into-winner"      // merge content into the winner copy
+  | "keep-as-override";      // acknowledge the conflict but keep both
 
 export interface BulkRequest {
   action: BulkAction;

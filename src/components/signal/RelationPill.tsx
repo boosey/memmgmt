@@ -12,6 +12,7 @@ interface RelationPillProps {
   direction: "out" | "in";
   target: Entity | PseudoNode | undefined;
   onPinTarget: (id: string) => void;
+  onResolve?: (relation: Relation, target: PseudoNode | undefined) => void;
 }
 
 interface KindLabels {
@@ -57,6 +58,7 @@ export function RelationPill({
   direction,
   target,
   onPinTarget,
+  onResolve,
 }: RelationPillProps) {
   const targetId = direction === "out" ? relation.to : relation.from;
   const verb = KIND_LABELS[relation.kind][direction];
@@ -83,7 +85,11 @@ export function RelationPill({
       data-target-id={targetId}
       onClick={(e) => {
         e.stopPropagation();
-        if (clickable) onPinTarget(targetId);
+        if (broken && onResolve) {
+          onResolve(relation, target as PseudoNode | undefined);
+        } else if (clickable) {
+          onPinTarget(targetId);
+        }
       }}
       className={[
         "flex w-full items-center gap-[6px] rounded-sm px-[6px] py-[3px] text-left",

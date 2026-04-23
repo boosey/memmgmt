@@ -39,6 +39,10 @@ export async function dispatchBulk(
         return await runMarker(req, ctx, "dismissedStale");
       case "flag-for-review":
         return await runMarker(req, ctx, "flaggedForReview");
+      case "keep-as-override":
+        return await runMarker(req, ctx, "keptAsOverride");
+      case "merge-into-winner":
+        return await runMergeIntoWinner(req, ctx);
       case "delete-entity":
         if (req.confirm !== true) {
           return {
@@ -69,6 +73,8 @@ async function runDeleteShadowed(
   ctx: BulkContext,
 ): Promise<BulkResponse> {
   const affected: BulkAffected[] = [];
+  const processedGroups = new Set<string>();
+
   for (const id of req.entityIds) {
     const entity = ctx.knownEntities.find((e) => e.id === id);
     if (!entity) {
@@ -80,9 +86,24 @@ async function runDeleteShadowed(
         partiallyAffected: affected,
       };
     }
+
+    const groupKey = entity.identity || `id:${entity.id}`;
+    if (processedGroups.has(groupKey)) continue;
+    processedGroups.add(groupKey);
+
     const group = groupByIdentity(entity, ctx.knownEntities);
     if (group.length < 2) continue; // not contested → no-op
-    const winner = pickWinner(group);
+
+    // BUG FIX: If we are resolving to a SPECIFIC winner (e.g. from the Conflict Resolver UI),
+    // we should keep that copy. If multiple copies from the same group are selected
+    // (e.g. from BulkActionBar), or if the action is delete-shadowed, we fall back 
+    // to the natural winner.
+    const selectedInGroup = group.filter((g) => req.entityIds.includes(g.id));
+    const winner =
+      (req.action === "resolve-to-winner" && selectedInGroup.length === 1)
+        ? selectedInGroup[0]!
+        : pickWinner(group);
+
     for (const copy of group) {
       if (copy.id === winner.id) continue;
       const res = await deleteFileEntity(copy, ctx);
@@ -110,6 +131,135 @@ function pickWinner(group: Entity[]): Entity {
   return [...group].sort(
     (a, b) => SCOPE_PRECEDENCE[b.scope] - SCOPE_PRECEDENCE[a.scope],
   )[0]!;
+}
+
+// ── merge-into-winner ──────────────────────────────────────────────────────
+// Appends the content of the selected copies into their group's winner copy,
+// then deletes the source copies.
+
+async function runMergeIntoWinner(
+  req: BulkRequest,
+  ctx: BulkContext,
+): Promise<BulkResponse> {
+  const affected: BulkAffected[] = [];
+  const processedGroups = new Set<string>();
+
+  for (const id of req.entityIds) {
+    const entity = ctx.knownEntities.find((e) => e.id === id);
+    if (!entity) {
+      return {
+        ok: false,
+        action: req.action,
+        reason: "entity-missing",
+        message: `entity not found: ${id}`,
+        partiallyAffected: affected,
+      };
+    }
+
+    const groupKey = entity.identity || `id:${entity.id}`;
+    if (processedGroups.has(groupKey)) continue;
+    processedGroups.add(groupKey);
+
+    const group = groupByIdentity(entity, ctx.knownEntities);
+    if (group.length < 2) continue;
+
+    const winner = pickWinner(group);
+    const losers = group.filter((g) => g.id !== winner.id);
+    const toMerge = losers.filter((g) => req.entityIds.includes(g.id));
+
+    if (toMerge.length === 0) continue;
+
+    // We only support merging for markdown-backed file entities in v1.8.
+    const canMerge = (e: Entity) =>
+      e.type === "skill" ||
+      e.type === "command" ||
+      e.type === "agent" ||
+      e.type === "memory" ||
+      e.type === "standing-instruction";
+
+    if (!canMerge(winner)) {
+      return {
+        ok: false,
+        action: req.action,
+        reason: "action-not-applicable",
+        message: `merging into ${winner.type} is not supported`,
+        partiallyAffected: affected,
+      };
+    }
+
+    // Read winner content
+    let winnerContent: string;
+    try {
+      winnerContent = await fs.readFile(winner.sourceFile, "utf8");
+    } catch (e) {
+      return {
+        ok: false,
+        action: req.action,
+        reason: "internal",
+        message: `failed to read winner file: ${(e as Error).message}`,
+        partiallyAffected: affected,
+      };
+    }
+
+    // Append loser contents
+    let mergedContent = winnerContent.trimEnd() + "\n\n";
+    for (const loser of toMerge) {
+      mergedContent += `\n--- Merged from ${loser.scope} scope ---\n\n`;
+      mergedContent += loser.rawContent.trim() + "\n";
+    }
+
+    // Back up winner
+    try {
+      const bk = await createBackup({
+        sourceFile: winner.sourceFile,
+        scopeRoot: winner.scopeRoot,
+        backupsDir: ctx.backupsDir,
+      });
+      affected.push({
+        entityId: winner.id,
+        sourceFile: winner.sourceFile,
+        backupPath: bk.backupPath,
+      });
+    } catch (e) {
+      return {
+        ok: false,
+        action: req.action,
+        reason: "write-failed",
+        message: `backup failed: ${(e as Error).message}`,
+        partiallyAffected: affected,
+      };
+    }
+
+    // Write winner
+    try {
+      await fs.writeFile(winner.sourceFile, mergedContent, "utf8");
+    } catch (e) {
+      return {
+        ok: false,
+        action: req.action,
+        reason: "write-failed",
+        message: (e as Error).message,
+        partiallyAffected: affected,
+      };
+    }
+
+    // Delete merged copies
+    for (const loser of toMerge) {
+      const res = await deleteFileEntity(loser, ctx);
+      if (!res.ok) {
+        return {
+          ok: false,
+          action: req.action,
+          reason: res.reason,
+          message: res.message,
+          partiallyAffected: affected,
+        };
+      }
+      affected.push(res.affected);
+    }
+  }
+
+  return { ok: true, action: req.action, affected };
 }
 
 // ── promote / demote scope ─────────────────────────────────────────────────
@@ -339,7 +489,7 @@ async function runDeleteEntity(
 async function runMarker(
   req: BulkRequest,
   ctx: BulkContext,
-  bucket: "dismissedStale" | "flaggedForReview",
+  bucket: "dismissedStale" | "flaggedForReview" | "keptAsOverride",
 ): Promise<BulkResponse> {
   const markerFile = path.join(ctx.claudeHome, "memmgmt-state.json");
   const state = await readState(markerFile);
@@ -387,6 +537,7 @@ async function runMarker(
 interface MemmgmtState {
   dismissedStale?: Array<{ entityId: string; atMs: number }>;
   flaggedForReview?: Array<{ entityId: string; atMs: number }>;
+  keptAsOverride?: Array<{ entityId: string; atMs: number }>;
 }
 
 async function readState(markerFile: string): Promise<MemmgmtState> {

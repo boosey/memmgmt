@@ -24,6 +24,7 @@ import {
   deriveFiresOn,
   deriveGates,
   deriveImports,
+  deriveInvokes,
   deriveProvides,
 } from "./relations";
 import { isMemoryStale } from "../health/stale";
@@ -192,6 +193,7 @@ export function buildPayload(input: BuildPayloadInput): BuildPayloadResult {
   const registry = new PseudoNodeRegistry();
   const relations: Relation[] = [];
   relations.push(...deriveProvides(entities));
+  relations.push(...deriveInvokes(entities));
   const importsOpts: { homeDir?: string; exists?: (p: string) => boolean } = {};
   if (input.homeDir !== undefined) importsOpts.homeDir = input.homeDir;
   if (input.exists !== undefined) importsOpts.exists = input.exists;

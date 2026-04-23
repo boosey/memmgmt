@@ -65,7 +65,7 @@ function memoryEntity(
 }
 
 describe("dispatchBulk — resolve-to-winner", () => {
-  it("deletes shadowed copies and keeps the highest-scope winner", async () => {
+  it("promotes the specifically selected copy as winner even if lower scope", async () => {
     const globalFile = path.join(claudeHome, "skills", "ship", "SKILL.md");
     const projRoot = path.join(tmp, "projA");
     const projFile = path.join(projRoot, ".claude", "skills", "ship", "SKILL.md");
@@ -84,18 +84,41 @@ describe("dispatchBulk — resolve-to-winner", () => {
     expect(res.ok).toBe(true);
     if (!res.ok) return;
     expect(res.affected.length).toBe(1);
-    // Global (loser) gone; project (winner) preserved.
+    // Project (natural winner) gone; global (selected winner) preserved.
+    await expect(fs.stat(projFile)).rejects.toBeTruthy();
+    expect(await fs.readFile(globalFile, "utf8")).toBe("global\n");
+  });
+
+  it("falls back to natural winner when multiple group members are selected", async () => {
+    const globalFile = path.join(claudeHome, "skills", "ship", "SKILL.md");
+    const projRoot = path.join(tmp, "projA");
+    const projFile = path.join(projRoot, ".claude", "skills", "ship", "SKILL.md");
+    await writeFileFixture(globalFile, "global\n");
+    await writeFileFixture(projFile, "project\n");
+
+    const ents = [
+      skillEntity("global", globalFile, claudeHome, "ship", "g1"),
+      skillEntity("project", projFile, projRoot, "ship", "p1"),
+    ];
+
+    const res = await dispatchBulk(
+      { action: "resolve-to-winner", entityIds: ["g1", "p1"] },
+      { backupsDir, claudeHome, knownEntities: ents },
+    );
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+    // Global gone; project preserved.
     await expect(fs.stat(globalFile)).rejects.toBeTruthy();
     expect(await fs.readFile(projFile, "utf8")).toBe("project\n");
   });
 });
 
 describe("dispatchBulk — delete-shadowed", () => {
-  it("removes non-winners without touching the winner", async () => {
+  it("removes selected shadowed copies without touching the winner", async () => {
     const globalFile = path.join(claudeHome, "skills", "x", "SKILL.md");
     const projRoot = path.join(tmp, "p");
     const projFile = path.join(projRoot, ".claude", "skills", "x", "SKILL.md");
-    await writeFileFixture(globalFile);
+    await writeFileFixture(globalFile, "loser\n");
     await writeFileFixture(projFile, "winner\n");
     const ents = [
       skillEntity("global", globalFile, claudeHome, "x", "a"),

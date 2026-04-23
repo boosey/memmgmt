@@ -31,6 +31,8 @@ const ACTION_LABELS: Record<BulkAction, string> = {
   "dismiss-stale": "Dismiss stale",
   "flag-for-review": "Flag for review",
   "delete-entity": "Delete entity",
+  "merge-into-winner": "Merge",
+  "keep-as-override": "Keep override",
 };
 
 interface BulkActionBarProps {
