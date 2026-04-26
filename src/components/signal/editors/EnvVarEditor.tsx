@@ -4,18 +4,32 @@ import { buildNextContentFor } from "@/lib/buildNextContent";
 import { FormRow, ecBtnClass, monoClass } from "./shared";
 import type { TypedEditorProps } from "./editorTypes";
 
-export function EnvVarEditor({ entity, onApiReady }: TypedEditorProps) {
+interface EnvVarEditorProps extends TypedEditorProps {
+  onStanzasChange?: (stanzas: string[]) => void;
+}
+
+export function EnvVarEditor({
+  entity,
+  onApiReady,
+  onStanzasChange,
+}: EnvVarEditorProps) {
   const sd = (entity.structured ?? {}) as { name?: string; value?: string };
-  const [name, setName] = useState((sd.name ?? entity.title ?? "").toUpperCase());
+  const [name, setName] = useState(
+    (sd.name ?? entity.title ?? "").toUpperCase(),
+  );
   const [value, setValue] = useState(sd.value ?? entity.intent ?? "");
   const [secret, setSecret] = useState(false);
   const [reveal, setReveal] = useState(false);
 
   useEffect(() => {
+    onStanzasChange?.([name]);
+  }, [name, onStanzasChange]);
+
+  useEffect(() => {
     onApiReady({
       currentTitle: name,
-      getSerializedContent: () =>
-        buildNextContentFor(entity, { name, value }),
+      stanzas: [name],
+      getSerializedContent: () => buildNextContentFor(entity, { name, value }),
     });
   }, [name, value, entity, onApiReady]);
 

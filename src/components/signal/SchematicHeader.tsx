@@ -1,7 +1,7 @@
 const GRID_COLS =
-  "grid-cols-[22px_210px_repeat(5,1fr)_1.6fr_1.4fr]";
+  "grid-cols-[22px_300px_repeat(4,120px)_1fr_minmax(0,1.4fr)]";
 
-const SCOPE_LABELS = ["Global", "Plugin", "Slug", "Project", "Local"];
+const SCOPE_LABELS = ["Global", "Slug", "Project", "Local"];
 
 export function SchematicHeader() {
   return (

@@ -14,6 +14,7 @@ import { KeybindingEditor } from "./editors/KeybindingEditor";
 import { PluginEditor } from "./editors/PluginEditor";
 import { AgentEditor } from "./editors/AgentEditor";
 import { McpServerEditor } from "./editors/McpServerEditor";
+import { EnabledPluginsEditor } from "./editors/EnabledPluginsEditor";
 import { RawFallbackEditor } from "./editors/RawFallbackEditor";
 import { ScopeMover } from "./editors/ScopeMover";
 import { ResolveConflict } from "./editors/ResolveConflict";
@@ -46,13 +47,20 @@ export function EditorDrawer({
     getSerializedContent: () => entity.rawContent,
   });
   const [currentTitle, setCurrentTitle] = useState<string>(entity.title);
+  const [currentStanzas, setCurrentStanzas] = useState<string[]>([]);
 
   const onApiReady = useCallback((api: EditorApi) => {
     apiRef.current = api;
+    if (api.stanzas) setCurrentStanzas(api.stanzas);
   }, []);
 
   const onTitleChange = useCallback((t: string) => {
     setCurrentTitle(t);
+  }, []);
+
+  const onStanzasChange = useCallback((s: string[]) => {
+    setCurrentStanzas(s);
+    apiRef.current.stanzas = s;
   }, []);
 
   const typeLabel = TYPE_LABELS[entity.type].label;
@@ -61,7 +69,7 @@ export function EditorDrawer({
 
   function renderEditor() {
     const t: EntityType = entity.type;
-    const common = { entity, onApiReady, onTitleChange };
+    const common = { entity, onApiReady, onTitleChange, onStanzasChange };
     switch (t) {
       case "standing-instruction":
         return <StandingInstructionEditor {...common} relations={relations} />;
@@ -84,10 +92,6 @@ export function EditorDrawer({
           <MemoryEditor
             {...common}
             relations={relations}
-            onDeleted={() => {
-              onSaved();
-              onClose();
-            }}
             onSaved={onSaved}
           />
         );
@@ -110,6 +114,8 @@ export function EditorDrawer({
         return <AgentEditor {...common} />;
       case "mcp-server":
         return <McpServerEditor {...common} />;
+      case "enabled-plugins":
+        return <EnabledPluginsEditor {...common} />;
       default:
         return <RawFallbackEditor {...common} />;
     }
@@ -150,7 +156,9 @@ export function EditorDrawer({
           {(
             [
               ["edit", "Edit"],
-              ["scope", "Move scope"],
+              ...(!entity.plugin
+                ? ([["scope", "Move scope"]] as const)
+                : []),
               ...(contested ? ([["resolve", "Resolve conflict"]] as const) : []),
             ] as const
           ).map(([k, l]) => {
@@ -202,10 +210,11 @@ export function EditorDrawer({
       <RightRail
         entity={entity}
         currentFormTitle={currentTitle}
-        getSerializedContent={() => apiRef.current.getSerializedContent()}
+        api={apiRef.current}
         onSaved={() => {
           onSaved();
         }}
+        stanzas={currentStanzas}
       />
     </div>
   );

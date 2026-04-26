@@ -4,10 +4,12 @@ import {
   useHealthFilter,
   type HealthFilterKey,
 } from "@/hooks/useHealthFilter";
+import { useSignalFilter, type SourceFilter, type StatusFilter } from "@/hooks/useSignalFilter";
 import { ProjectSelect } from "./ProjectSelect";
 
 interface HealthRibbonProps {
   graph: GraphPayload;
+  entities: readonly Entity[];
   onManageGhosts?: () => void;
 }
 
@@ -65,33 +67,38 @@ const SEV_BG: Record<Severity, string> = {
   info: "oklch(0.60 0.05 240)",
 };
 
-export function HealthRibbon({ graph, onManageGhosts }: HealthRibbonProps) {
+export function HealthRibbon({
+  graph,
+  entities,
+  onManageGhosts,
+}: HealthRibbonProps) {
   const filter = useHealthFilter();
+  const signalFilter = useSignalFilter();
 
   const chips: Chip[] = [
     {
       key: "contested",
       label: "Contested",
       severity: "warn",
-      count: countContested(graph.entities),
+      count: countContested(entities),
     },
     {
       key: "stale",
       label: "Stale memory",
       severity: "info",
-      count: countStale(graph.entities),
+      count: countStale(entities),
     },
     {
       key: "unknown",
       label: "Unknown author",
       severity: "warn",
-      count: countUnknown(graph.entities),
+      count: countUnknown(entities),
     },
     {
       key: "broken-import",
       label: "Dead imports",
       severity: "error",
-      count: countDeadImports(graph.entities, graph.pseudoNodes),
+      count: countDeadImports(entities, graph.pseudoNodes),
     },
   ];
 
@@ -109,7 +116,44 @@ export function HealthRibbon({ graph, onManageGhosts }: HealthRibbonProps) {
     >
       <div className="flex items-center gap-6">
         <ProjectSelect slugs={slugs} />
-        <div className="smallcaps text-[9.5px] text-[color:var(--text-muted)]">
+        <div className="flex items-center gap-2 border-l border-[color:var(--rule)] pl-6">
+          <span className="smallcaps text-[9.5px] text-[color:var(--text-muted)]">Source</span>
+          <select
+            value={signalFilter.source}
+            onChange={(e) => signalFilter.setSource(e.target.value as SourceFilter)}
+            className="rounded-sm border border-[color:var(--rule)] bg-[color:var(--paper)] px-1 py-0.5 font-mono text-[11px] outline-none"
+          >
+            <option value="all">All</option>
+            <option value="anthropic">Anthropic</option>
+            <option value="community">Community</option>
+            <option value="you">You</option>
+            <option value="plugin">Plugin (any)</option>
+          </select>
+        </div>
+        <div className="flex items-center gap-2 border-l border-[color:var(--rule)] pl-6">
+          <span className="smallcaps text-[9.5px] text-[color:var(--text-muted)]">Status</span>
+          <select
+            value={signalFilter.status}
+            onChange={(e) => signalFilter.setStatus(e.target.value as StatusFilter)}
+            className="rounded-sm border border-[color:var(--rule)] bg-[color:var(--paper)] px-1 py-0.5 font-mono text-[11px] outline-none"
+          >
+            <option value="all">All</option>
+            <option value="enabled">Enabled</option>
+            <option value="disabled">Disabled</option>
+          </select>
+        </div>
+        <div className="flex items-center gap-2 border-l border-[color:var(--rule)] pl-6">
+          <span className="smallcaps text-[9.5px] text-[color:var(--text-muted)]">Informational</span>
+          <select
+            value={signalFilter.showInformational ? "show" : "hide"}
+            onChange={(e) => signalFilter.setShowInformational(e.target.value === "show")}
+            className="rounded-sm border border-[color:var(--rule)] bg-[color:var(--paper)] px-1 py-0.5 font-mono text-[11px] outline-none"
+          >
+            <option value="hide">Hide</option>
+            <option value="show">Show</option>
+          </select>
+        </div>
+        <div className="smallcaps ml-4 text-[9.5px] text-[color:var(--text-muted)]">
           Health
         </div>
       </div>
@@ -152,14 +196,20 @@ export function HealthRibbon({ graph, onManageGhosts }: HealthRibbonProps) {
         );
       })}
       <span className="flex-1" />
-      {filter.active && (
+      {(filter.active ||
+        signalFilter.source !== "all" ||
+        signalFilter.status !== "all" ||
+        signalFilter.showInformational) && (
         <button
           type="button"
-          onClick={filter.clear}
+          onClick={() => {
+            filter.clear();
+            signalFilter.clear();
+          }}
           data-testid="health-clear-filter"
           className="cursor-pointer border-none bg-transparent text-[11px] text-[color:var(--text-muted)] underline"
         >
-          clear filter
+          clear filters
         </button>
       )}
       <button

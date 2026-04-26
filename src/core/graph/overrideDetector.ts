@@ -1,10 +1,9 @@
 import type { ArtifactNode, GraphEdge, Scope } from "../types";
 
 const PRECEDENCE: Record<Scope, number> = {
-  local: 5,
-  project: 4,
-  slug: 3,
-  plugin: 2,
+  local: 4,
+  project: 3,
+  slug: 2,
   global: 1,
 };
 
@@ -21,9 +20,20 @@ export function detectOverrides(nodes: ArtifactNode[]): GraphEdge[] {
   const edges: GraphEdge[] = [];
   for (const arr of groups.values()) {
     if (arr.length < 2) continue;
-    const sorted = [...arr].sort(
-      (a, b) => PRECEDENCE[b.scope] - PRECEDENCE[a.scope],
-    );
+    const sorted = [...arr].sort((a, b) => {
+      const diff = PRECEDENCE[b.scope] - PRECEDENCE[a.scope];
+      if (diff !== 0) return diff;
+
+      // Tie-breaker: for the same scope, use version if available.
+      const getVer = (n: ArtifactNode) =>
+        (n.structuredData as { version?: string } | null)?.version ?? "";
+      const va = getVer(a);
+      const vb = getVer(b);
+      if (va || vb) return vb.localeCompare(va, undefined, { numeric: true });
+
+      // Final tie-breaker: use ID (deterministic)
+      return b.id.localeCompare(a.id);
+    });
     const winner = sorted[0]!;
     for (const loser of sorted.slice(1)) {
       edges.push({
@@ -77,9 +87,10 @@ export function identityKey(n: ArtifactNode): string | null {
     }
     case "typed-memory":
       return typeof sd.name === "string" && sd.name ? `tmem::${sd.name}` : null;
+    case "plugin-manifest":
+      return typeof sd.name === "string" && sd.name ? `plugin::${sd.name}` : null;
     case "keybindings":
     case "memory-index-entry":
-    case "plugin-manifest":
       return null;
   }
 }

@@ -21,7 +21,6 @@ function structured(entity: Entity): ParsedTypedMemory {
 
 interface MemoryEditorProps extends TypedEditorProps {
   relations?: readonly Relation[];
-  onDeleted?: () => void;
   onSaved?: () => void;
 }
 
@@ -30,13 +29,12 @@ export function MemoryEditor({
   onApiReady,
   onTitleChange,
   relations = [],
-  onDeleted,
   onSaved,
 }: MemoryEditorProps) {
   const initial = useMemo(() => structured(entity), [entity]);
   const [filename, setFilename] = useState(initial.name || entity.title);
   const [body, setBody] = useState(initial.body ?? "");
-  const [busy, setBusy] = useState<"delete" | "dismiss-stale" | null>(null);
+  const [busy, setBusy] = useState<"dismiss-stale" | null>(null);
   const [note, setNote] = useState<string | null>(null);
 
   const accretesRel = useMemo(
@@ -62,33 +60,6 @@ export function MemoryEditor({
       getSerializedContent: () => buildNextContentFor(entity, draft),
     });
   }, [filename, body, entity, initial, onApiReady]);
-
-  async function handleDelete() {
-    if (!window.confirm("Delete this memory file? This cannot be undone.")) return;
-    setBusy("delete");
-    setNote(null);
-    try {
-      const r = await fetch("/api/bulk", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          action: "delete-entity",
-          entityIds: [entity.id],
-          confirm: true,
-        }),
-      });
-      const j = await r.json();
-      if (!j.ok) setNote(String(j.reason ?? "delete failed"));
-      else {
-        setNote("Memory deleted.");
-        onDeleted?.();
-      }
-    } catch (e) {
-      setNote(String(e));
-    } finally {
-      setBusy(null);
-    }
-  }
 
   async function handleDismissStale() {
     setBusy("dismiss-stale");
@@ -117,7 +88,6 @@ export function MemoryEditor({
   }
 
   const ghost = ecBtnClass();
-  const destructive = ecBtnClass(false, true);
 
   return (
     <div>
@@ -200,16 +170,6 @@ export function MemoryEditor({
               {busy === "dismiss-stale" ? "clearing…" : "Dismiss stale flag"}
             </button>
           )}
-
-          <button
-            type="button"
-            onClick={handleDelete}
-            disabled={busy !== null}
-            className={destructive.className}
-            style={destructive.style}
-          >
-            {busy === "delete" ? "deleting…" : "Dismiss memory"}
-          </button>
         </div>
         {note && (
           <div className="mt-[8px] text-[11.5px] text-[color:var(--text-muted)]">

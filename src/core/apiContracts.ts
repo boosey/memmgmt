@@ -97,17 +97,20 @@ export interface BulkRequest {
   entityIds: string[];
   /** Client must set this for `delete-entity` to proceed. */
   confirm?: boolean;
+  /** For promote-scope / demote-scope: the specific scope to move to.
+   * If omitted, moves one step up/down the ladder. */
+  targetScope?: Scope;
 }
 
 export interface BulkAffected {
   entityId: string;
   sourceFile: string;
   /** Populated when the operation wrote a backup before acting. */
-  backupPath?: string;
+  backupPath?: string | undefined;
   /** For scope moves: the new sourceFile after the move. */
-  newSourceFile?: string;
+  newSourceFile?: string | undefined;
   /** For dismiss-stale / flag-for-review: the marker file touched. */
-  markerFile?: string;
+  markerFile?: string | undefined;
 }
 
 export type BulkResponse =
@@ -156,7 +159,6 @@ export function applicableBulkActions(a: BulkApplicability): BulkAction[] {
 
 export const SCOPE_LADDER: readonly Scope[] = [
   "global",
-  "plugin",
   "slug",
   "project",
   "local",

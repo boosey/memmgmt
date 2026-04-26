@@ -64,17 +64,20 @@ export function McpServerEditor({
         />
       </FormRow>
 
-      <div className="flex items-center gap-2">
-        <input
-          type="checkbox"
-          id="mcp-enabled"
-          checked={enabled}
-          onChange={(e) => setEnabled(e.target.checked)}
-        />
-        <label htmlFor="mcp-enabled" className="text-[20px] font-medium text-[color:var(--ink)]">
-          Enabled
+      <FormRow label="State">
+        <label className="flex cursor-pointer items-center gap-2">
+          <input
+            type="checkbox"
+            checked={enabled}
+            disabled={!!entity.plugin}
+            onChange={(e) => setEnabled(e.target.checked)}
+            />
+            <span className="text-[12.5px] text-[color:var(--ink)]">
+            Enabled · {enabled ? "Active" : "Disabled (Claude will not see this server)"}
+            {!!entity.plugin && " · Controlled by plugin state"}
+            </span>
         </label>
-      </div>
+      </FormRow>
 
       <FormRow label="Command" hint="The executable to run for stdio transport.">
         <input

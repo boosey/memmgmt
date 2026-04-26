@@ -10,6 +10,8 @@ import {
   type BulkRequest,
   type BulkResponse,
 } from "../apiContracts";
+import { parseClaudeMd, serializeClaudeMd } from "../parsers/claudeMd";
+import { parseSettings, serializeSettings } from "../parsers/settings";
 
 export interface BulkContext {
   /** Root for persistent backups. */
@@ -267,7 +269,7 @@ async function runMergeIntoWinner(
 async function runScopeMove(
   req: BulkRequest,
   ctx: BulkContext,
-  direction: "up" | "down",
+  dir: "up" | "down",
 ): Promise<BulkResponse> {
   const affected: BulkAffected[] = [];
   for (const id of req.entityIds) {
@@ -281,33 +283,19 @@ async function runScopeMove(
         partiallyAffected: affected,
       };
     }
-    const target =
-      direction === "up" ? scopeAboveFrom(entity) : scopeBelowFrom(entity);
+
+    const target = req.targetScope ?? (dir === "up" ? scopeAbove(entity.scope) : scopeBelow(entity.scope));
     if (!target) {
       return {
         ok: false,
         action: req.action,
         reason: "action-not-applicable",
-        message: `no ${direction === "up" ? "higher" : "lower"} scope for ${entity.scope}`,
+        message: `cannot move ${entity.scope} ${dir}`,
         partiallyAffected: affected,
       };
     }
 
-    const canFileMove =
-      entity.type === "skill" ||
-      entity.type === "command" ||
-      entity.type === "agent" ||
-      entity.type === "memory";
-
-    if (!canFileMove) {
-      return {
-        ok: false,
-        action: req.action,
-        reason: "action-not-applicable",
-        message: `${entity.type} entities can't be scope-moved in v1.7`,
-        partiallyAffected: affected,
-      };
-    }
+    if (target === entity.scope) continue;
 
     const destFile = resolveDestFile(entity, target, ctx);
     if (!destFile) {
@@ -315,34 +303,69 @@ async function runScopeMove(
         ok: false,
         action: req.action,
         reason: "action-not-applicable",
-        message: `no destination path for ${entity.type} at scope ${target}`,
+        message: `no valid destination for ${entity.type} in ${target} scope`,
         partiallyAffected: affected,
       };
     }
 
-    // Back up the source file before anything mutates.
-    let backupPath: string;
-    try {
-      const bk = await createBackup({
-        sourceFile: entity.sourceFile,
-        scopeRoot: entity.scopeRoot,
-        backupsDir: ctx.backupsDir,
-      });
-      backupPath = bk.backupPath;
-    } catch (e) {
-      return {
-        ok: false,
-        action: req.action,
-        reason: "write-failed",
-        message: `backup failed: ${(e as Error).message}`,
-        partiallyAffected: affected,
-      };
-    }
+    const isFileBacked =
+      entity.type === "skill" ||
+      entity.type === "command" ||
+      entity.type === "agent" ||
+      entity.type === "memory" ||
+      entity.type === "keybinding" ||
+      entity.type === "plugin";
 
     try {
-      await fs.mkdir(path.dirname(destFile), { recursive: true });
-      await fs.copyFile(entity.sourceFile, destFile);
-      await fs.unlink(entity.sourceFile);
+      if (isFileBacked) {
+        // 1. Back up original
+        const bk = await createBackup({
+          sourceFile: entity.sourceFile,
+          scopeRoot: entity.scopeRoot,
+          backupsDir: ctx.backupsDir,
+        });
+
+        // 2. Write to new location
+        await fs.mkdir(path.dirname(destFile), { recursive: true });
+        await fs.writeFile(destFile, entity.rawContent, "utf8");
+
+        // 3. Delete original
+        await fs.unlink(entity.sourceFile);
+
+        affected.push({
+          entityId: entity.id,
+          sourceFile: entity.sourceFile,
+          newSourceFile: destFile,
+          backupPath: bk.backupPath,
+        });
+      } else {
+        // Entry-level move
+        // 1. Delete from source
+        const delRes = await deleteFileEntity(entity, ctx);
+        if (!delRes.ok) {
+          return {
+            ok: false,
+            action: req.action,
+            reason: delRes.reason,
+            message: delRes.message,
+            partiallyAffected: affected,
+          };
+        }
+        affected.push(delRes.affected);
+
+        // 2. Add to destination
+        const addRes = await addEntityToTarget(entity, destFile, ctx);
+        if (!addRes.ok) {
+          return {
+            ok: false,
+            action: req.action,
+            reason: "write-failed",
+            message: addRes.message!,
+            partiallyAffected: affected,
+          };
+        }
+        affected.push(addRes.affected!);
+      }
     } catch (e) {
       return {
         ok: false,
@@ -352,82 +375,125 @@ async function runScopeMove(
         partiallyAffected: affected,
       };
     }
-
-    affected.push({
-      entityId: entity.id,
-      sourceFile: entity.sourceFile,
-      backupPath,
-      newSourceFile: destFile,
-    });
   }
   return { ok: true, action: req.action, affected };
 }
 
-function scopeAboveFrom(entity: Entity): Scope | null {
-  // Wrapper preserves a hook for future entity-type-specific ladder tweaks.
-  return scopeAbove(entity.scope);
+async function addEntityToTarget(
+  entity: Entity,
+  destFile: string,
+  ctx: BulkContext,
+): Promise<{ ok: boolean; message?: string; affected?: BulkAffected }> {
+  try {
+    let content = "";
+    try {
+      content = await fs.readFile(destFile, "utf8");
+    } catch {
+      // file doesn't exist yet, that's fine
+    }
+
+    let nextContent: string;
+    if (entity.type === "standing-instruction") {
+      nextContent = content.trimEnd() + "\n\n" + entity.rawContent.trim() + "\n";
+    } else {
+      const parsed = parseSettings(content || "{}");
+      if (entity.type === "permission") {
+        const sd = entity.structured as any;
+        const group = sd?.group || "allow";
+        const val = sd?.value || entity.title;
+        const perms = (parsed.raw.permissions ??= {}) as any;
+        const list = (perms[group] ??= []) as string[];
+        list.push(val);
+      } else if (entity.type === "hook") {
+        const sd = entity.structured as any;
+        const hooks = (parsed.raw.hooks ??= {}) as any;
+        const list = (hooks[sd?.event || "PostToolUse"] ??= []) as any[];
+        list.push({ matcher: sd?.matcher || "*", hooks: sd?.hooks || [] });
+      } else if (entity.type === "env") {
+        const sd = entity.structured as any;
+        const env = (parsed.raw.env ??= {}) as any;
+        env[sd?.name || entity.title] = sd?.value || entity.intent;
+      } else {
+        return { ok: false, message: `adding ${entity.type} to settings.json not implemented` };
+      }
+      nextContent = serializeSettings(parsed);
+    }
+
+    // Backup dest before writing
+    let backupPath: string | undefined;
+    if (content) {
+      const bk = await createBackup({
+        sourceFile: destFile,
+        scopeRoot: ctx.claudeHome, // best effort
+        backupsDir: ctx.backupsDir,
+      });
+      backupPath = bk.backupPath;
+    }
+
+    await fs.mkdir(path.dirname(destFile), { recursive: true });
+    await fs.writeFile(destFile, nextContent, "utf8");
+
+    return {
+      ok: true,
+      affected: {
+        entityId: entity.id,
+        sourceFile: destFile,
+        backupPath,
+      },
+    };
+  } catch (e) {
+    return { ok: false, message: (e as Error).message };
+  }
 }
 
-function scopeBelowFrom(entity: Entity): Scope | null {
-  return scopeBelow(entity.scope);
-}
-
-// Canonical destination path for file-backed entities at the given scope.
-// We need the scope-root for the new scope as well — which we can't know from
-// the entity alone for `slug` and `project` / `local`. For the common cases
-// (global ↔ plugin, project ↔ local) we can derive it; for slug we require
-// an existing slug-scope entity we can piggyback on.
 function resolveDestFile(
   entity: Entity,
   target: Scope,
   ctx: BulkContext,
 ): string | null {
   const basename = path.basename(entity.sourceFile);
+  const isFileBacked =
+    entity.type === "skill" ||
+    entity.type === "command" ||
+    entity.type === "agent" ||
+    entity.type === "memory" ||
+    entity.type === "keybinding" ||
+    entity.type === "plugin";
+
   const kindDir = entity.type === "memory" ? "memory" : `${entity.type}s`;
 
+  let root: string | null = null;
   switch (target) {
-    case "global": {
-      // ~/.claude/skills/<name>/SKILL.md — preserve parent dir for SKILL.md layout.
-      return joinDestForKind(
-        ctx.claudeHome,
-        kindDir,
-        entity.sourceFile,
-        basename,
-      );
-    }
-    case "plugin":
-      // No canonical "plugin dir" — we'd need to know which plugin.
-      // Treat as inapplicable; caller will surface the error.
-      return null;
-    case "project": {
-      // We can only target `project` when we already have a concrete project
-      // root in hand — which is the case for `local` → `project` moves.
-      if (entity.scope === "local" || entity.scope === "project") {
-        return joinDestForKind(
-          path.join(entity.scopeRoot, ".claude"),
-          kindDir,
-          entity.sourceFile,
-          basename,
-        );
-      }
-      return null;
-    }
-    case "local": {
-      if (entity.scope === "project") {
-        return joinDestForKind(
-          path.join(entity.scopeRoot, ".claude"),
-          kindDir,
-          entity.sourceFile,
-          basename,
-        );
-      }
-      return null;
-    }
-    case "slug": {
-      if (entity.scope !== "slug") return null;
-      return joinDestForKind(entity.scopeRoot, kindDir, entity.sourceFile, basename);
-    }
+    case "global":
+      root = ctx.claudeHome;
+      break;
+    case "slug":
+      root = entity.slugRef ? path.join(ctx.claudeHome, "projects", entity.slugRef) : null;
+      break;
+    case "project":
+      root = entity.scopeRoot; // scopeRoot is the project root for project/local/slug entities
+      break;
+    case "local":
+      root = entity.scopeRoot;
+      break;
   }
+
+  if (!root) return null;
+
+  if (isFileBacked) {
+    return joinDestForKind(root, kindDir, entity.sourceFile, basename);
+  }
+
+  // Entry-level
+  if (entity.type === "standing-instruction") {
+    if (target === "local") return path.join(root, "CLAUDE.local.md");
+    return path.join(root, "CLAUDE.md");
+  }
+
+  // settings.json backed
+  const settingsDir = (target === "project" || target === "local") ? path.join(root, ".claude") : root;
+  if (target === "local") return path.join(settingsDir, "settings.local.json");
+  return path.join(settingsDir, "settings.json");
 }
 
 // Build `<root>/<kindDir>/<tail>` where tail is either `<name>/SKILL.md`
@@ -549,13 +615,13 @@ async function readState(markerFile: string): Promise<MemmgmtState> {
   }
 }
 
-// ── Low-level delete (file-layer for file-backed types; no-op for entries) ─
+// ── Low-level delete (file-layer for file-backed types; entry-layer for others) ─
 
 type DeleteResult =
   | { ok: true; affected: BulkAffected }
   | {
       ok: false;
-      reason: "write-failed" | "action-not-applicable";
+      reason: "write-failed" | "action-not-applicable" | "internal";
       message: string;
     };
 
@@ -563,9 +629,15 @@ async function deleteFileEntity(
   entity: Entity,
   ctx: BulkContext,
 ): Promise<DeleteResult> {
-  // Settings-backed + CLAUDE.md-backed entries live inside a shared file;
-  // deleting the underlying file would nuke unrelated entries. v1.7 scope
-  // limit: only file-per-entity kinds are deletable via bulk ops.
+  // Plugin-contributed entities are locked.
+  if (entity.plugin) {
+    return {
+      ok: false,
+      reason: "action-not-applicable",
+      message: `${entity.type} contributed by plugin is read-only`,
+    };
+  }
+
   const fileBacked =
     entity.type === "skill" ||
     entity.type === "command" ||
@@ -573,30 +645,83 @@ async function deleteFileEntity(
     entity.type === "memory" ||
     entity.type === "keybinding" ||
     entity.type === "plugin";
-  if (!fileBacked) {
+
+  if (fileBacked) {
+    let backupPath: string;
+    try {
+      const bk = await createBackup({
+        sourceFile: entity.sourceFile,
+        scopeRoot: entity.scopeRoot,
+        backupsDir: ctx.backupsDir,
+      });
+      backupPath = bk.backupPath;
+    } catch (e) {
+      return {
+        ok: false,
+        reason: "write-failed",
+        message: `backup failed: ${(e as Error).message}`,
+      };
+    }
+    try {
+      await fs.unlink(entity.sourceFile);
+    } catch (e) {
+      return {
+        ok: false,
+        reason: "write-failed",
+        message: (e as Error).message,
+      };
+    }
     return {
-      ok: false,
-      reason: "action-not-applicable",
-      message: `${entity.type} entries can't be bulk-deleted at the file layer`,
+      ok: true,
+      affected: {
+        entityId: entity.id,
+        sourceFile: entity.sourceFile,
+        backupPath,
+      },
     };
   }
-  let backupPath: string;
+
+  // Entry-level entities (share a file with other entities)
   try {
+    const raw = await fs.readFile(entity.sourceFile, "utf8");
+    let nextContent: string;
+
+    if (entity.type === "standing-instruction") {
+      const sections = parseClaudeMd(raw);
+      const nextSections = sections.filter((s) => {
+        // Match by headingPath (exact identity)
+        const key = JSON.stringify(s.headingPath);
+        return key !== entity.entryKey;
+      });
+      if (nextSections.length === sections.length) {
+        return { ok: false, reason: "internal", message: "section not found" };
+      }
+      nextContent = serializeClaudeMd(nextSections);
+    } else {
+      // settings.json backed
+      const parsed = parseSettings(raw);
+      if (!entity.entryKey) {
+        return { ok: false, reason: "internal", message: "entryKey missing" };
+      }
+      deleteEntryFromSettings(parsed.raw, entity.entryKey);
+      nextContent = serializeSettings(parsed);
+    }
+
     const bk = await createBackup({
       sourceFile: entity.sourceFile,
       scopeRoot: entity.scopeRoot,
       backupsDir: ctx.backupsDir,
     });
-    backupPath = bk.backupPath;
-  } catch (e) {
+    await fs.writeFile(entity.sourceFile, nextContent, "utf8");
+
     return {
-      ok: false,
-      reason: "write-failed",
-      message: `backup failed: ${(e as Error).message}`,
+      ok: true,
+      affected: {
+        entityId: entity.id,
+        sourceFile: entity.sourceFile,
+        backupPath: bk.backupPath,
+      },
     };
-  }
-  try {
-    await fs.unlink(entity.sourceFile);
   } catch (e) {
     return {
       ok: false,
@@ -604,13 +729,29 @@ async function deleteFileEntity(
       message: (e as Error).message,
     };
   }
-  return {
-    ok: true,
-    affected: {
-      entityId: entity.id,
-      sourceFile: entity.sourceFile,
-      backupPath,
-    },
-  };
 }
 
+/**
+ * Removes a nested property from an object using pseudo-JSON-pointer syntax
+ * like "permissions.allow[0]" or "env.DEBUG".
+ */
+function deleteEntryFromSettings(obj: any, pathStr: string) {
+  const parts = pathStr.split(".");
+  let cur = obj;
+  for (let i = 0; i < parts.length - 1; i++) {
+    const p = parts[i]!;
+    if (!cur[p]) return;
+    cur = cur[p];
+  }
+  const last = parts[parts.length - 1]!;
+  const arrayMatch = /(.*)\[(\d+)\]$/.exec(last);
+  if (arrayMatch) {
+    const key = arrayMatch[1]!;
+    const index = parseInt(arrayMatch[2]!, 10);
+    if (Array.isArray(cur[key])) {
+      cur[key].splice(index, 1);
+    }
+  } else {
+    delete cur[last];
+  }
+}

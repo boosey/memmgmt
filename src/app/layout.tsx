@@ -17,7 +17,7 @@ const jetBrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "memmgmt",
+  title: "The Memory Register",
   description: "Local-only manager for Claude Code configuration.",
 };
 

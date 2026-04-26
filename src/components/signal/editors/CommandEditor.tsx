@@ -13,6 +13,7 @@ function structured(entity: Entity): ParsedCommand {
     (entity.structured as ParsedCommand) ?? {
       description: entity.intent,
       author: null,
+      enabled: true,
       body: "",
       extraFrontmatter: {},
     }
@@ -35,6 +36,7 @@ export function CommandEditor({
   const stripped = (entity.title ?? "").replace(/^\//, "");
   const [name, setName] = useState(stripped);
   const [description, setDescription] = useState(initial.description);
+  const [enabled, setEnabled] = useState(initial.enabled !== false);
   const [args, setArgs] = useState<string>(
     ((initial.extraFrontmatter?.["argument-hint"] as string | undefined) ??
       "$ARGUMENTS"),
@@ -51,6 +53,7 @@ export function CommandEditor({
     const draft: ParsedCommand = {
       description,
       author: initial.author,
+      enabled,
       body,
       extraFrontmatter: extra,
     };
@@ -58,7 +61,7 @@ export function CommandEditor({
       currentTitle: name,
       getSerializedContent: () => buildNextContentFor(entity, draft),
     });
-  }, [name, description, args, body, entity, initial, onApiReady]);
+  }, [name, description, enabled, args, body, entity, initial, onApiReady]);
 
   return (
     <div>
@@ -79,6 +82,20 @@ export function CommandEditor({
             className="flex-1 border-none bg-transparent px-[10px] py-2 font-mono text-[12.5px] text-[color:var(--ink)] outline-none"
           />
         </div>
+      </FormRow>
+      <FormRow label="State">
+        <label className="flex cursor-pointer items-center gap-2">
+          <input
+            type="checkbox"
+            checked={enabled}
+            disabled={!!entity.plugin}
+            onChange={(e) => setEnabled(e.target.checked)}
+          />
+          <span className="text-[12.5px] text-[color:var(--ink)]">
+            Enabled · {enabled ? "Active" : "Disabled (Claude will not see this command)"}
+            {!!entity.plugin && " · Controlled by plugin state"}
+          </span>
+        </label>
       </FormRow>
       <FormRow
         label="Description"

@@ -57,7 +57,7 @@ export function ImportList({
             </span>
             {broken && (
               <span
-                className="smallcaps text-[9px] tracking-[0.14em]"
+                className="smallcaps text-[12px] tracking-[0.14em]"
                 style={{ color: "var(--semantic-error)" }}
               >
                 missing

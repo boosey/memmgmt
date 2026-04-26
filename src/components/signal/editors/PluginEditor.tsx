@@ -37,6 +37,18 @@ export function PluginEditor({
   );
   const [enabled, setEnabled] = useState<boolean>(initial.enabled ?? true);
 
+  const globalSettings = useMemo(() => 
+    allEntities.find(e => e.type === 'enabled-plugins' && e.scope === 'global'),
+    [allEntities]
+  );
+  
+  const projectSettings = useMemo(() => 
+    allEntities.find(e => e.type === 'enabled-plugins' && (e.scope === 'project' || e.scope === 'local')),
+    [allEntities]
+  );
+
+  const activeSettings = projectSettings || globalSettings;
+
   useEffect(() => {
     onTitleChange?.(name);
   }, [name, onTitleChange]);
@@ -45,11 +57,31 @@ export function PluginEditor({
     const baseRaw = { ...((initial.raw ?? {}) as Record<string, unknown>) };
     baseRaw.name = name;
     if (source) baseRaw.repository = source;
+    
+    const nameChanged = name !== (initial.name ?? entity.title);
+    const sourceChanged = source !== (initial.source ?? (initial.raw?.repository as string) ?? "");
+    const enabledChanged = enabled !== (initial.enabled ?? true);
+    
+    const isOnlyToggle = !nameChanged && !sourceChanged && enabledChanged;
+
     onApiReady({
       currentTitle: name,
-      getSerializedContent: () => buildNextContentFor(entity, baseRaw),
+      getSerializedContent: () => {
+        if (isOnlyToggle && activeSettings) {
+          return buildNextContentFor(entity, {
+            pluginName: name,
+            enabled,
+            targetSettings: activeSettings
+          });
+        }
+        return buildNextContentFor(entity, baseRaw);
+      },
+      ...(isOnlyToggle && activeSettings ? {
+        sourceFile: activeSettings.sourceFile,
+        scopeRoot: activeSettings.scopeRoot,
+      } : {})
     });
-  }, [name, source, enabled, entity, initial, onApiReady]);
+  }, [name, source, enabled, entity, initial, onApiReady, activeSettings]);
 
   const provides = useMemo(
     () => relations.filter((r) => r.kind === "provides" && r.from === entity.id),
@@ -82,19 +114,33 @@ export function PluginEditor({
         />
       </FormRow>
       <FormRow label="State">
-        <label className="flex cursor-pointer items-center gap-2">
-          <input
-            type="checkbox"
-            checked={enabled}
-            onChange={(e) => setEnabled(e.target.checked)}
-          />
-          <span className="text-[12.5px] text-[color:var(--ink)]">
-            Enabled ·{" "}
-            {enabled
-              ? "provides skills and commands to all sessions"
-              : "disabled — entities below are not active"}
-          </span>
-        </label>
+        <div className="flex flex-col gap-3">
+          <label className="flex cursor-pointer items-center gap-2">
+            <input
+              type="checkbox"
+              checked={enabled}
+              onChange={(e) => setEnabled(e.target.checked)}
+            />
+            <span className="text-[12.5px] text-[color:var(--ink)]">
+              Enabled · {enabled ? "Active" : "Disabled"}
+            </span>
+          </label>
+          
+          <div className="flex items-center gap-2 border-t border-[color:var(--rule-soft)] pt-2">
+            <span className="smallcaps text-[10px] text-[color:var(--text-muted)]">Targeting:</span>
+            <span className={[
+              "rounded-sm px-1.5 py-0.5 font-mono text-[10px] uppercase tracking-wider",
+              projectSettings ? "bg-[color:var(--author-you)] text-[color:var(--author-you-ink)]" : "bg-[color:var(--paper-deep)] text-[color:var(--text-muted)]"
+            ].join(" ")}>
+              {projectSettings ? (projectSettings.scope === 'local' ? "Local Settings" : "Project Settings") : "Global Settings"}
+            </span>
+            <span className="text-[11px] text-[color:var(--text-faint)] italic">
+              {projectSettings 
+                ? "Changes will only affect this project." 
+                : "No project settings found; changes will be global."}
+            </span>
+          </div>
+        </div>
       </FormRow>
 
       <FormRow

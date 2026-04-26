@@ -13,23 +13,21 @@ const AUTHOR_STRIPE: Record<AuthorBucket, string> = {
   unknown: "var(--author-unknown)",
 };
 
-function truncate(s: string, max: number): string {
-  if (s.length <= max) return s;
-  return s.slice(0, max - 2) + "…";
-}
-
 export function Composite({ winner, shadowedCount }: CompositeProps) {
   const contested = shadowedCount > 0;
   return (
     <div
-      className="rounded-sm bg-[color:var(--paper)] px-[10px] py-[8px]"
+      className="min-w-0 rounded-sm bg-[color:var(--paper)] px-[10px] py-[8px]"
       style={{
         border: "1.5px solid var(--ink)",
         borderLeft: `3px solid ${AUTHOR_STRIPE[winner.author]}`,
       }}
     >
-      <div className="text-[13px] leading-[1.35] font-medium text-[color:var(--ink)]">
-        {truncate(winner.intent, 56)}
+      <div
+        className="truncate text-[13px] font-medium leading-[1.35] text-[color:var(--ink)]"
+        title={winner.intent}
+      >
+        {winner.intent}
       </div>
       <div className="mt-[3px] flex items-center gap-2">
         <AuthorBadge author={winner.author} />

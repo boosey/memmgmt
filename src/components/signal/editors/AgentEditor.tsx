@@ -32,6 +32,7 @@ export function AgentEditor({
   const initial = useMemo(() => structured(entity), [entity]);
   const [name, setName] = useState(initial?.name || entity.title);
   const [desc, setDesc] = useState(initial?.description || entity.intent);
+  const [enabled, setEnabled] = useState(initial?.enabled !== false);
   const [model, setModel] = useState(initial?.model || "");
   const [tools, setTools] = useState<string[]>(initial?.tools || []);
   const [toolMode, setToolMode] = useState<"inherit" | "restrict">(
@@ -53,11 +54,12 @@ export function AgentEditor({
           tools: toolMode === "inherit" ? [] : tools,
           model: model || null,
           author: initial?.author ?? null,
+          enabled,
           body,
           extraFrontmatter: initial?.extraFrontmatter ?? {},
         }),
     });
-  }, [name, desc, model, tools, toolMode, body, initial, onApiReady]);
+  }, [name, desc, enabled, model, tools, toolMode, body, initial, onApiReady]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -71,6 +73,21 @@ export function AgentEditor({
           onChange={(e) => setName(e.target.value)}
           className={monoClass()}
         />
+      </FormRow>
+
+      <FormRow label="State">
+        <label className="flex cursor-pointer items-center gap-2">
+          <input
+            type="checkbox"
+            checked={enabled}
+            disabled={!!entity.plugin}
+            onChange={(e) => setEnabled(e.target.checked)}
+          />
+          <span className="text-[12.5px] text-[color:var(--ink)]">
+            Enabled · {enabled ? "Active" : "Disabled (Claude will not see this agent)"}
+            {!!entity.plugin && " · Controlled by plugin state"}
+          </span>
+        </label>
       </FormRow>
 
       <FormRow

@@ -13,9 +13,14 @@ const Schema = z.object({
     "dismiss-stale",
     "flag-for-review",
     "delete-entity",
+    "merge-into-winner",
+    "keep-as-override",
   ]),
   entityIds: z.array(z.string()),
   confirm: z.boolean().optional(),
+  targetScope: z
+    .enum(["global", "plugin", "slug", "project", "local"])
+    .optional(),
 });
 
 export const runtime = "nodejs";
@@ -27,17 +32,11 @@ export async function POST(req: Request) {
   }
   const { backupsDir, claudeHome } = resolveHomePaths();
   const { payload } = await getOrBuildGraph();
-  const { action, entityIds, confirm } = parsed.data;
-  const res = await dispatchBulk(
-    confirm === undefined
-      ? { action, entityIds }
-      : { action, entityIds, confirm },
-    {
-      backupsDir,
-      claudeHome,
-      knownEntities: payload.entities,
-    },
-  );
+  const res = await dispatchBulk(parsed.data as any, {
+    backupsDir,
+    claudeHome,
+    knownEntities: payload.entities,
+  });
   if (res.ok) invalidate();
   return NextResponse.json(res, { status: res.ok ? 200 : 409 });
 }

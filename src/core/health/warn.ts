@@ -6,5 +6,5 @@ import type { Entity } from "../entities";
  * via the plugin manifest.
  */
 export function shouldWarn(entity: Entity): boolean {
-  return entity.author === "unknown" && entity.scope === "plugin";
+  return entity.author === "unknown" && !!entity.plugin;
 }

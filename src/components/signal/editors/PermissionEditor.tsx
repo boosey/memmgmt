@@ -27,10 +27,15 @@ function initialEffect(entity: Entity): PermissionEffect {
   return "allow";
 }
 
+interface PermissionEditorProps extends TypedEditorProps {
+  onStanzasChange?: (stanzas: string[]) => void;
+}
+
 export function PermissionEditor({
   entity,
   onApiReady,
-}: TypedEditorProps) {
+  onStanzasChange,
+}: PermissionEditorProps) {
   const sd = entity.structured as { value?: string } | null;
   const initialValue = sd?.value ?? entity.title ?? "";
   const parsed = useMemo(
@@ -45,15 +50,22 @@ export function PermissionEditor({
   const preview = permissionPreview({ effect, tool, pattern });
   const effectColor = permissionPreviewColorClass(effect);
 
+  const ruleValue = useMemo(() => formatPermissionValue(tool, pattern), [tool, pattern]);
+
+  useEffect(() => {
+    onStanzasChange?.([ruleValue]);
+  }, [ruleValue, onStanzasChange]);
+
   useEffect(() => {
     onApiReady({
+      stanzas: [ruleValue],
       getSerializedContent: () =>
         buildNextContentFor(entity, {
           group: effect,
-          value: formatPermissionValue(tool, pattern),
+          value: ruleValue,
         }),
     });
-  }, [effect, tool, pattern, entity, onApiReady]);
+  }, [effect, ruleValue, entity, onApiReady]);
 
   return (
     <div>

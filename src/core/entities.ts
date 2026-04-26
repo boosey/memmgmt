@@ -7,23 +7,21 @@
 
 // ── Scopes ───────────────────────────────────────────────────────────────────
 
-export type Scope = "global" | "plugin" | "slug" | "project" | "local";
+export type Scope = "global" | "slug" | "project" | "local";
 
 export const SCOPE_ORDER: readonly Scope[] = [
   "global",
-  "plugin",
   "slug",
   "project",
   "local",
 ] as const;
 
-// Precedence: later scopes win on conflict (local > project > slug > plugin > global).
+// Precedence: later scopes win on conflict (local > project > slug > global).
 export const SCOPE_PRECEDENCE: Record<Scope, number> = {
   global: 1,
-  plugin: 2,
-  slug: 3,
-  project: 4,
-  local: 5,
+  slug: 2,
+  project: 3,
+  local: 4,
 };
 
 // ── Entity types ─────────────────────────────────────────────────────────────
@@ -39,7 +37,8 @@ export type EntityType =
   | "env"
   | "keybinding"
   | "agent"        // new in v1.6 — ~/.claude/agents/**/*.md + project agents
-  | "mcp-server";  // new in v1.6 — extracted from settings.json mcpServers
+  | "mcp-server"   // new in v1.6 — extracted from settings.json mcpServers
+  | "enabled-plugins"; // new — extracted from settings.json enabledPlugins
 
 export const ENTITY_TYPE_ORDER: readonly EntityType[] = [
   "standing-instruction",
@@ -53,6 +52,7 @@ export const ENTITY_TYPE_ORDER: readonly EntityType[] = [
   "keybinding",
   "agent",
   "mcp-server",
+  "enabled-plugins",
 ] as const;
 
 // ── Provenance buckets ───────────────────────────────────────────────────────
@@ -94,10 +94,17 @@ export interface Entity {
   scopeRoot: string;
   mtimeMs: number;
   rawContent: string;
+  entryKey?: string | undefined;
 
   // Parse / dead-import signalling — shown as badges on the row.
   parseError?: string;
   hasDeadImports?: boolean;
+  isInformational?: boolean;
+
+  // Whether the entity is active in the current environment.
+  // Defaults to true for most types; explicitly false for disabled MCPs/Plugins.
+  enabled?: boolean;
+  disabledReason?: "plugin" | "config";
 
   // Type-specific parsed data for editors in v1.7. `unknown` by design —
   // per-type editor components narrow via the `type` discriminant.

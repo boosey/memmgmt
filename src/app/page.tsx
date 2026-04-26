@@ -33,6 +33,7 @@ import {
 } from "@/hooks/useHealthFilter";
 import { ProjectFilterProvider, useProjectFilter } from "@/hooks/useProjectFilter";
 import { useGraph } from "@/hooks/useGraph";
+import { SignalFilterProvider, useSignalFilter, entityMatchesSignalFilter } from "@/hooks/useSignalFilter";
 
 export default function HomePage() {
   return (
@@ -40,8 +41,10 @@ export default function HomePage() {
       <SelectionProvider>
         <HealthFilterProvider>
           <ProjectFilterProvider>
-            <SignalFlowPage />
-            <UndoToaster />
+            <SignalFilterProvider>
+              <SignalFlowPage />
+              <UndoToaster />
+            </SignalFilterProvider>
           </ProjectFilterProvider>
         </HealthFilterProvider>
       </SelectionProvider>
@@ -136,6 +139,7 @@ function Loaded({
   const selection = useSelection();
   const healthFilter = useHealthFilter();
   const projectFilter = useProjectFilter();
+  const signalFilter = useSignalFilter();
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
   const [manageGhostsOpen, setManageGhostsOpen] = useState(false);
   const [brokenImport, setBrokenImport] = useState<{
@@ -181,8 +185,8 @@ function Loaded({
   const filteredEntities = useMemo(() => {
     if (!activeProject) return graph.entities;
     return graph.entities.filter((e) => {
-      // Global and plugin scopes always apply.
-      if (e.scope === "global" || e.scope === "plugin") return true;
+      // Global scope always applies.
+      if (e.scope === "global") return true;
       // Slug scope must match the selected slug.
       if (e.scope === "slug") return e.slugRef === activeProject.name;
       // Project and local scopes must match the decoded project path.
@@ -200,10 +204,26 @@ function Loaded({
 
   const visibleRows = useMemo(
     () =>
-      rows.filter((r) =>
-        groupMatchesFilter(r.group, healthFilter.active, graph.pseudoNodes),
+      rows.filter(
+        (r) =>
+          groupMatchesFilter(r.group, healthFilter.active, graph.pseudoNodes) &&
+          r.group.some((e) =>
+            entityMatchesSignalFilter(
+              e,
+              signalFilter.source,
+              signalFilter.status,
+              signalFilter.showInformational,
+            ),
+          ),
       ),
-    [rows, healthFilter.active, graph.pseudoNodes],
+    [
+      rows,
+      healthFilter.active,
+      graph.pseudoNodes,
+      signalFilter.source,
+      signalFilter.status,
+      signalFilter.showInformational,
+    ],
   );
 
   const pinnedEntity = pinnedId ? entitiesById.get(pinnedId) : undefined;
@@ -252,6 +272,7 @@ function Loaded({
       <Masthead />
       <HealthRibbon
         graph={graph}
+        entities={filteredEntities}
         onManageGhosts={() => setManageGhostsOpen(true)}
       />
       {pinnedTarget && (

@@ -9,7 +9,9 @@ test("cold load renders Masthead + TypeTabs + first SignalRow in under 10s", asy
   expect(elapsed).toBeLessThan(10_000);
 
   // Masthead renders the wordmark + edition tag.
-  await expect(page.getByTestId("masthead")).toContainText(/memmgmt/i);
+  await expect(page.getByTestId("masthead")).toContainText(
+    /The Memory Register/i,
+  );
   await expect(page.getByTestId("masthead")).toContainText(
     /Signal Edition · v1\.6/,
   );

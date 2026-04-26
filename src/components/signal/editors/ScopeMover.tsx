@@ -3,8 +3,6 @@ import { useState } from "react";
 import type { Entity, Scope } from "@/core/entities";
 import {
   SCOPE_LADDER,
-  scopeAbove,
-  scopeBelow,
   type BulkAction,
   type BulkRequest,
   type BulkResponse,
@@ -19,20 +17,20 @@ interface ScopeMoverProps {
 /**
  * Scope moves flow through /api/bulk (promote-scope / demote-scope) so the
  * backend can re-root the source path, rewrite relations, and leave a backup
- * in one transaction. This UI only exposes direct neighbors — the multi-step
- * ladder traversal isn't a v1.7 surface.
+ * in one transaction.
  */
 export function ScopeMover({ entity, onMoved }: ScopeMoverProps) {
   const [scope, setScope] = useState<Scope>(entity.scope);
   const [pending, setPending] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const above = scopeAbove(entity.scope);
-  const below = scopeBelow(entity.scope);
+  const currentIndex = SCOPE_LADDER.indexOf(entity.scope);
+  const targetIndex = SCOPE_LADDER.indexOf(scope);
 
   function scopeToAction(target: Scope): BulkAction | null {
-    if (target === above) return "promote-scope";
-    if (target === below) return "demote-scope";
+    const idx = SCOPE_LADDER.indexOf(target);
+    if (idx < currentIndex) return "promote-scope";
+    if (idx > currentIndex) return "demote-scope";
     return null;
   }
 
@@ -49,6 +47,7 @@ export function ScopeMover({ entity, onMoved }: ScopeMoverProps) {
         action,
         entityIds: [entity.id],
         confirm: true,
+        targetScope: scope,
       };
       const resp = await fetch("/api/bulk", {
         method: "POST",
@@ -72,24 +71,16 @@ export function ScopeMover({ entity, onMoved }: ScopeMoverProps) {
     <div data-testid="scope-mover">
       <FormRow
         label="Move to scope"
-        hint="Promote (one step up) or demote (one step down). Writes a backup + rewrites relations."
+        hint="Relocate this entity to a different scope. Writes a backup + rewrites relations."
       >
         <div className="flex flex-wrap gap-[6px]">
-          {SCOPE_LADDER.map((sk) => {
-            const reachable =
-              sk === entity.scope || sk === above || sk === below;
-            const title = reachable
-              ? null
-              : "Only neighbor scopes are reachable from this entity.";
+          {SCOPE_LADDER.filter((sk) => sk !== "plugin").map((sk) => {
             return (
               <Chip
                 key={sk}
                 label={sk.toUpperCase()}
                 active={scope === sk}
-                onClick={() => {
-                  if (reachable) setScope(sk);
-                }}
-                {...(title ? { title } : {})}
+                onClick={() => setScope(sk)}
               />
             );
           })}

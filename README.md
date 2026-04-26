@@ -1,4 +1,4 @@
-# memmgmt
+# The Memory Register
 
 Local-only web UI for managing your Claude Code configuration surface — CLAUDE.md, skills, slash commands, settings, hooks, keybindings, and auto-memory — across Global, Slug, Plugin, Project, and Local scopes.
 

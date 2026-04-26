@@ -2,7 +2,6 @@ import type { Scope } from "@/core/entities";
 
 const SCOPE_LABELS: Record<Scope, string> = {
   global: "Global",
-  plugin: "Plugin",
   slug: "Slug",
   project: "Project",
   local: "Local",

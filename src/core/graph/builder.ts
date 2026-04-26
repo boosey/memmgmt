@@ -32,19 +32,35 @@ export function buildGraph(raws: RawArtifact[], opts: BuildOptions = {}): Graph 
   const parseErrors: ParseError[] = [];
 
   const pluginManifestByRoot = new Map<string, PluginManifestInfo>();
+  const enabledPlugins = new Set<string>();
+
   for (const r of raws) {
-    if (r.kind !== "plugin-manifest") continue;
-    try {
-      const m = parsePluginManifest(r.rawContent, r.sourceFile);
-      pluginManifestByRoot.set(r.scopeRoot, {
-        author: m.author,
-        publisher: m.publisher,
-      });
-    } catch (e) {
-      parseErrors.push({
-        artifactId: r.id,
-        message: `plugin manifest parse: ${(e as Error).message}`,
-      });
+    if (r.kind === "plugin-manifest") {
+      try {
+        const m = parsePluginManifest(r.rawContent, r.sourceFile);
+        pluginManifestByRoot.set(r.scopeRoot, {
+          author: m.author,
+          publisher: m.publisher,
+        });
+      } catch (e) {
+        parseErrors.push({
+          artifactId: r.id,
+          message: `plugin manifest parse: ${(e as Error).message}`,
+        });
+      }
+    }
+    if (r.kind === "settings-entry") {
+      try {
+        const parsed = parseSettings(r.rawContent);
+        const ep = parsed.raw.enabledPlugins;
+        if (Array.isArray(ep)) {
+          ep.forEach((p) => {
+            if (typeof p === "string") enabledPlugins.add(p);
+          });
+        }
+      } catch {
+        /* ignore settings parse errors here, handled in loop below */
+      }
     }
   }
 
@@ -82,7 +98,7 @@ export function buildGraph(raws: RawArtifact[], opts: BuildOptions = {}): Graph 
           nodes.push(emitKeybindings(r));
           break;
         case "plugin-manifest":
-          nodes.push(...emitPluginManifest(r));
+          nodes.push(...emitPluginManifest(r, enabledPlugins));
           break;
       }
     } catch (e) {
@@ -136,7 +152,6 @@ export function buildGraph(raws: RawArtifact[], opts: BuildOptions = {}): Graph 
   for (const n of nodes)
     if (n.kind === "plugin-manifest") pluginsByRoot.set(n.scopeRoot, n);
   for (const n of nodes) {
-    if (n.scope !== "plugin") continue;
     if (n.kind === "plugin-manifest") continue;
     const plug = pluginsByRoot.get(n.scopeRoot);
     if (plug) {
@@ -146,6 +161,11 @@ export function buildGraph(raws: RawArtifact[], opts: BuildOptions = {}): Graph 
         from: plug.id,
         to: n.id,
       });
+      // If the plugin is disabled, all its provided entities are also disabled.
+      if (plug.enabled === false) {
+        n.enabled = false;
+        n.disabledReason = "plugin";
+      }
     }
   }
 
@@ -180,6 +200,7 @@ function baseNode(
   entryKey?: string,
   idSuffix = "",
   kindOverride?: ArtifactKind,
+  enabled?: boolean,
 ): ArtifactNode {
   const id = idSuffix ? `${r.id}::${idSuffix}` : r.id;
   const kind = kindOverride ?? r.kind;
@@ -206,6 +227,8 @@ function baseNode(
   if (r.slug !== undefined) node.slug = r.slug;
   if (author.publisher) node.publisher = author.publisher;
   if (entryKey !== undefined) node.entryKey = entryKey;
+  if (enabled !== undefined) node.enabled = enabled;
+  if (enabled === false) node.disabledReason = "config";
   return node;
 }
 
@@ -245,16 +268,23 @@ function emitClaudeMdSections(r: RawArtifact): ArtifactNode[] {
     frontmatterAuthor: null,
     pluginManifest: null,
   });
-  return sections.map((s, i) =>
-    baseNode(
-      r,
-      s.heading || `(pre-heading) ${r.sourceFile.split(/[\\/]/).pop()}`,
-      s,
-      author,
-      s.headingPath.join(" / ") || `section-${i}`,
-      `s${i}`,
-    ),
-  );
+
+  return sections
+    .map((s, i) => {
+      const stripped = s.body.replace(/<!--[\s\S]*?-->/g, "").trim();
+      const node = baseNode(
+        r,
+        s.heading || `(pre-heading) ${r.sourceFile.split(/[\\/]/).pop()}`,
+        s,
+        author,
+        s.headingPath.join(" / ") || `section-${i}`,
+        `s${i}`,
+      );
+      if (stripped === "" && s.imports.length === 0) {
+        node.isInformational = true;
+      }
+      return node;
+    });
 }
 
 function emitSettingsEntries(r: RawArtifact): ArtifactNode[] {
@@ -264,16 +294,22 @@ function emitSettingsEntries(r: RawArtifact): ArtifactNode[] {
     frontmatterAuthor: null,
     pluginManifest: null,
   });
-  return parsed.entries.map((e) =>
-    baseNode(
+  return parsed.entries.map((e) => {
+    let enabled: boolean | undefined = undefined;
+    if (e.kind === "mcp-server") {
+      enabled = e.server.enabled;
+    }
+    return baseNode(
       r,
       titleForSettingsEntry(e),
       e,
       author,
       e.entryKey,
       e.entryKey.replace(/[^\w]/g, "_"),
-    ),
-  );
+      undefined,
+      enabled,
+    );
+  });
 }
 
 function titleForSettingsEntry(e: {
@@ -305,6 +341,10 @@ function emitSkill(
     parsed.name || (r.sourceFile.split(/[\\/]/).pop() ?? ""),
     parsed,
     author,
+    undefined,
+    "",
+    undefined,
+    parsed.enabled,
   );
 }
 
@@ -322,7 +362,16 @@ function emitCommand(
     /\.md$/,
     "",
   );
-  return baseNode(r, filename, { ...parsed, filename }, author);
+  return baseNode(
+    r,
+    filename,
+    { ...parsed, filename },
+    author,
+    undefined,
+    "",
+    undefined,
+    parsed.enabled,
+  );
 }
 
 function emitAgent(
@@ -347,6 +396,10 @@ function emitAgent(
     effectiveName,
     { ...parsed, name: effectiveName, filename: effectiveName },
     author,
+    undefined,
+    "",
+    undefined,
+    parsed.enabled,
   );
 }
 
@@ -387,14 +440,29 @@ function emitKeybindings(r: RawArtifact): ArtifactNode {
   return baseNode(r, "Keybindings", parsed, author);
 }
 
-function emitPluginManifest(r: RawArtifact): ArtifactNode[] {
+function emitPluginManifest(
+  r: RawArtifact,
+  enabledPlugins: Set<string>,
+): ArtifactNode[] {
   const parsed = parsePluginManifest(r.rawContent, r.sourceFile);
   const author = resolveAuthor({
-    scope: "plugin",
+    scope: r.scope,
     frontmatterAuthor: null,
     pluginManifest: { author: parsed.author, publisher: parsed.publisher },
   });
-  const out: ArtifactNode[] = [baseNode(r, parsed.name, parsed, author)];
+  const isEnabled = enabledPlugins.has(parsed.name);
+  const out: ArtifactNode[] = [
+    baseNode(
+      r,
+      parsed.name,
+      { ...parsed, enabled: isEnabled },
+      author,
+      undefined,
+      "",
+      undefined,
+      isEnabled,
+    ),
+  ];
 
   // Plugin manifests can embed mcpServers directly. Lift them into per-server
   // settings-entry nodes so the transform layer emits mcp-server entities with
@@ -411,6 +479,8 @@ function emitPluginManifest(r: RawArtifact): ArtifactNode[] {
         entryKey: `mcpServers.${name}`,
         server,
       };
+      // If the plugin is disabled, all its provided servers are also disabled.
+      const serverEnabled = isEnabled && server.enabled;
       out.push(
         baseNode(
           r,
@@ -420,6 +490,7 @@ function emitPluginManifest(r: RawArtifact): ArtifactNode[] {
           entry.entryKey,
           `mcp_${name.replace(/[^\w]/g, "_")}`,
           "settings-entry",
+          serverEnabled,
         ),
       );
     }

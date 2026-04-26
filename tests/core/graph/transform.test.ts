@@ -86,7 +86,7 @@ describe("buildPayload kind mapping", () => {
         kind: "plugin-manifest",
         sourceFile: "/abs/p/.claude-plugin/plugin.json",
         scopeRoot: "/abs/p",
-        scope: "plugin",
+        scope: "global",
         rawContent: JSON.stringify({ name: "dbtools", author: "Bob" }),
       }),
       raw({
@@ -121,7 +121,7 @@ describe("buildPayload author buckets", () => {
       kind: "plugin-manifest",
       sourceFile: "/abs/plug/.claude-plugin/plugin.json",
       scopeRoot: "/abs/plug",
-      scope: "plugin",
+      scope: "global",
       rawContent: JSON.stringify({ name: "p", author: "Anthropic" }),
     });
     const skill = raw({
@@ -129,7 +129,7 @@ describe("buildPayload author buckets", () => {
       kind: "skill",
       sourceFile: "/abs/plug/skills/foo/SKILL.md",
       scopeRoot: "/abs/plug",
-      scope: "plugin",
+      scope: "global",
       rawContent: `---\nname: foo\ndescription: d\n---\nbody`,
     });
     const { payload } = build([plugManifest, skill]);
@@ -143,7 +143,7 @@ describe("buildPayload author buckets", () => {
       kind: "plugin-manifest",
       sourceFile: "/abs/plug/.claude-plugin/plugin.json",
       scopeRoot: "/abs/plug",
-      scope: "plugin",
+      scope: "global",
       rawContent: JSON.stringify({ name: "p" }),
     });
     const skill = raw({
@@ -151,7 +151,7 @@ describe("buildPayload author buckets", () => {
       kind: "skill",
       sourceFile: "/abs/plug/skills/foo/SKILL.md",
       scopeRoot: "/abs/plug",
-      scope: "plugin",
+      scope: "global",
       rawContent: `---\nname: foo\ndescription: d\n---\nbody`,
     });
     const { payload } = build([plug, skill]);
@@ -166,7 +166,7 @@ describe("buildPayload author buckets", () => {
       kind: "plugin-manifest",
       sourceFile: "/abs/plug/.claude-plugin/plugin.json",
       scopeRoot: "/abs/plug",
-      scope: "plugin",
+      scope: "global",
       rawContent: JSON.stringify({ name: "p", author: "Jane" }),
     });
     const skill = raw({
@@ -174,7 +174,7 @@ describe("buildPayload author buckets", () => {
       kind: "skill",
       sourceFile: "/abs/plug/skills/foo/SKILL.md",
       scopeRoot: "/abs/plug",
-      scope: "plugin",
+      scope: "global",
       rawContent: `---\nname: foo\ndescription: d\n---\nbody`,
     });
     const { payload } = build([plug, skill]);
@@ -314,6 +314,18 @@ describe("buildPayload payload shape", () => {
     expect(payload).toHaveProperty("parseErrors");
     expect(payload).toHaveProperty("crawledAtMs");
   });
+
+  it("carries over isInformational flag to entities", () => {
+    const { payload } = build([
+      raw({
+        rawContent: "<!-- metadata -->\n# Top\nBody\n",
+      }),
+    ]);
+    const preHeading = payload.entities.find((e) =>
+      e.title.includes("(pre-heading)"),
+    );
+    expect(preHeading?.isInformational).toBe(true);
+  });
 });
 
 describe("buildPayload plugin-manifest mcpServers extraction", () => {
@@ -324,7 +336,7 @@ describe("buildPayload plugin-manifest mcpServers extraction", () => {
         kind: "plugin-manifest",
         sourceFile: "/abs/plug/.claude-plugin/plugin.json",
         scopeRoot: "/abs/plug",
-        scope: "plugin",
+        scope: "global",
         rawContent: JSON.stringify({
           name: "multi-tool",
           author: "Jane",
@@ -337,7 +349,8 @@ describe("buildPayload plugin-manifest mcpServers extraction", () => {
     ]);
     const mcp = payload.entities.filter((e) => e.type === "mcp-server");
     expect(mcp.map((e) => e.title).sort()).toEqual(["bar", "foo"]);
-    expect(mcp.every((e) => e.scope === "plugin")).toBe(true);
+    expect(mcp.every((e) => e.scope === "global")).toBe(true);
+    expect(mcp.every((e) => !!e.plugin)).toBe(true);
     const det = payload.detections.find(
       (d) => d.convention === "plugin-manifest-mcp-servers-unparsed",
     );
@@ -353,7 +366,7 @@ describe("buildPayload plugin-manifest mcpServers extraction", () => {
         kind: "plugin-manifest",
         sourceFile: "/abs/plug/.claude-plugin/plugin.json",
         scopeRoot: "/abs/plug",
-        scope: "plugin",
+        scope: "global",
         rawContent: JSON.stringify({
           name: "weird",
           mcpServers: ["not-an-object-map"],
@@ -374,7 +387,7 @@ describe("buildPayload plugin-manifest mcpServers extraction", () => {
         kind: "plugin-manifest",
         sourceFile: "/abs/plug/.claude-plugin/plugin.json",
         scopeRoot: "/abs/plug",
-        scope: "plugin",
+        scope: "global",
         rawContent: JSON.stringify({
           name: "dbtools",
           mcpServers: { postgres: { command: "pg-mcp" } },
@@ -398,7 +411,7 @@ describe("buildPayload agent title fallback", () => {
         kind: "agent",
         sourceFile: "/abs/plug/agents/seo-auditor/AGENT.md",
         scopeRoot: "/abs/plug",
-        scope: "plugin",
+        scope: "global",
         rawContent: `---\ndescription: Runs an SEO audit.\n---\nbody\n`,
       }),
     ]);

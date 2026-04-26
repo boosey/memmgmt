@@ -10,6 +10,7 @@ import type { TypedEditorProps } from "./editorTypes";
 
 interface StandingInstructionEditorProps extends TypedEditorProps {
   relations: readonly Relation[];
+  onStanzasChange?: (stanzas: string[]) => void;
 }
 
 function structured(entity: Entity): ClaudeMdSection | null {
@@ -25,6 +26,7 @@ export function StandingInstructionEditor({
   relations,
   onApiReady,
   onTitleChange,
+  onStanzasChange,
 }: StandingInstructionEditorProps) {
   const initial = useMemo(() => structured(entity), [entity]);
   const [heading, setHeading] = useState(initial?.heading || entity.title);
@@ -45,7 +47,8 @@ export function StandingInstructionEditor({
 
   useEffect(() => {
     onTitleChange?.(heading);
-  }, [heading, onTitleChange]);
+    onStanzasChange?.(heading ? [`## ${heading}`, `# ${heading}`] : []);
+  }, [heading, onTitleChange, onStanzasChange]);
 
   useEffect(() => {
     // Harmonized regex with claudeMd.ts
@@ -61,6 +64,7 @@ export function StandingInstructionEditor({
 
     onApiReady({
       currentTitle: heading,
+      stanzas: heading ? [`## ${heading}`, `# ${heading}`] : [],
       getSerializedContent: () =>
         buildNextContentFor(entity, {
           heading,

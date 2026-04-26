@@ -44,6 +44,8 @@ function settingsEntryType(sd: unknown): EntityType {
       return "env";
     case "mcp-server":
       return "mcp-server";
+    case "enabled-plugins":
+      return "enabled-plugins";
     default:
       // 'other' keys fall back to env-less standing-instruction? Keep as
       // permission-shaped? The UI won't render these in v1.6 — they still
@@ -92,10 +94,11 @@ export interface TransformInput {
   node: ArtifactNode;
   type: EntityType;
   identity: string | null;
-  author: "anthropic" | "community" | "you" | "unknown";
+  author: AuthorBucket;
   stale?: boolean;
   warn?: boolean;
   plugin?: string;
+  isFromPlugin: boolean;
 }
 
 export function transformNodeToEntity(input: TransformInput): Entity {
@@ -111,6 +114,7 @@ export function transformNodeToEntity(input: TransformInput): Entity {
     scopeRoot: node.scopeRoot,
     mtimeMs: node.mtimeMs,
     rawContent: node.rawContent,
+    entryKey: node.entryKey,
     structured: node.structuredData,
   };
   if (identity) ent.identity = identity;
@@ -118,8 +122,12 @@ export function transformNodeToEntity(input: TransformInput): Entity {
   if (imps) ent.imports = imps;
   if (node.parseError) ent.parseError = node.parseError;
   if (node.hasDeadImports) ent.hasDeadImports = node.hasDeadImports;
+  if (node.isInformational) ent.isInformational = true;
   if (node.slug) ent.slugRef = node.slug;
+  if (node.enabled !== undefined) ent.enabled = node.enabled;
+  if (node.disabledReason) ent.disabledReason = node.disabledReason;
   if (input.plugin) ent.plugin = input.plugin;
+  if (input.isFromPlugin) ent.isInformational = ent.isInformational || false; // just ensuring it's not undefined if we want to filter by it, though not strictly needed yet
   if (input.stale) ent.stale = true;
   if (input.warn) ent.warn = true;
   return ent;
@@ -170,15 +178,16 @@ export function buildPayload(input: BuildPayloadInput): BuildPayloadResult {
     if (n.kind === "memory-index-entry") continue;
 
     const resolved = resolveNodeAuthor(n);
-    const bucket = authorBucket(resolved, n.scope);
-    const id = identityKey(n);
     const plug = pluginNameByRoot.get(n.scopeRoot);
+    const bucket = authorBucket(resolved, !!plug);
+    const id = identityKey(n);
     const ent = transformNodeToEntity({
       node: n,
       type,
       identity: id,
       author: bucket,
-      ...(plug && n.scope === "plugin" ? { plugin: plug } : {}),
+      isFromPlugin: !!plug,
+      ...(plug ? { plugin: plug } : {}),
     });
     if (shouldWarn(ent)) ent.warn = true;
     entities.push(ent);

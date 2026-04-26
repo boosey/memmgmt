@@ -27,6 +27,7 @@ function structured(entity: Entity): ParsedSkill {
       name: entity.title,
       description: entity.intent,
       author: null,
+      enabled: true,
       body: "",
       extraFrontmatter: {},
     }
@@ -41,6 +42,7 @@ export function SkillEditor({
   const initial = useMemo(() => structured(entity), [entity]);
   const [name, setName] = useState(initial.name || entity.title);
   const [description, setDescription] = useState(initial.description || "");
+  const [enabled, setEnabled] = useState(initial.enabled !== false);
   const [body, setBody] = useState(initial.body ?? "");
 
   // Tool access: if extraFrontmatter has a `tools` field, restrict.
@@ -71,6 +73,7 @@ export function SkillEditor({
       name,
       description,
       author: initial.author,
+      enabled,
       body,
       extraFrontmatter: extra,
     };
@@ -78,7 +81,7 @@ export function SkillEditor({
       currentTitle: name,
       getSerializedContent: () => buildNextContentFor(entity, draft),
     });
-  }, [name, description, body, mode, tools, entity, initial, onApiReady]);
+  }, [name, description, enabled, body, mode, tools, entity, initial, onApiReady]);
 
   return (
     <div>
@@ -92,6 +95,20 @@ export function SkillEditor({
           onChange={(e) => setName(e.target.value)}
           className={monoClass()}
         />
+      </FormRow>
+      <FormRow label="State">
+        <label className="flex cursor-pointer items-center gap-2">
+          <input
+            type="checkbox"
+            checked={enabled}
+            disabled={!!entity.plugin}
+            onChange={(e) => setEnabled(e.target.checked)}
+          />
+          <span className="text-[12.5px] text-[color:var(--ink)]">
+            Enabled · {enabled ? "Active" : "Disabled (Claude will not see this skill)"}
+            {!!entity.plugin && " · Controlled by plugin state"}
+          </span>
+        </label>
       </FormRow>
       <FormRow
         label="Description"

@@ -10,13 +10,17 @@ import { TYPE_LABELS } from "../typeLabels";
 import { DiffPreviewModal } from "../DiffPreviewModal";
 import { showUndoToast } from "../UndoToast";
 import { ecBtnClass } from "./shared";
+import type { EditorApi } from "./editorTypes";
 
 interface RightRailProps {
   entity: Entity;
   currentFormTitle?: string;
-  /** Lazy: called right before preview/save to get the serialized file content. */
-  getSerializedContent: () => string;
+  /** Access to the editor's current state and content. */
+  api: EditorApi;
   onSaved: () => void;
+  /** Strings that identify the section(s) being edited.
+   * Used by DiffPreviewModal to scroll to and highlight the changes. */
+  stanzas?: string[];
 }
 
 function inferLanguage(sourceFile: string): string {
@@ -28,8 +32,9 @@ function inferLanguage(sourceFile: string): string {
 export function RightRail({
   entity,
   currentFormTitle,
-  getSerializedContent,
+  api,
   onSaved,
+  stanzas,
 }: RightRailProps) {
   const [pending, setPending] = useState<"preview" | "save" | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -47,15 +52,49 @@ export function RightRail({
 
   const ghost = ecBtnClass();
   const primary = ecBtnClass(true);
+  const destructive = ecBtnClass(false, true);
+
+  async function handleDelete() {
+    if (
+      !window.confirm(
+        `Delete this ${typeLabel.toLowerCase()}? This cannot be undone.`,
+      )
+    ) {
+      return;
+    }
+    setPending("save");
+    setError(null);
+    try {
+      const r = await fetch("/api/bulk", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          action: "delete-entity",
+          entityIds: [entity.id],
+          confirm: true,
+        }),
+      });
+      const j = await r.json();
+      if (!r.ok || !j.ok) {
+        setError(String(j.reason ?? j.message ?? "delete failed"));
+        return;
+      }
+      onSaved();
+    } catch (e: unknown) {
+      setError(String(e));
+    } finally {
+      setPending(null);
+    }
+  }
 
   async function handlePreview() {
     setPending("preview");
     setError(null);
     try {
       const body: SavePreviewRequest = {
-        sourceFile: entity.sourceFile,
-        scopeRoot: entity.scopeRoot,
-        nextContent: getSerializedContent(),
+        sourceFile: api.sourceFile ?? entity.sourceFile,
+        scopeRoot: api.scopeRoot ?? entity.scopeRoot,
+        nextContent: api.getSerializedContent(),
         expectedMtimeMs: entity.mtimeMs,
       };
       const r = await fetch("/api/save/preview", {
@@ -81,13 +120,15 @@ export function RightRail({
     setPending("save");
     setError(null);
     try {
+      const sourceFile = api.sourceFile ?? entity.sourceFile;
+      const scopeRoot = api.scopeRoot ?? entity.scopeRoot;
       const r = await fetch("/api/save", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          sourceFile: entity.sourceFile,
-          scopeRoot: entity.scopeRoot,
-          nextContent: getSerializedContent(),
+          sourceFile,
+          scopeRoot,
+          nextContent: api.getSerializedContent(),
           expectedMtimeMs: entity.mtimeMs,
         }),
       });
@@ -97,8 +138,8 @@ export function RightRail({
         return;
       }
       showUndoToast({
-        sourceFile: entity.sourceFile,
-        scopeRoot: entity.scopeRoot,
+        sourceFile,
+        scopeRoot,
         label: `Saved ${typeLabel.toLowerCase()} · ${entity.title}`,
       });
       onSaved();
@@ -142,6 +183,20 @@ export function RightRail({
         >
           {pending === "save" ? "saving…" : "Save with backup"}
         </button>
+        {!entity.plugin && (
+          <button
+            type="button"
+            onClick={handleDelete}
+            disabled={pending !== null}
+            className={destructive.className}
+            style={destructive.style}
+            data-testid="right-rail-delete"
+          >
+            {pending === "save"
+              ? "deleting…"
+              : `Delete ${entity.type === "memory" ? "memory" : "entity"}`}
+          </button>
+        )}
       </div>
       {error && (
         <div
@@ -168,9 +223,10 @@ export function RightRail({
         open={diffOpen}
         before={diffData?.before ?? ""}
         after={diffData?.after ?? ""}
-        language={inferLanguage(entity.sourceFile)}
+        language={inferLanguage(api.sourceFile ?? entity.sourceFile)}
         {...(diffData?.noop ? { noop: true } : {})}
         onClose={() => setDiffOpen(false)}
+        stanzas={stanzas}
       />
     </div>
   );

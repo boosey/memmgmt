@@ -19,13 +19,13 @@ const PROVIDES_KINDS = new Set<Entity["type"]>([
 export function deriveProvides(entities: Entity[]): Relation[] {
   const pluginsByRoot = new Map<string, Entity>();
   for (const e of entities) {
-    if (e.type === "plugin" && e.scope === "plugin") {
+    if (e.type === "plugin") {
       pluginsByRoot.set(e.scopeRoot, e);
     }
   }
   const out: Relation[] = [];
   for (const e of entities) {
-    if (e.scope !== "plugin") continue;
+    if (!e.plugin) continue;
     if (!PROVIDES_KINDS.has(e.type)) continue;
     const plug = pluginsByRoot.get(e.scopeRoot);
     if (!plug) continue;

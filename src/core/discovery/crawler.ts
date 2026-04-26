@@ -82,50 +82,7 @@ export async function crawl(opts: CrawlOptions): Promise<CrawlResult> {
   // (e.g. plugins/cache/<source>/<name>/<version>/.claude-plugin/plugin.json).
   // Walk the tree and treat the dir containing each manifest as a plugin root.
   const pluginsDir = path.join(claudeHome, "plugins");
-  for (const pluginDir of await findPluginRoots(pluginsDir)) {
-    const manifestCandidates = [
-      path.join(pluginDir, ".claude-plugin", "plugin.json"),
-      path.join(pluginDir, "plugin.json"),
-      path.join(pluginDir, "package.json"),
-    ];
-    for (const m of manifestCandidates) {
-      if (await fileExists(m)) {
-        await pushIfFile(
-          raws,
-          m,
-          "plugin-manifest",
-          "file",
-          "plugin",
-          pluginDir,
-        );
-        break;
-      }
-    }
-    await pushDirFiles(
-      raws,
-      path.join(pluginDir, "skills"),
-      "skill",
-      "file",
-      "plugin",
-      pluginDir,
-    );
-    await pushDirFiles(
-      raws,
-      path.join(pluginDir, "commands"),
-      "command",
-      "file",
-      "plugin",
-      pluginDir,
-    );
-    await pushDirFiles(
-      raws,
-      path.join(pluginDir, "agents"),
-      "agent",
-      "file",
-      "plugin",
-      pluginDir,
-    );
-  }
+  await crawlPluginsIn(pluginsDir, raws, "global");
 
   // Slug scope (auto-memory)
   const projectsDir = path.join(claudeHome, "projects");
@@ -176,6 +133,10 @@ export async function crawl(opts: CrawlOptions): Promise<CrawlResult> {
 
   // Project + Local scope per known project path
   for (const proj of projectPaths) {
+    // Project plugins
+    const projPluginsDir = path.join(proj, ".claude", "plugins");
+    await crawlPluginsIn(projPluginsDir, raws, "project");
+
     for (const fname of ["CLAUDE.md", "AGENTS.md", "GEMINI.md"]) {
       await pushIfFile(
         raws,
@@ -366,4 +327,48 @@ async function findPluginRoots(pluginsRoot: string): Promise<string[]> {
     }
   }
   return Array.from(roots);
+}
+
+async function crawlPluginsIn(
+  dir: string,
+  raws: RawArtifact[],
+  scope: Scope,
+): Promise<void> {
+  for (const pluginDir of await findPluginRoots(dir)) {
+    const manifestCandidates = [
+      path.join(pluginDir, ".claude-plugin", "plugin.json"),
+      path.join(pluginDir, "plugin.json"),
+      path.join(pluginDir, "package.json"),
+    ];
+    for (const m of manifestCandidates) {
+      if (await fileExists(m)) {
+        await pushIfFile(raws, m, "plugin-manifest", "file", scope, pluginDir);
+        break;
+      }
+    }
+    await pushDirFiles(
+      raws,
+      path.join(pluginDir, "skills"),
+      "skill",
+      "file",
+      scope,
+      pluginDir,
+    );
+    await pushDirFiles(
+      raws,
+      path.join(pluginDir, "commands"),
+      "command",
+      "file",
+      scope,
+      pluginDir,
+    );
+    await pushDirFiles(
+      raws,
+      path.join(pluginDir, "agents"),
+      "agent",
+      "file",
+      scope,
+      pluginDir,
+    );
+  }
 }

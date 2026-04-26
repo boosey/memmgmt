@@ -49,8 +49,12 @@ export function SignalRow({
   onOpenEditor,
   onResolveImport,
 }: SignalRowProps) {
-  const byScope = new Map<Scope, Entity>();
-  for (const a of group) byScope.set(a.scope, a);
+  const byScope = new Map<Scope, Entity[]>();
+  for (const a of group) {
+    const arr = byScope.get(a.scope) ?? [];
+    arr.push(a);
+    byScope.set(a.scope, arr);
+  }
   const contested = group.length > 1;
   const shadowedCount = contested ? group.length - 1 : 0;
   const groupKey = group[0]?.identity ?? `id:${winner.id}`;
@@ -147,6 +151,14 @@ export function SignalRow({
                 parse error
               </span>
             )}
+            {winner.enabled === false && (
+              <span
+                data-testid="row-badge-disabled"
+                className="smallcaps shrink-0 rounded-sm border border-[color:var(--rule)] bg-[color:var(--paper-deep)] px-[5px] py-[1px] text-[8.5px] tracking-[0.12em] text-[color:var(--text-muted)]"
+              >
+                {winner.disabledReason === "plugin" ? "plugin disabled" : "disabled"}
+              </span>
+            )}
             {group.some((e) => e.hasDeadImports) && (
               <span
                 data-testid="row-badge-dead-imports"
@@ -160,7 +172,7 @@ export function SignalRow({
               </span>
             )}
           </div>
-          <div className="smallcaps mt-[2px] font-mono text-[9.5px] tracking-[0.12em] text-[color:var(--text-muted)]">
+          <div className="smallcaps mt-[2px] font-mono text-[10px] tracking-[0.12em] text-[color:var(--text-muted)]">
             {contested ? `${group.length} scopes` : "single source"}
             {relationsOut.length > 0 ? ` · ${relationsOut.length} out` : ""}
             {relationsIn.length > 0 ? ` · ${relationsIn.length} in` : ""}
@@ -168,19 +180,21 @@ export function SignalRow({
         </div>
       </div>
 
-      {/* 5 scope cells */}
+      {/* 4 scope cells */}
       {SCOPE_ORDER.map((scope) => {
-        const node = byScope.get(scope);
+        const nodes = byScope.get(scope);
+        const hasWinner = nodes?.some((n) => n.id === winner.id);
+        const isShadowed = !!nodes && !hasWinner;
         return (
           <div
             key={scope}
-            className="relative flex h-[52px] items-center justify-center"
+            className="relative flex h-[52px] min-w-0 items-center justify-center"
           >
-            {node ? (
+            {nodes ? (
               <SignalNode
-                entity={node}
-                isWinner={node === winner && contested}
-                isShadowed={contested && node !== winner}
+                entities={nodes}
+                isWinner={!!hasWinner}
+                isShadowed={isShadowed}
               />
             ) : (
               <EmptyLane />
@@ -194,7 +208,7 @@ export function SignalRow({
 
       {/* relations */}
       <div
-        className="flex flex-col gap-[3px]"
+        className="flex flex-col gap-[3px] min-w-0"
         onClick={(e) => e.stopPropagation()}
       >
         {relationsOut.map((r) => (

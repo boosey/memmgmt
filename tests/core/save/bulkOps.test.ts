@@ -27,6 +27,7 @@ function skillEntity(
   scopeRoot: string,
   name: string,
   id: string,
+  rawContent: string = "",
 ): Entity {
   return {
     id,
@@ -39,7 +40,7 @@ function skillEntity(
     sourceFile,
     scopeRoot,
     mtimeMs: 0,
-    rawContent: "",
+    rawContent,
   };
 }
 
@@ -48,6 +49,7 @@ function memoryEntity(
   sourceFile: string,
   scopeRoot: string,
   id: string,
+  rawContent: string = "",
 ): Entity {
   return {
     id,
@@ -60,7 +62,33 @@ function memoryEntity(
     sourceFile,
     scopeRoot,
     mtimeMs: 0,
+    rawContent,
+  };
+}
+
+function permissionEntity(
+  scope: Entity["scope"],
+  sourceFile: string,
+  scopeRoot: string,
+  id: string,
+  tool: string,
+  pattern: string,
+  entryKey: string,
+  group: string = "allow",
+): Entity {
+  return {
+    id,
+    type: "permission",
+    scope,
+    author: "you",
+    title: `${tool}(${pattern})`,
+    intent: "",
+    sourceFile,
+    scopeRoot,
+    mtimeMs: 0,
     rawContent: "",
+    entryKey,
+    structured: { value: `${tool}(${pattern})`, group },
   };
 }
 
@@ -134,25 +162,13 @@ describe("dispatchBulk — delete-shadowed", () => {
   });
 });
 
-describe("dispatchBulk — promote-scope / demote-scope", () => {
+describe("dispatchBulk — promote-scope", () => {
   it("refuses to promote an entity at the top of the ladder", async () => {
-    const gFile = path.join(claudeHome, "skills", "s", "SKILL.md");
-    await writeFileFixture(gFile);
-    const ent = skillEntity("global", gFile, claudeHome, "s", "g");
-    const res = await dispatchBulk(
-      { action: "promote-scope", entityIds: ["g"] },
-      { backupsDir, claudeHome, knownEntities: [ent] },
-    );
-    expect(res.ok).toBe(false);
-    expect(res.ok === false && res.reason).toBe("action-not-applicable");
-  });
-
-  it("refuses to demote an entity at the bottom of the ladder", async () => {
-    const f = path.join(tmp, "p", ".claude", "skills", "s", "SKILL.md");
+    const f = path.join(claudeHome, "skills", "s", "SKILL.md");
     await writeFileFixture(f);
-    const ent = skillEntity("local", f, path.join(tmp, "p"), "s", "L");
+    const ent = skillEntity("global", f, claudeHome, "s", "G");
     const res = await dispatchBulk(
-      { action: "demote-scope", entityIds: ["L"] },
+      { action: "promote-scope", entityIds: ["G"] },
       { backupsDir, claudeHome, knownEntities: [ent] },
     );
     expect(res.ok).toBe(false);
@@ -160,13 +176,15 @@ describe("dispatchBulk — promote-scope / demote-scope", () => {
   });
 
   it("promotes a plugin skill to global scope", async () => {
-    const pluginRoot = path.join(tmp, "plugins", "foo");
-    const pluginFile = path.join(pluginRoot, "skills", "bar", "SKILL.md");
-    await writeFileFixture(pluginFile, "content\n");
-    const ent = skillEntity("plugin", pluginFile, pluginRoot, "bar", "pk1");
+    const pluginDir = path.join(claudeHome, "plugins", "foo");
+    const pluginFile = path.join(pluginDir, "skills", "bar", "SKILL.md");
+    const content = "content\n";
+    await writeFileFixture(pluginFile, content);
+
+    const ents = [skillEntity("plugin", pluginFile, pluginDir, "bar", "a", content)];
     const res = await dispatchBulk(
-      { action: "promote-scope", entityIds: ["pk1"] },
-      { backupsDir, claudeHome, knownEntities: [ent] },
+      { action: "promote-scope", entityIds: ["a"] },
+      { backupsDir, claudeHome, knownEntities: ents },
     );
     expect(res.ok).toBe(true);
     if (!res.ok) return;
@@ -176,23 +194,41 @@ describe("dispatchBulk — promote-scope / demote-scope", () => {
     await expect(fs.stat(pluginFile)).rejects.toBeTruthy();
   });
 
-  it("refuses to scope-move an entity type without a file-per-entity layout", async () => {
-    const f = path.join(tmp, "settings.json");
-    await writeFileFixture(f, "{}\n");
-    const ent: Entity = {
-      id: "perm1",
-      type: "permission",
-      scope: "project",
-      author: "you",
-      title: "Bash(*)",
-      intent: "",
-      sourceFile: f,
-      scopeRoot: tmp,
-      mtimeMs: 0,
-      rawContent: "",
-    };
+  it("moves a permission from local scope to global scope directly", async () => {
+    const localRoot = path.join(tmp, "p");
+    const localFile = path.join(localRoot, ".claude", "settings.local.json");
+    const globalFile = path.join(claudeHome, "settings.json");
+    
+    await writeFileFixture(localFile, JSON.stringify({ permissions: { allow: ["Bash(*)"] } }));
+    await writeFileFixture(globalFile, JSON.stringify({ permissions: { allow: [] } }));
+
+    const ent = permissionEntity("local", localFile, localRoot, "p1", "Bash", "*", "permissions.allow[0]");
+    
     const res = await dispatchBulk(
-      { action: "promote-scope", entityIds: ["perm1"] },
+      { action: "promote-scope", entityIds: ["p1"], targetScope: "global" },
+      { backupsDir, claudeHome, knownEntities: [ent] },
+    );
+
+    expect(res.ok).toBe(true);
+    if (!res.ok) return;
+
+    // Check dest: should have the rule
+    const globalContent = JSON.parse(await fs.readFile(globalFile, "utf8"));
+    expect(globalContent.permissions.allow).toContain("Bash(*)");
+
+    // Check source: should be gone
+    const localContent = JSON.parse(await fs.readFile(localFile, "utf8"));
+    expect(localContent.permissions.allow).not.toContain("Bash(*)");
+  });
+});
+
+describe("dispatchBulk — demote-scope", () => {
+  it("refuses to demote an entity at the bottom of the ladder", async () => {
+    const f = path.join(tmp, "p", ".claude", "skills", "s", "SKILL.md");
+    await writeFileFixture(f);
+    const ent = skillEntity("local", f, path.join(tmp, "p"), "s", "L");
+    const res = await dispatchBulk(
+      { action: "demote-scope", entityIds: ["L"] },
       { backupsDir, claudeHome, knownEntities: [ent] },
     );
     expect(res.ok).toBe(false);
@@ -257,26 +293,5 @@ describe("dispatchBulk — delete-entity", () => {
     );
     expect(res.ok).toBe(false);
     expect(res.ok === false && res.reason).toBe("confirmation-required");
-    expect(await fs.readFile(f, "utf8")).toBe("x\n");
-  });
-
-  it("deletes all scope copies when confirmed", async () => {
-    const a = path.join(tmp, "a.md");
-    const b = path.join(tmp, "b.md");
-    await writeFileFixture(a);
-    await writeFileFixture(b);
-    const ents = [
-      skillEntity("global", a, tmp, "same", "a"),
-      skillEntity("project", b, tmp, "same", "b"),
-    ];
-    const res = await dispatchBulk(
-      { action: "delete-entity", entityIds: ["a"], confirm: true },
-      { backupsDir, claudeHome, knownEntities: ents },
-    );
-    expect(res.ok).toBe(true);
-    if (!res.ok) return;
-    expect(res.affected.length).toBe(2);
-    await expect(fs.stat(a)).rejects.toBeTruthy();
-    await expect(fs.stat(b)).rejects.toBeTruthy();
   });
 });

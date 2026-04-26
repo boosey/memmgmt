@@ -20,6 +20,7 @@ export type SettingsEntry =
       entryKey: string;
       server: ParsedMcpServer;
     }
+  | { kind: "enabled-plugins"; entryKey: string; plugins: string[] }
   | { kind: "other"; entryKey: string; key: string; value: unknown };
 
 export interface ParsedSettings {
@@ -59,7 +60,7 @@ const KNOWN_TOP_LEVEL_KEYS = new Set([
   "installMethod",
 ]);
 
-const STRUCTURED_KEYS = new Set(["permissions", "hooks", "env", "mcpServers"]);
+const STRUCTURED_KEYS = new Set(["permissions", "hooks", "env", "mcpServers", "enabledPlugins"]);
 
 export function parseSettings(src: string): ParsedSettings {
   const obj = (JSON.parse(src) ?? {}) as Record<string, unknown>;
@@ -110,6 +111,13 @@ export function parseSettings(src: string): ParsedSettings {
       });
     }
   }
+
+  const enabledPlugins = obj.enabledPlugins ?? [];
+  entries.push({
+    kind: "enabled-plugins",
+    entryKey: "enabledPlugins",
+    plugins: Array.isArray(enabledPlugins) ? (enabledPlugins as string[]) : [],
+  });
 
   const unknownTopLevelKeys: string[] = [];
   for (const [k, v] of Object.entries(obj)) {

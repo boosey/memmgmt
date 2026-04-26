@@ -114,7 +114,7 @@ export function RelationPill({
       >
         {label}
       </span>
-      <span className="font-mono text-[9px] tracking-[0.08em] text-[color:var(--text-faint)]">
+      <span className="font-mono text-[12px] tracking-[0.08em] text-[color:var(--text-faint)]">
         {typeLabel}
       </span>
       {broken && (

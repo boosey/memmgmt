@@ -1,4 +1,4 @@
-export type Scope = "global" | "slug" | "plugin" | "project" | "local";
+export type Scope = "global" | "slug" | "project" | "local";
 
 export type ArtifactKind =
   | "claude-md-section"
@@ -50,6 +50,9 @@ export interface ArtifactNode {
   entryKey?: string;
   parseError?: string;
   hasDeadImports?: boolean;
+  isInformational?: boolean;
+  enabled?: boolean;
+  disabledReason?: "plugin" | "config";
 }
 
 export type EdgeKind =

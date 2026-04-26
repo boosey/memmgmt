@@ -1,8 +1,8 @@
-import type { AuthorBucket, Entity, Scope } from "@/core/entities";
+import type { AuthorBucket, Entity } from "@/core/entities";
 import { WireSegment } from "./WireSegment";
 
 interface SignalNodeProps {
-  entity: Entity;
+  entities: Entity[];
   isWinner: boolean;
   isShadowed: boolean;
 }
@@ -21,49 +21,66 @@ const AUTHOR_TINT: Record<AuthorBucket, string> = {
   unknown: "var(--author-unknown-tint)",
 };
 
-const SCOPE_SHORT: Record<Scope, string> = {
-  global: "Global",
-  plugin: "Plugin",
-  slug: "Slug",
-  project: "Project",
-  local: "Local",
-};
-
-function truncate(s: string, max: number): string {
-  if (s.length <= max) return s;
-  return s.slice(0, max - 2) + "…";
-}
-
-export function SignalNode({ entity, isWinner, isShadowed }: SignalNodeProps) {
-  const stripe = AUTHOR_STRIPE[entity.author];
-  const tint = AUTHOR_TINT[entity.author];
+export function SignalNode({ entities, isWinner, isShadowed }: SignalNodeProps) {
+  // Use the first entity for coloring, but theoretically they should all share 
+  // the same author if they are in the same scope/group.
+  const first = entities[0]!;
+  const stripe = AUTHOR_STRIPE[first.author];
+  const tint = AUTHOR_TINT[first.author];
+  const count = entities.length;
 
   return (
     <div
-      title={entity.intent}
-      className={[
-        "relative w-full overflow-hidden rounded-sm px-[7px] py-[4px] leading-[1.25] whitespace-nowrap",
-        isWinner
-          ? "border border-[color:var(--ink)] bg-[color:var(--paper)] shadow-[1px_1px_0_var(--ink)]"
-          : "border border-[color:var(--rule)]",
-        isShadowed ? "opacity-60" : "",
-      ].join(" ")}
-      style={{
-        borderLeft: `3px solid ${stripe}`,
-        ...(isWinner ? {} : { background: tint }),
-      }}
+      className="relative flex h-full w-full items-center justify-center"
+      title={entities.map(e => e.intent).join("\n---\n")}
     >
-      <div className="smallcaps font-mono text-[9px] tracking-[0.12em] text-[color:var(--text-muted)]">
-        {SCOPE_SHORT[entity.scope]}
-      </div>
       <div
         className={[
-          "overflow-hidden text-[11.5px] text-[color:var(--ink)]",
-          isShadowed ? "line-through decoration-[color:var(--text-faint)]" : "",
+          "relative flex size-6 items-center justify-center rounded-full border transition-all",
+          isWinner
+            ? "border-[color:var(--ink)] bg-[oklch(0.62_0.17_145)] text-white shadow-[0_0_0_1px_var(--ink)]"
+            : "border-[color:var(--rule)] bg-[oklch(0.95_0.01_55)] text-[color:var(--text-muted)]",
+          isShadowed ? "opacity-40" : "",
         ].join(" ")}
-        style={{ textOverflow: "ellipsis" }}
+        style={{
+          boxShadow: isWinner ? `0 0 0 2px ${tint}` : undefined,
+        }}
       >
-        {truncate(entity.intent, 26)}
+        {isWinner ? (
+          <svg
+            className="size-4"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={3.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M5 13l4 4L19 7"
+            />
+          </svg>
+        ) : isShadowed ? (
+          <svg
+            className="size-3.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2.5}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M6 18L18 6M6 6l12 12"
+            />
+          </svg>
+        ) : null}
+
+        {count > 1 && (
+          <div className="absolute -top-1.5 -right-1.5 flex size-4 items-center justify-center rounded-full bg-[color:var(--ink)] text-[9px] font-bold text-[color:var(--paper)] shadow-sm">
+            {count}
+          </div>
+        )}
       </div>
       <WireSegment />
     </div>

@@ -30,38 +30,42 @@ describe("deriveProvides", () => {
       ent({
         id: "pl",
         type: "plugin",
-        scope: "plugin",
+        scope: "global",
         scopeRoot: "/p/dbtools",
       }),
       ent({
         id: "sk",
         type: "skill",
-        scope: "plugin",
+        scope: "global",
         scopeRoot: "/p/dbtools",
+        plugin: "dbtools",
       }),
       ent({
         id: "cm",
         type: "command",
-        scope: "plugin",
+        scope: "global",
         scopeRoot: "/p/dbtools",
+        plugin: "dbtools",
       }),
       ent({
         id: "ag",
         type: "agent",
-        scope: "plugin",
+        scope: "global",
         scopeRoot: "/p/dbtools",
+        plugin: "dbtools",
       }),
       ent({
         id: "mc",
         type: "mcp-server",
-        scope: "plugin",
+        scope: "global",
         scopeRoot: "/p/dbtools",
+        plugin: "dbtools",
       }),
-      // Different plugin root — no relation.
+      // No plugin provenance — no relation.
       ent({
         id: "sk2",
         type: "skill",
-        scope: "plugin",
+        scope: "global",
         scopeRoot: "/p/other",
       }),
     ];

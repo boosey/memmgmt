@@ -9,7 +9,7 @@ export function Masthead() {
           className="font-sans text-[26px] font-semibold leading-none text-[color:var(--ink)]"
           style={{ letterSpacing: "-0.02em" }}
         >
-          memmgmt
+          The Memory Register
         </span>
         <span className="smallcaps text-[10px] text-[color:var(--text-muted)]">
           Trace entities, follow relationships, resolve and prune — all inline.

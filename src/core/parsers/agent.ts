@@ -6,6 +6,7 @@ export interface ParsedAgent {
   tools: string[];
   model: string | null;
   author: string | null;
+  enabled: boolean;
   body: string;
   extraFrontmatter: Record<string, unknown>;
 }
@@ -25,20 +26,28 @@ function coerceTools(value: unknown): string[] {
 
 export function parseAgent(src: string): ParsedAgent {
   const { frontmatter, body } = splitFrontmatter(src);
-  const { name, description, tools, model, author, ...extra } =
+  const { name, description, tools, model, author, enabled, disabled, ...extra } =
     frontmatter as {
       name?: string;
       description?: string;
       tools?: unknown;
       model?: string;
       author?: string;
+      enabled?: boolean;
+      disabled?: boolean;
     };
+
+  let isEnabled = true;
+  if (typeof enabled === "boolean") isEnabled = enabled;
+  else if (typeof disabled === "boolean") isEnabled = !disabled;
+
   return {
     name: name ?? "",
     description: description ?? "",
     tools: coerceTools(tools),
     model: typeof model === "string" ? model : null,
     author: typeof author === "string" ? author : null,
+    enabled: isEnabled,
     body,
     extraFrontmatter: extra,
   };
@@ -48,6 +57,7 @@ export function serializeAgent(p: ParsedAgent): string {
   const fm: Record<string, unknown> = {
     name: p.name,
     description: p.description,
+    enabled: p.enabled,
     ...p.extraFrontmatter,
   };
   if (p.tools.length > 0) fm.tools = p.tools;

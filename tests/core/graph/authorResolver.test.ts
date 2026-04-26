@@ -5,7 +5,7 @@ describe("authorResolver", () => {
   it("prefers frontmatter author for plugin-contributed artifact", () => {
     expect(
       resolveAuthor({
-        scope: "plugin",
+        scope: "global",
         frontmatterAuthor: "X",
         pluginManifest: { author: "Plugin Y", publisher: null },
       }),
@@ -15,7 +15,7 @@ describe("authorResolver", () => {
   it("uses plugin manifest author when frontmatter absent", () => {
     expect(
       resolveAuthor({
-        scope: "plugin",
+        scope: "global",
         frontmatterAuthor: null,
         pluginManifest: { author: "Plugin Y", publisher: null },
       }),
@@ -25,7 +25,7 @@ describe("authorResolver", () => {
   it("marks Anthropic as official via author", () => {
     expect(
       resolveAuthor({
-        scope: "plugin",
+        scope: "global",
         frontmatterAuthor: null,
         pluginManifest: { author: "Anthropic", publisher: "anthropic" },
       }),
@@ -49,10 +49,10 @@ describe("authorResolver", () => {
   it("returns null author for plugin with no manifest info", () => {
     expect(
       resolveAuthor({
-        scope: "plugin",
+        scope: "global",
         frontmatterAuthor: null,
         pluginManifest: null,
       }),
-    ).toEqual({ author: null, publisher: null, isOfficial: false });
+    ).toEqual({ author: "self", publisher: null, isOfficial: false });
   });
 });

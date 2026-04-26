@@ -9,6 +9,13 @@ interface InputLike {
 export function deriveIntentSummary(input: InputLike): string {
   const sd = input.structuredData as Record<string, unknown> | null | undefined;
 
+  if (input.kind === "plugin-manifest" && sd) {
+    const desc = typeof sd.description === "string" ? sd.description : "";
+    const ver = typeof sd.version === "string" ? sd.version : "";
+    const summary = ver ? `v${ver}${desc ? ` · ${desc}` : ""}` : desc;
+    return truncate(summary.trim(), 120);
+  }
+
   if (sd && typeof sd.description === "string" && sd.description.trim()) {
     return truncate(sd.description.trim(), 120);
   }

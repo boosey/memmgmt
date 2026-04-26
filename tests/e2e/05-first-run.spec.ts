@@ -6,7 +6,7 @@ test("cold launch lands on signal-flow — no setup screen, no config prompt", a
   await page.goto("/");
   // No welcome / setup / onboarding surface.
   await expect(
-    page.getByText(/^welcome|setup wizard|get started|configure memmgmt/i),
+    page.getByText(/^welcome|setup wizard|get started|configure app/i),
   ).toHaveCount(0);
 
   await waitForSignalFlow(page);

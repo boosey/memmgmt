@@ -135,8 +135,14 @@
   Smallcaps helper — used on scope labels, column headers, relation verbs.
   tight letter-spacing, upper case, font-size set per use site.
 */
-.smallcaps {
-  text-transform: uppercase;
-  letter-spacing: 0.16em;
-  font-weight: 500;
+/* Diff preview flash highlight */
+.diff-flash-highlight {
+  animation: diff-flash 2s ease-out forwards;
+  background-color: oklch(0.90 0.1 90) !important;
+}
+
+@keyframes diff-flash {
+  0% { background-color: oklch(0.90 0.1 90) !important; }
+  30% { background-color: oklch(0.90 0.1 90) !important; }
+  100% { background-color: transparent !important; }
 }

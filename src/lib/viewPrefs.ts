@@ -6,6 +6,7 @@ export interface ViewPrefs {
   showConnections: boolean;
   filters: { scopes: string[]; types: string[]; authors: string[] };
   sidebarWidthPx: number;
+  showInformational: boolean;
 }
 
 const DEFAULT: ViewPrefs = {
@@ -13,6 +14,7 @@ const DEFAULT: ViewPrefs = {
   showConnections: false,
   filters: { scopes: [], types: [], authors: [] },
   sidebarWidthPx: 420,
+  showInformational: false,
 };
 
 export async function loadViewPrefs(): Promise<ViewPrefs> {

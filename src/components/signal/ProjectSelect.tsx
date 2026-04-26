@@ -23,13 +23,13 @@ export function ProjectSelect({ slugs }: ProjectSelectProps) {
   return (
     <div className="flex items-center gap-3">
       <div className="flex items-center gap-2">
-        <span className="smallcaps text-[9px] text-[color:var(--text-muted)]">
+        <span className="smallcaps text-[12px] text-[color:var(--text-muted)]">
           Project
         </span>
         <select
           value={activeSlug ?? ""}
           onChange={(e) => set(e.target.value || null)}
-          className="max-w-[120px] cursor-pointer border-0 bg-transparent font-sans text-[11.5px] font-medium text-[color:var(--ink)] outline-none hover:underline"
+          className="max-w-[120px] cursor-pointer border-0 bg-transparent font-sans text-[14px] font-medium text-[color:var(--ink)] outline-none hover:underline"
         >
           <option value="">All Projects</option>
           {sortedSlugs.map((s) => (

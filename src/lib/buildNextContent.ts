@@ -68,6 +68,15 @@ export interface McpServerDraft {
   raw: Record<string, unknown>;
 }
 
+export interface EnabledPluginsDraft {
+  plugins: string[];
+}
+
+export interface PluginToggleDraft {
+  pluginName: string;
+  enabled: boolean;
+}
+
 // ── Entry-path parsing ──────────────────────────────────────────────────────
 
 function settingsEntryLocation(entity: Entity): {
@@ -202,6 +211,28 @@ function buildMcpServer(entity: Entity, draft: McpServerDraft): string {
   return serializeSettings({ ...parsed, raw });
 }
 
+function buildEnabledPlugins(entity: Entity, draft: EnabledPluginsDraft): string {
+  const parsed = parseSettings(entity.rawContent);
+  const raw = JSON.parse(JSON.stringify(parsed.raw)) as Record<string, unknown>;
+  raw.enabledPlugins = draft.plugins;
+  return serializeSettings({ ...parsed, raw });
+}
+
+function buildPluginToggle(entity: Entity, draft: PluginToggleDraft): string {
+  const parsed = parseSettings(entity.rawContent);
+  const raw = JSON.parse(JSON.stringify(parsed.raw)) as Record<string, unknown>;
+  const plugins = new Set((raw.enabledPlugins as string[] | undefined) ?? []);
+
+  if (draft.enabled) {
+    plugins.add(draft.pluginName);
+  } else {
+    plugins.delete(draft.pluginName);
+  }
+
+  raw.enabledPlugins = Array.from(plugins).sort();
+  return serializeSettings({ ...parsed, raw });
+}
+
 function buildKeybinding(draft: KeybindingDraft): string {
   return serializeKeybindings({ raw: draft.raw, entries: [] });
 }
@@ -224,6 +255,8 @@ export function buildNextContentFor(
       return buildEnv(entity, draft as EnvDraft);
     case "mcp-server":
       return buildMcpServer(entity, draft as McpServerDraft);
+    case "enabled-plugins":
+      return buildEnabledPlugins(entity, draft as EnabledPluginsDraft);
     case "keybinding":
       return buildKeybinding(draft as KeybindingDraft);
     case "skill":
@@ -235,6 +268,17 @@ export function buildNextContentFor(
     case "memory":
       return serializeTypedMemory(draft as ParsedTypedMemory);
     case "plugin":
+      // If we are given a PluginToggleDraft, it means we are toggling enablement
+      // in settings.json rather than editing the plugin manifest itself.
+      if (
+        typeof draft === "object" &&
+        draft !== null &&
+        "pluginName" in draft &&
+        "targetSettings" in (draft as any)
+      ) {
+        const d = draft as PluginToggleDraft & { targetSettings: Entity };
+        return buildPluginToggle(d.targetSettings, d);
+      }
       // Plugin files (plugin.json / package.json) round-trip as JSON raw.
       return JSON.stringify(draft, null, 2) + "\n";
     default:

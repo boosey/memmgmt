@@ -30,19 +30,16 @@ export function resolveAuthor(input: ResolveInput): ResolvedAuthor {
     };
   }
 
-  if (input.scope === "plugin") {
-    const mf = input.pluginManifest;
-    if (mf && (mf.author || mf.publisher)) {
-      const isOfficial =
-        (mf.author != null && ANTHROPIC_RE.test(mf.author)) ||
-        isAnthropicPublisher(mf.publisher);
-      return {
-        author: mf.author ?? null,
-        publisher: mf.publisher ?? null,
-        isOfficial,
-      };
-    }
-    return { author: null, publisher: null, isOfficial: false };
+  const mf = input.pluginManifest;
+  if (mf && (mf.author || mf.publisher)) {
+    const isOfficial =
+      (mf.author != null && ANTHROPIC_RE.test(mf.author)) ||
+      isAnthropicPublisher(mf.publisher);
+    return {
+      author: mf.author ?? null,
+      publisher: mf.publisher ?? null,
+      isOfficial,
+    };
   }
 
   return { author: "self", publisher: null, isOfficial: false };
@@ -52,13 +49,13 @@ export function resolveAuthor(input: ResolveInput): ResolvedAuthor {
  * Collapse a ResolvedAuthor + Scope into a UI-facing provenance bucket.
  *
  *   anthropic → resolved.isOfficial OR author starts with /anthropic/i
- *   you       → author === 'self' OR (author === null AND scope !== 'plugin')
- *   unknown   → author === null AND scope === 'plugin'
+ *   you       → author === 'self' OR (author === null AND NOT plugin)
+ *   unknown   → author === null AND is from a plugin
  *   community → everyone else
  */
 export function authorBucket(
   resolved: ResolvedAuthor,
-  scope: Scope,
+  isFromPlugin: boolean,
 ): AuthorBucket {
   if (
     resolved.isOfficial ||
@@ -68,7 +65,7 @@ export function authorBucket(
   }
   if (resolved.author === "self") return "you";
   if (resolved.author === null) {
-    return scope === "plugin" ? "unknown" : "you";
+    return isFromPlugin ? "unknown" : "you";
   }
   return "community";
 }

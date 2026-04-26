@@ -74,10 +74,28 @@ export function ResolveConflict({
             >
               {a.scope}
             </span>
-            <span className="text-[13px] text-[color:var(--ink)]">
-              {a.intent}
-            </span>
+            <div className="min-w-0">
+              <span className="text-[13px] font-medium text-[color:var(--ink)]">
+                {a.intent}
+              </span>
+              <div className="mt-0.5 truncate font-mono text-[10px] text-[color:var(--text-faint)]">
+                {a.sourceFile}
+              </div>
+            </div>
             <div className="flex gap-[6px]">
+              <button
+                type="button"
+                onClick={() => {
+                  if (window.confirm("Delete this copy? This cannot be undone.")) {
+                    run("delete-shadowed", [a.id]);
+                  }
+                }}
+                disabled={pending !== null}
+                className={destructive.className}
+                style={destructive.style}
+              >
+                delete
+              </button>
               {!isWinner && (
                 <>
                   <button
@@ -88,15 +106,6 @@ export function ResolveConflict({
                     style={ghost.style}
                   >
                     make winner
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => run("delete-shadowed", [a.id])}
-                    disabled={pending !== null}
-                    className={destructive.className}
-                    style={destructive.style}
-                  >
-                    delete
                   </button>
                   <button
                     type="button"
@@ -120,7 +129,7 @@ export function ResolveConflict({
               )}
               {isWinner && (
                 <span
-                  className="smallcaps text-[10px] tracking-[0.14em] text-[color:var(--ink)]"
+                  className="smallcaps ml-2 text-[10px] font-bold tracking-[0.14em] text-[color:var(--ink)]"
                 >
                   current winner
                 </span>
