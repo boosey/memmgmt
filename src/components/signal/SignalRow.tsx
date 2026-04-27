@@ -15,6 +15,8 @@ import { SIGNAL_ROW_GRID_COLS } from "./SchematicHeader";
 interface SignalRowProps {
   group: readonly Entity[];
   winner: Entity;
+  groupKey: string;
+  identityGroup?: readonly Entity[];
   relationsOut: readonly Relation[];
   relationsIn: readonly Relation[];
   targetsById: ReadonlyMap<string, Entity | PseudoNode>;
@@ -36,6 +38,8 @@ interface SignalRowProps {
 export function SignalRow({
   group,
   winner,
+  groupKey,
+  identityGroup,
   relationsOut,
   relationsIn,
   targetsById,
@@ -55,9 +59,17 @@ export function SignalRow({
     arr.push(a);
     byScope.set(a.scope, arr);
   }
-  const contested = group.length > 1;
-  const shadowedCount = contested ? group.length - 1 : 0;
-  const groupKey = group[0]?.identity ?? `id:${winner.id}`;
+
+  // Use the provided identityGroup (all scope copies) or fallback to the current group
+  const effectiveGroup = identityGroup ?? group;
+  const contested = effectiveGroup.length > 1;
+
+  // In Identity mode (group.length > 1), shadowed count is group - 1.
+  // In File mode (group.length === 1), if the single entity is not the winner, it is shadowed.
+  const isShadowedInFileMode =
+    identityGroup && identityGroup.length > 1 && group.length === 1 && !group.some(e => e.id === winner.id);
+  const shadowedCount = group.length > 1 ? group.length - 1 : isShadowedInFileMode ? 1 : 0;
+
   const relCount = relationsOut.length + relationsIn.length;
 
   const rowBg = isExpanded

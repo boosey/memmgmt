@@ -17,7 +17,7 @@ import { ProjectSelect } from "@/components/signal/ProjectSelect";
 import { SchematicHeader } from "@/components/signal/SchematicHeader";
 import { SignalRow } from "@/components/signal/SignalRow";
 import { TracingBanner } from "@/components/signal/TracingBanner";
-import { TracingBlurb } from "@/components/signal/TracingBlurb";
+import { TracingBlurb, type GroupBy } from "@/components/signal/TracingBlurb";
 import { TypeTabs } from "@/components/signal/TypeTabs";
 import { EditorDrawer } from "@/components/signal/EditorDrawer";
 import { BulkActionBar } from "@/components/signal/BulkActionBar";
@@ -121,6 +121,34 @@ function groupByIdentity(entities: readonly Entity[]): GroupedRow[] {
   return rows;
 }
 
+function groupByFile(entities: readonly Entity[]): GroupedRow[] {
+  const groups = new Map<string, Entity[]>();
+  for (const e of entities) {
+    const key = e.sourceFile;
+    const arr = groups.get(key);
+    if (arr) arr.push(e);
+    else groups.set(key, [e]);
+  }
+  const rows: GroupedRow[] = [];
+  for (const [key, group] of groups) {
+    // When grouping by file, we don't collapse by identity; each entity
+    // in the file gets its own row.
+    for (const e of group) {
+      rows.push({
+        key: e.id,
+        group: [e],
+        winner: e,
+      });
+    }
+  }
+  rows.sort((a, b) => {
+    const fileComp = a.winner.sourceFile.localeCompare(b.winner.sourceFile);
+    if (fileComp !== 0) return fileComp;
+    return a.winner.title.localeCompare(b.winner.title);
+  });
+  return rows;
+}
+
 function Loaded({
   graph,
   refetch,
@@ -141,6 +169,7 @@ function Loaded({
   const projectFilter = useProjectFilter();
   const signalFilter = useSignalFilter();
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
+  const [groupBy, setGroupBy] = useState<GroupBy>("file");
   const [manageGhostsOpen, setManageGhostsOpen] = useState(false);
   const [brokenImport, setBrokenImport] = useState<{
     relation: Relation;
@@ -148,9 +177,38 @@ function Loaded({
     target: PseudoNode | undefined;
   } | null>(null);
 
+  const winningIds = useMemo(() => {
+    const groups = new Map<string, Entity[]>();
+    for (const e of graph.entities) {
+      const key = e.identity ?? `id:${e.id}`;
+      const arr = groups.get(key);
+      if (arr) arr.push(e);
+      else groups.set(key, [e]);
+    }
+    const winners = new Set<string>();
+    for (const group of groups.values()) {
+      group.sort(
+        (a, b) => SCOPE_PRECEDENCE[b.scope] - SCOPE_PRECEDENCE[a.scope],
+      );
+      if (group[0]) winners.add(group[0].id);
+    }
+    return winners;
+  }, [graph.entities]);
+
   const entitiesById = useMemo(() => {
     const m = new Map<string, Entity>();
     for (const e of graph.entities) m.set(e.id, e);
+    return m;
+  }, [graph.entities]);
+
+  const entitiesByIdentity = useMemo(() => {
+    const m = new Map<string, Entity[]>();
+    for (const e of graph.entities) {
+      const key = e.identity ?? `id:${e.id}`;
+      const arr = m.get(key) ?? [];
+      arr.push(e);
+      m.set(key, arr);
+    }
     return m;
   }, [graph.entities]);
 
@@ -199,8 +257,8 @@ function Loaded({
 
   const rows = useMemo(() => {
     const byType = filteredEntities.filter((e) => e.type === activeType);
-    return groupByIdentity(byType);
-  }, [filteredEntities, activeType]);
+    return groupBy === "identity" ? groupByIdentity(byType) : groupByFile(byType);
+  }, [filteredEntities, activeType, groupBy]);
 
   const visibleRows = useMemo(
     () =>
@@ -291,7 +349,11 @@ function Loaded({
         pinnedId={pinnedId}
         onSelectType={setActiveType}
       />
-      <TracingBlurb activeType={activeType} />
+      <TracingBlurb
+        activeType={activeType}
+        groupBy={groupBy}
+        onGroupByChange={setGroupBy}
+      />
 
       <div className="flex-1 overflow-auto px-7 pt-[14px] pb-[60px]">
         <SchematicHeader />
@@ -303,52 +365,72 @@ function Loaded({
                 : "No entities match the current filter."}
             </div>
           ) : (
-            visibleRows.map(({ key, group, winner }) => {
-              const out = relationsByEntity.out.get(winner.id) ?? [];
-              const inb = relationsByEntity.inb.get(winner.id) ?? [];
-              const isPinned = group.some((e) => e.id === pinnedId);
-              const isRelated =
-                !isPinned && group.some((e) => relatedSet.has(e.id));
-              const isChecked = group.some((e) =>
-                selection.isSelected(e.id),
-              );
-              const isExpanded = expandedKey === key;
-              return (
-                <div key={key} data-testid="signal-row-wrapper">
-                  <SignalRow
-                    group={group}
-                    winner={winner}
-                    relationsOut={out}
-                    relationsIn={inb}
-                    targetsById={targetsById}
-                    isPinned={isPinned}
-                    isRelated={isRelated}
-                    isChecked={isChecked}
-                    isExpanded={isExpanded}
-                    onPin={(id) =>
-                      pinnedId === id ? unpin() : pin(id)
-                    }
-                    onPinTarget={(id) => pin(id)}
-                    onToggleSelect={selection.toggle}
-                    onOpenEditor={handleOpenEditor}
-                    onResolveImport={(rel, imp, target) =>
-                      setBrokenImport({ relation: rel, importer: imp, target })
-                    }
-                  />
-                  {isExpanded && (
-                    <EditorDrawer
-                      entity={winner}
+            (() => {
+              let lastFile = "";
+              return visibleRows.map(({ key, group, winner }) => {
+                const out = relationsByEntity.out.get(winner.id) ?? [];
+                const inb = relationsByEntity.inb.get(winner.id) ?? [];
+                const isPinned = group.some((e) => e.id === pinnedId);
+                const isRelated =
+                  !isPinned && group.some((e) => relatedSet.has(e.id));
+                const isChecked = group.some((e) =>
+                  selection.isSelected(e.id),
+                );
+                const isExpanded = expandedKey === key;
+                const showFileHeader = groupBy === "file" && winner.sourceFile !== lastFile;
+                if (showFileHeader) lastFile = winner.sourceFile;
+
+                const identityKey = winner.identity ?? `id:${winner.id}`;
+                const identityGroup = entitiesByIdentity.get(identityKey);
+                
+                // In File mode, the 'winner' of the row is just the single entity.
+                // But we need to know who the logical winner of the identity group is.
+                const globalWinnerId = Array.from(winningIds).find(id => {
+                  const e = entitiesById.get(id);
+                  return e && (e.identity === winner.identity || e.id === winner.id);
+                });
+                const globalWinner = globalWinnerId ? entitiesById.get(globalWinnerId) : winner;
+
+                return (
+                  <div key={key} data-testid="signal-row-wrapper">
+                    {showFileHeader && <FileHeader path={winner.sourceFile} />}
+                    <SignalRow
                       group={group}
-                      allEntities={graph.entities}
-                      relations={graph.relations}
-                      onClose={() => setExpandedKey(null)}
-                      onSaved={handleSaved}
-                      onOpenEntity={handleOpenEntity}
+                      winner={globalWinner!}
+                      groupKey={key}
+                      identityGroup={identityGroup}
+                      relationsOut={out}
+                      relationsIn={inb}
+                      targetsById={targetsById}
+                      isPinned={isPinned}
+                      isRelated={isRelated}
+                      isChecked={isChecked}
+                      isExpanded={isExpanded}
+                      onPin={(id) =>
+                        pinnedId === id ? unpin() : pin(id)
+                      }
+                      onPinTarget={(id) => pin(id)}
+                      onToggleSelect={selection.toggle}
+                      onOpenEditor={handleOpenEditor}
+                      onResolveImport={(rel, imp, target) =>
+                        setBrokenImport({ relation: rel, importer: imp, target })
+                      }
                     />
-                  )}
-                </div>
-              );
-            })
+                    {isExpanded && (
+                      <EditorDrawer
+                        entity={globalWinner!}
+                        group={identityGroup!}
+                        allEntities={graph.entities}
+                        relations={graph.relations}
+                        onClose={() => setExpandedKey(null)}
+                        onSaved={handleSaved}
+                        onOpenEntity={handleOpenEntity}
+                      />
+                    )}
+                  </div>
+                );
+              });
+            })()
           )}
         </div>
       </div>
@@ -380,5 +462,16 @@ function Loaded({
         />
       )}
     </main>
+  );
+}
+
+function FileHeader({ path }: { path: string }) {
+  return (
+    <div className="sticky top-0 z-10 -mx-2 mb-1 mt-6 border-b border-[color:var(--rule)] bg-[color:var(--paper-deep)] px-2 py-1.5">
+      <div className="flex items-center gap-2 text-[11px] font-bold tracking-tight text-[color:var(--text-muted)]">
+        <span className="opacity-50">FILE:</span>
+        <span className="font-mono">{path}</span>
+      </div>
+    </div>
   );
 }

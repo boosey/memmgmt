@@ -29,6 +29,12 @@ export function SignalNode({ entities, isWinner, isShadowed }: SignalNodeProps) 
   const tint = AUTHOR_TINT[first.author];
   const count = entities.length;
 
+  // For the node icon/state, we look at the individual copies.
+  // If ANY of them are winners, the cell is a winner.
+  // If ALL of them are shadowed, the cell is shadowed.
+  const cellIsWinner = isWinner;
+  const cellIsShadowed = isShadowed;
+
   return (
     <div
       className="relative flex h-full w-full items-center justify-center"
@@ -37,16 +43,16 @@ export function SignalNode({ entities, isWinner, isShadowed }: SignalNodeProps) 
       <div
         className={[
           "relative flex size-6 items-center justify-center rounded-full border transition-all",
-          isWinner
+          cellIsWinner
             ? "border-[color:var(--ink)] bg-[oklch(0.62_0.17_145)] text-white shadow-[0_0_0_1px_var(--ink)]"
             : "border-[color:var(--rule)] bg-[oklch(0.95_0.01_55)] text-[color:var(--text-muted)]",
-          isShadowed ? "opacity-40" : "",
+          cellIsShadowed ? "opacity-40" : "",
         ].join(" ")}
         style={{
-          boxShadow: isWinner ? `0 0 0 2px ${tint}` : undefined,
+          boxShadow: cellIsWinner ? `0 0 0 2px ${tint}` : undefined,
         }}
       >
-        {isWinner ? (
+        {cellIsWinner ? (
           <svg
             className="size-4"
             fill="none"

@@ -9,8 +9,8 @@ interface TypeLabel {
 
 export const TYPE_LABELS: Record<EntityType, TypeLabel> = {
   "standing-instruction": {
-    label: "Memory",
-    plural: "Memories",
+    label: "Standing Instruction",
+    plural: "Standing Instructions",
     glyph: "§",
     blurb: "Manual instructions Claude reads at startup (CLAUDE.md).",
   },

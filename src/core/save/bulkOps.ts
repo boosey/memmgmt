@@ -12,6 +12,7 @@ import {
 } from "../apiContracts";
 import { parseClaudeMd, serializeClaudeMd } from "../parsers/claudeMd";
 import { parseSettings, serializeSettings } from "../parsers/settings";
+import { parseMemoryIndex, serializeMemoryIndex } from "../parsers/memory";
 
 export interface BulkContext {
   /** Root for persistent backups. */
@@ -530,20 +531,17 @@ async function runDeleteEntity(
         partiallyAffected: affected,
       };
     }
-    const group = groupByIdentity(entity, ctx.knownEntities);
-    for (const copy of group) {
-      const res = await deleteFileEntity(copy, ctx);
-      if (!res.ok) {
-        return {
-          ok: false,
-          action: req.action,
-          reason: res.reason,
-          message: res.message,
-          partiallyAffected: affected,
-        };
-      }
-      affected.push(res.affected);
+    const res = await deleteFileEntity(entity, ctx);
+    if (!res.ok) {
+      return {
+        ok: false,
+        action: req.action,
+        reason: res.reason,
+        message: res.message,
+        partiallyAffected: affected,
+      };
     }
+    affected.push(res.affected);
   }
   return { ok: true, action: req.action, affected };
 }
@@ -698,6 +696,13 @@ async function deleteFileEntity(
         return { ok: false, reason: "internal", message: "section not found" };
       }
       nextContent = serializeClaudeMd(nextSections);
+    } else if (entity.type === "memory") {
+      const entries = parseMemoryIndex(raw);
+      const nextEntries = entries.filter((e) => e.file !== entity.entryKey);
+      if (nextEntries.length === entries.length) {
+        return { ok: false, reason: "internal", message: "memory entry not found" };
+      }
+      nextContent = serializeMemoryIndex(nextEntries);
     } else {
       // settings.json backed
       const parsed = parseSettings(raw);
