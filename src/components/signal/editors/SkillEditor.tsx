@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Entity } from "@/core/entities";
 import type { ParsedSkill } from "@/core/parsers/skill";
 import { buildNextContentFor } from "@/lib/buildNextContent";
+import { deriveSourceFileFromName, isBlankEntity } from "@/lib/blankEntity";
 import { BodyEditor } from "./BodyEditor";
 import { ToolAccessControl } from "./ToolAccessControl";
 import { FormRow, fieldClass, monoClass } from "./shared";
@@ -77,9 +78,13 @@ export function SkillEditor({
       body,
       extraFrontmatter: extra,
     };
+    const isNew = isBlankEntity(entity);
     onApiReady({
       currentTitle: name,
       getSerializedContent: () => buildNextContentFor(entity, draft),
+      ...(isNew
+        ? { sourceFile: deriveSourceFileFromName(entity.sourceFile, name) }
+        : {}),
     });
   }, [name, description, enabled, body, mode, tools, entity, initial, onApiReady]);
 

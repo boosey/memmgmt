@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Entity, Relation } from "@/core/entities";
 import type { ParsedTypedMemory } from "@/core/parsers/memory";
 import { buildNextContentFor } from "@/lib/buildNextContent";
+import { deriveSourceFileFromName, isBlankEntity } from "@/lib/blankEntity";
 import { BodyEditor } from "./BodyEditor";
 import { FormRow, monoClass, ecBtnClass } from "./shared";
 import type { TypedEditorProps } from "./editorTypes";
@@ -55,9 +56,13 @@ export function MemoryEditor({
       name: filename,
       body,
     };
+    const isNew = isBlankEntity(entity);
     onApiReady({
       currentTitle: filename,
       getSerializedContent: () => buildNextContentFor(entity, draft),
+      ...(isNew
+        ? { sourceFile: deriveSourceFileFromName(entity.sourceFile, filename) }
+        : {}),
     });
   }, [filename, body, entity, initial, onApiReady]);
 

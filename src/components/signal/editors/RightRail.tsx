@@ -11,6 +11,7 @@ import { DiffPreviewModal } from "../DiffPreviewModal";
 import { showUndoToast } from "../UndoToast";
 import { ecBtnClass } from "./shared";
 import type { EditorApi } from "./editorTypes";
+import { isBlankEntity } from "@/lib/blankEntity";
 
 interface RightRailProps {
   entity: Entity;
@@ -87,6 +88,12 @@ export function RightRail({
     }
   }
 
+  const isNewEntity = isBlankEntity(entity);
+  // Distinguish "appending to an existing file" (we have an mtime, do the
+  // concurrency check) from "creating a brand-new file" (mtime=0, no check).
+  const knownMtime = api.expectedMtimeMs ?? entity.mtimeMs;
+  const omitMtime = isNewEntity && knownMtime === 0;
+
   async function handlePreview() {
     setPending("preview");
     setError(null);
@@ -94,8 +101,8 @@ export function RightRail({
       const body: SavePreviewRequest = {
         sourceFile: api.sourceFile ?? entity.sourceFile,
         scopeRoot: api.scopeRoot ?? entity.scopeRoot,
-        nextContent: api.getSerializedContent(),
-        expectedMtimeMs: api.expectedMtimeMs ?? entity.mtimeMs,
+        nextContent: api.getSerializedContent({ isNew: isNewEntity }),
+        ...(omitMtime ? {} : { expectedMtimeMs: knownMtime }),
       };
       const r = await fetch("/api/save/preview", {
         method: "POST",
@@ -116,7 +123,7 @@ export function RightRail({
     }
   }
 
-  async function handleSave(isNew = false) {
+  async function handleSave() {
     setPending("save");
     setError(null);
     try {
@@ -128,8 +135,8 @@ export function RightRail({
         body: JSON.stringify({
           sourceFile,
           scopeRoot,
-          nextContent: api.getSerializedContent({ isNew }),
-          expectedMtimeMs: isNew ? undefined : (api.expectedMtimeMs ?? entity.mtimeMs),
+          nextContent: api.getSerializedContent({ isNew: isNewEntity }),
+          ...(omitMtime ? {} : { expectedMtimeMs: knownMtime }),
         }),
       });
       const j = await r.json();
@@ -140,8 +147,8 @@ export function RightRail({
       showUndoToast({
         sourceFile,
         scopeRoot,
-        label: isNew
-          ? `Added new ${typeLabel.toLowerCase()}`
+        label: isNewEntity
+          ? `Created new ${typeLabel.toLowerCase()}`
           : `Saved ${typeLabel.toLowerCase()} · ${entity.title}`,
       });
       onSaved();
@@ -151,8 +158,6 @@ export function RightRail({
       setPending(null);
     }
   }
-
-  const supportsSaveAsNew = entity.type === "permission" || entity.type === "hook";
 
   return (
     <div
@@ -179,27 +184,19 @@ export function RightRail({
         </button>
         <button
           type="button"
-          onClick={() => handleSave(false)}
+          onClick={() => handleSave()}
           disabled={pending !== null}
           className={primary.className}
           style={primary.style}
           data-testid="right-rail-save"
         >
-          {pending === "save" ? "saving…" : "Save with backup"}
+          {pending === "save"
+            ? "saving…"
+            : isNewEntity
+              ? "Create"
+              : "Save with backup"}
         </button>
-        {supportsSaveAsNew && (
-          <button
-            type="button"
-            onClick={() => handleSave(true)}
-            disabled={pending !== null}
-            className={ghost.className}
-            style={ghost.style}
-            data-testid="right-rail-save-new"
-          >
-            Save as New
-          </button>
-        )}
-        {!(entity.plugin && entity.type !== "plugin") && (
+        {!isNewEntity && !(entity.plugin && entity.type !== "plugin") && (
           <button
             type="button"
             onClick={handleDelete}

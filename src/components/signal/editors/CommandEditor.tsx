@@ -3,6 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import type { Entity } from "@/core/entities";
 import type { ParsedCommand } from "@/core/parsers/command";
 import { buildNextContentFor } from "@/lib/buildNextContent";
+import { deriveSourceFileFromName, isBlankEntity } from "@/lib/blankEntity";
 import { BodyEditor } from "./BodyEditor";
 import { ConvertToSkill } from "./ConvertToSkill";
 import { FormRow, fieldClass, monoClass } from "./shared";
@@ -57,9 +58,13 @@ export function CommandEditor({
       body,
       extraFrontmatter: extra,
     };
+    const isNew = isBlankEntity(entity);
     onApiReady({
       currentTitle: name,
       getSerializedContent: () => buildNextContentFor(entity, draft),
+      ...(isNew
+        ? { sourceFile: deriveSourceFileFromName(entity.sourceFile, name) }
+        : {}),
     });
   }, [name, description, enabled, args, body, entity, initial, onApiReady]);
 

@@ -40,6 +40,7 @@ import type { Entity, EntityType } from "@/core/entities";
 export interface StandingInstructionDraft {
   heading: string;
   body: string;
+  isNew?: boolean;
 }
 
 export interface PermissionDraft {
@@ -128,8 +129,37 @@ function buildStandingInstruction(
   entity: Entity,
   draft: StandingInstructionDraft,
 ): string {
-  const current = entity.structured as ClaudeMdSection | null;
   const sections = parseClaudeMd(entity.rawContent);
+
+  if (draft.isNew) {
+    // Append a new H2 section at the end of the file.
+    const trimmedHeading = draft.heading.trim();
+    if (!trimmedHeading) {
+      throw new Error("heading is required for a new standing instruction");
+    }
+    // Ensure the preceding content ends with a newline so the new heading
+    // doesn't fuse onto the prior line.
+    if (sections.length > 0) {
+      const last = sections[sections.length - 1]!;
+      if (!last.body.endsWith("\n")) last.body += "\n";
+    }
+    const bodyWithLead = draft.body.startsWith("\n")
+      ? draft.body
+      : `\n${draft.body}`;
+    const bodyWithTrailing = bodyWithLead.endsWith("\n")
+      ? bodyWithLead
+      : `${bodyWithLead}\n`;
+    sections.push({
+      heading: trimmedHeading,
+      level: 2,
+      headingPath: [trimmedHeading],
+      body: bodyWithTrailing,
+      imports: [],
+    });
+    return serializeClaudeMd(sections);
+  }
+
+  const current = entity.structured as ClaudeMdSection | null;
   const target = sections.findIndex(
     (s) =>
       s.level === (current?.level ?? 2) &&

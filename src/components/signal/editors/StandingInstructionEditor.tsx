@@ -65,10 +65,11 @@ export function StandingInstructionEditor({
     onApiReady({
       currentTitle: heading,
       stanzas: heading ? [`## ${heading}`, `# ${heading}`] : [],
-      getSerializedContent: () =>
+      getSerializedContent: (options) =>
         buildNextContentFor(entity, {
           heading,
           body: finalBody,
+          isNew: options?.isNew,
         }),
     });
   }, [heading, body, imports, entity, onApiReady]);

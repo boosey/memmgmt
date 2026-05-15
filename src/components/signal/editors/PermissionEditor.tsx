@@ -12,9 +12,10 @@ import { buildNextContentFor } from "@/lib/buildNextContent";
 import { Chip, FormRow, fieldClass, monoClass } from "./shared";
 import type { TypedEditorProps } from "./editorTypes";
 
-const TOOL_OPTIONS = ["Bash", "Read", "Edit", "Write", "WebFetch", "*"] as const;
+const TOOL_OPTIONS = ["Bash", "PowerShell", "Read", "Edit", "Write", "WebFetch", "*"] as const;
 const PRESETS: Record<string, string[]> = {
   Bash: ["git *", "pnpm *", "bun *", "rm *", "curl *"],
+  PowerShell: ["git *", "pnpm *", "npm *", "Get-* *", "Remove-Item *"],
   Read: ["~/.ssh/**", "~/.aws/**", ".env*"],
   Write: [".env*", "~/.config/**"],
 };

@@ -20,6 +20,7 @@ import { ScopeMover } from "./editors/ScopeMover";
 import { ResolveConflict } from "./editors/ResolveConflict";
 import { ecBtnClass } from "./editors/shared";
 import type { EditorApi } from "./editors/editorTypes";
+import { isBlankEntity } from "@/lib/blankEntity";
 
 interface EditorDrawerProps {
   entity: Entity;
@@ -64,7 +65,8 @@ export function EditorDrawer({
   }, []);
 
   const typeLabel = TYPE_LABELS[entity.type].label;
-  const contested = group.length > 1;
+  const isNew = isBlankEntity(entity);
+  const contested = !isNew && group.length > 1;
   const close = ecBtnClass();
 
   function renderEditor() {
@@ -135,10 +137,10 @@ export function EditorDrawer({
       <div>
         <div className="mb-[12px] flex items-center gap-3">
           <span className="smallcaps text-[10px] tracking-[0.18em] text-[color:var(--text-muted)]">
-            Editing · {typeLabel}
+            {isNew ? "Creating" : "Editing"} · {typeLabel}
           </span>
           <span className="text-[18px] font-semibold tracking-[-0.01em] text-[color:var(--ink)]">
-            {currentTitle}
+            {currentTitle || (isNew ? "(new)" : "")}
           </span>
           <span className="flex-1" />
           <button
@@ -156,7 +158,7 @@ export function EditorDrawer({
           {(
             [
               ["edit", "Edit"],
-              ...(!entity.plugin || entity.type === "plugin"
+              ...(!isNew && (!entity.plugin || entity.type === "plugin")
                 ? ([["scope", "Move scope"]] as const)
                 : []),
               ...(contested ? ([["resolve", "Resolve conflict"]] as const) : []),

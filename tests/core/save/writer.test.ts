@@ -54,6 +54,41 @@ describe("applyEdit", () => {
     expect(res.ok).toBe(false);
     expect(res.ok === false && res.reason).toBe("noop");
   });
+
+  // Regression: "Save as New" used to send expectedMtimeMs=undefined, which
+  // JSON.stringify dropped, so the route schema (required number) rejected
+  // it with 400 "invalid body". The schema now permits omission as a signal
+  // to create — applyEdit must accept it and skip the mtime check.
+  it("creates a new file when expectedMtimeMs is omitted", async () => {
+    const target = path.join(tmp, "subdir", "new-file.md");
+    const res = await applyEdit({
+      sourceFile: target,
+      scopeRoot: tmp,
+      backupsDir,
+      nextContent: "fresh\n",
+      // expectedMtimeMs intentionally omitted
+    });
+    expect(res.ok).toBe(true);
+    expect(res.ok === true && res.backupPath).toBeNull();
+    expect(await fs.readFile(target, "utf8")).toBe("fresh\n");
+  });
+
+  it("writes without mtime check when expectedMtimeMs is omitted on an existing file", async () => {
+    // Existing file with current content; caller did not pass an mtime.
+    // Used by the +Add flow when appending an entry to a file we already
+    // know the rawContent of (mtime check is implicit via the inherited
+    // rawContent the editor builds against).
+    const res = await applyEdit({
+      sourceFile: src,
+      scopeRoot: tmp,
+      backupsDir,
+      nextContent: "updated\n",
+      // expectedMtimeMs intentionally omitted
+    });
+    expect(res.ok).toBe(true);
+    expect(res.ok === true && res.backupPath).not.toBeNull();
+    expect(await fs.readFile(src, "utf8")).toBe("updated\n");
+  });
 });
 
 describe("restoreLastBackup", () => {

@@ -11,7 +11,8 @@ export interface SavePreviewRequest {
   sourceFile: string;
   scopeRoot: string;
   nextContent: string;
-  expectedMtimeMs: number;
+  /** Omit to signal a new-file create (no mtime check, file may not yet exist). */
+  expectedMtimeMs?: number | undefined;
 }
 
 export interface DiffHunk {

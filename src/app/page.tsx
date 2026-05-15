@@ -20,6 +20,7 @@ import { TracingBanner } from "@/components/signal/TracingBanner";
 import { TracingBlurb, type GroupBy } from "@/components/signal/TracingBlurb";
 import { TypeTabs } from "@/components/signal/TypeTabs";
 import { EditorDrawer } from "@/components/signal/EditorDrawer";
+import { AddNewButton } from "@/components/signal/AddNewButton";
 import { BulkActionBar } from "@/components/signal/BulkActionBar";
 import { UndoToaster } from "@/components/signal/UndoToast";
 import { BrokenImportModal } from "@/components/signal/BrokenImportModal";
@@ -198,6 +199,7 @@ function Loaded({
   const projectFilter = useProjectFilter();
   const signalFilter = useSignalFilter();
   const [expandedKey, setExpandedKey] = useState<string | null>(null);
+  const [createEntity, setCreateEntity] = useState<Entity | null>(null);
   const [groupBy, setGroupBy] = useState<GroupBy>("file");
   const [manageGhostsOpen, setManageGhostsOpen] = useState(false);
   const [brokenImport, setBrokenImport] = useState<{
@@ -347,6 +349,7 @@ function Loaded({
 
   function handleSaved() {
     setExpandedKey(null);
+    setCreateEntity(null);
     refetch();
   }
 
@@ -354,6 +357,11 @@ function Loaded({
     setActiveType(e.type);
     const key = e.identity ?? `id:${e.id}`;
     setExpandedKey(key);
+  }
+
+  function handleCreate(blank: Entity) {
+    setExpandedKey(null);
+    setCreateEntity(blank);
   }
 
   return (
@@ -387,6 +395,28 @@ function Loaded({
 
       <div className="flex-1 overflow-auto px-7 pt-[14px] pb-[60px]">
         <SchematicHeader />
+        <div className="mt-[10px] mb-[14px] flex items-center gap-3">
+          <AddNewButton
+            activeType={activeType}
+            entities={graph.entities}
+            pseudoNodes={graph.pseudoNodes}
+            activeProject={activeProject ?? null}
+            onCreate={handleCreate}
+          />
+        </div>
+        {createEntity && createEntity.type === activeType && (
+          <div className="mb-[14px]">
+            <EditorDrawer
+              entity={createEntity}
+              group={[createEntity]}
+              allEntities={graph.entities}
+              relations={graph.relations}
+              onClose={() => setCreateEntity(null)}
+              onSaved={handleSaved}
+              onOpenEntity={handleOpenEntity}
+            />
+          </div>
+        )}
         <div className="mt-[10px]">
           {visibleRows.length === 0 ? (
             <div className="py-10 text-center text-[13px] text-[color:var(--text-muted)]">

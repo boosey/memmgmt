@@ -14,12 +14,20 @@ const MTIME_TOLERANCE_MS = 1;
 export async function previewDiff(
   req: SavePreviewRequest,
 ): Promise<SavePreviewResponse> {
-  let stat: Awaited<ReturnType<typeof fs.stat>>;
+  const isCreate = req.expectedMtimeMs === undefined;
+  let stat: Awaited<ReturnType<typeof fs.stat>> | null = null;
   try {
     stat = await fs.stat(req.sourceFile);
   } catch (e) {
     const err = e as NodeJS.ErrnoException;
     if (err.code === "ENOENT") {
+      if (isCreate) {
+        // New file create: previewDiff against an empty before.
+        const after = req.nextContent;
+        const diff = computeDiff("", after);
+        const hunks: DiffHunk[] = diffToHunks("", after, diff.raw);
+        return { ok: true, before: "", after, hunks, noop: diff.noop };
+      }
       return {
         ok: false,
         reason: "file-missing",
@@ -33,7 +41,11 @@ export async function previewDiff(
     };
   }
 
-  if (Math.abs(stat.mtimeMs - req.expectedMtimeMs) > MTIME_TOLERANCE_MS) {
+  if (
+    !isCreate &&
+    Math.abs(stat.mtimeMs - (req.expectedMtimeMs as number)) >
+      MTIME_TOLERANCE_MS
+  ) {
     return {
       ok: false,
       reason: "mtime-drift",

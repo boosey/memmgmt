@@ -6,7 +6,7 @@ const Schema = z.object({
   sourceFile: z.string(),
   scopeRoot: z.string(),
   nextContent: z.string(),
-  expectedMtimeMs: z.number(),
+  expectedMtimeMs: z.number().optional(),
 });
 
 export const runtime = "nodejs";
